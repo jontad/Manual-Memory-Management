@@ -1,6 +1,8 @@
 #pragma once
 #include <stdlib.h>
 
+#define Free(ptr) {free(ptr); ptr = NULL;}
+
 typedef void obj;
 typedef void(*function1_t)(obj *);
 
