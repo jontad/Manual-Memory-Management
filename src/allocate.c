@@ -47,12 +47,14 @@ void deallocate(obj *object)
     {
       if(has_destructor(obj))
 	{
-	  obj->destructor(obj->object);
-	  free(obj);
+	  obj->destructor(obj->object);	  
 	}
       else
 	{
-	  free(obj->object);
+	  free(obj->object);	  
 	}
+      free(obj);
+      obj = NULL;
     }
 }
+
