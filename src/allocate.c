@@ -39,6 +39,15 @@ bool has_destructor(alloc_t *obj){
   return obj->destructor;
 }
 
+//Might not be needed!
+void set_destructor(obj *object, function1_t destructor)
+{
+  alloc_t *obj = object;
+  alloc_t obj_real = *obj;
+
+  obj_real.destructor = destructor;
+}
+
 void deallocate(obj *object)
 {
   alloc_t *obj = object; //TODO
@@ -56,3 +65,4 @@ void deallocate(obj *object)
 	}
     }
 }
+
