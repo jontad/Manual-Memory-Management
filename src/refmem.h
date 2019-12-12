@@ -38,6 +38,7 @@ size_t rc(obj *);
 /// @param bytes
 /// @param destructor
 /// @return
+
 obj *allocate(size_t bytes, function1_t destructor);
 
 /// @brief 
@@ -46,7 +47,6 @@ obj *allocate(size_t bytes, function1_t destructor);
 /// @param destructor
 /// @return
 obj *allocate_array(size_t elements, size_t elem_size, function1_t destructor);
-
 
 /// @brief 
 /// @param obj
@@ -58,6 +58,7 @@ void set_cascade_limit(size_t);
 
 /// @brief Get the current cascade limit
 /// @return Current cascade limit
+
 size_t get_cascade_limit();
 
 /// @brief Frees all objects with reference count 0, regardless of cascade limit
