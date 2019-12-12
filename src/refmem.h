@@ -1,6 +1,8 @@
 #pragma once
 #include <stdlib.h>
 
+
+#define Free(ptr) {free(ptr); ptr = NULL;}
 /**
  * @file refmem.h
  * @author Elias Insulander, Jonathan Tadese, Robert Paananen, Daniel Westberg, Alex Kangas, Georgios Davakos, Joel Waldenbäck
