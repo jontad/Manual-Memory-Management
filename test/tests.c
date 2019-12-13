@@ -17,7 +17,7 @@ void test_alloc_array()
 {
   string_t *alloc = allocate_array(10, sizeof(string_t), NULL);
   alloc->str = "test";
-  CU_ASSERT_PTR_NOT_NULL(alloc);
+  CU_ASSERT_PTR_NULL(alloc);
   deallocate(alloc);
 }
 
