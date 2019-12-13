@@ -65,3 +65,32 @@ void deallocate(obj *object)
     }
 }
 
+void retain(obj *object)
+{
+  if(object)
+    {
+      obj *tmp = object-sizeof(function1_t)-1;
+      uint8_t ref_count = *(uint8_t *)tmp;
+      ref_count++;
+      memset(tmp,ref_count,1);
+    }
+}
+
+void release(obj *object)
+{
+  if(object)
+    {
+      obj *tmp = object-sizeof(function1_t)-1;
+      uint8_t ref_count = *(uint8_t *)tmp;
+      ref_count--;
+      memset(tmp,ref_count,1);
+      if(ref_count == 0) deallocate(object);
+    }
+}
+
+size_t rc(obj *object)
+{
+  obj *tmp = object-sizeof(function1_t)-1;
+  uint8_t ref_count = *(uint8_t *)tmp;
+  return ref_count;
+}
