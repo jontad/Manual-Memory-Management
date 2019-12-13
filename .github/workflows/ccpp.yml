@@ -1,6 +1,6 @@
 name: Team-13 CI
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   val_tests:
