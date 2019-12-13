@@ -9,15 +9,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-#    - name: configure
-#      run: ./configure
     - name: Install cunit & valgrind
       run: sudo apt-get install libcunit1-dev libcunit1-doc libcunit1 valgrind
     - name: make compile
       run: make compile
+    - name: make tests
+      run: make tests
     - name: make val_tests
       run: make val_tests
-#    - name: make check
-#      run: make check
-#    - name: make distcheck
-#      run: make distcheck
