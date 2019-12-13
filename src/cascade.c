@@ -4,7 +4,11 @@ size_t cascade_limit = 0;
  
 void set_cascade_limit(size_t limit)
 {
-  cascade_limit = limit;
+  int test = (int) limit;
+  if (test >= 0)
+    {
+      cascade_limit = limit;
+    }
 }
 
 

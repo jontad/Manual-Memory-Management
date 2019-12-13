@@ -53,6 +53,10 @@ void test_cascade_limit()
   set_cascade_limit(40);
   limit = get_cascade_limit();
   CU_ASSERT_NOT_EQUAL(limit, expected);
+  set_cascade_limit(-20);
+  limit = get_cascade_limit();
+  expected = 40;
+  CU_ASSERT_EQUAL(limit, expected);
 }
 
 int init_suite(void)
