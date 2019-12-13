@@ -15,14 +15,14 @@ struct allocate
 
 obj *allocate(size_t bytes, function1_t destructor)
 {
-  alloc_t *info = malloc(sizeof(alloc_t));
+  /*alloc_t *info = malloc(sizeof(alloc_t));
   info->ref_count = 0;
   info->destructor = destructor;
-
-  obj *alloc = malloc(sizeof(alloc_t) + bytes);
-  memcpy(alloc,info,sizeof(*info));
-  alloc += sizeof(alloc_t);
-  free(info);
+  */
+  obj *alloc = malloc(1 + sizeof(function1_t) + bytes);
+  memset(alloc,0,1);
+  memcpy(alloc+1,&destructor,sizeof(destructor));
+  alloc += sizeof(destructor) + 1;
   return alloc;
 
 }
@@ -30,14 +30,10 @@ obj *allocate(size_t bytes, function1_t destructor)
 
 obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 {
-  alloc_t *info = malloc(sizeof(alloc_t));
-  info->ref_count = 0;
-  info->destructor = destructor;
-
-  obj *alloc = malloc(sizeof(alloc_t) + elements*bytes);
-  memcpy(alloc,info,sizeof(*info));
-  alloc += sizeof(alloc_t);
-  free(info);
+  obj *alloc = malloc(1 + sizeof(function1_t) + elements*bytes);
+  memset(alloc,0,1);
+  memcpy(alloc+1,&destructor,sizeof(destructor));
+  alloc += sizeof(destructor) + 1;
   return alloc;
 }
 
@@ -56,20 +52,16 @@ void set_destructor(obj *object, function1_t destructor)
 
 void deallocate(obj *object)
 {
-  alloc_t *info = malloc(sizeof(alloc_t));
-  obj *tmp = object-sizeof(alloc_t);
-  memcpy(info,tmp,sizeof(alloc_t));
-  uint8_t ref_count = info->ref_count;
-  function1_t destructor = info->destructor;
-
-  if((ref_count == 0)) //Tmp, use rc instead. TODO
+  obj *tmp = object-sizeof(function1_t)-1;
+  uint8_t ref_count = *(uint8_t *)tmp;
+  function1_t destructor = *(function1_t *)(tmp+1);
+  if((ref_count == 0))
     {
       if(destructor)
 	{
 	  destructor(object);	  
 	}
-      Free(tmp);	  
-      Free(info);
+      Free(tmp);
     }
 }
 
