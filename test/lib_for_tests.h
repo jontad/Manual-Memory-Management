@@ -22,3 +22,5 @@ struct string_struct
 
 /// @brief the following function is ment to deallocate a string
 void destructor_string(obj *object);
+
+void destructor_string_array(obj* object);
