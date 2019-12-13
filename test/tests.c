@@ -1,12 +1,10 @@
 #include <stdbool.h>
 #include "../src/refmem.h"
+#include "lib_for_tests.h"
 #include <CUnit/Basic.h>
-typedef struct test_struct test_t;
 
-struct test_struct
-{
-  char *str;
-};
+
+
 
 void test_alloc()
 {
@@ -23,12 +21,6 @@ void test_alloc_array()
   deallocate(alloc);
 }
 
-void destructor_string(obj *object)
-{
-  char **ptr = object;
-  char *str = *ptr;
-  free(str);
-}
 
 void test_destructor_null()
 {
