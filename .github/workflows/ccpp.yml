@@ -12,7 +12,7 @@ jobs:
 #    - name: configure
 #      run: ./configure
     - name: Install cunit
-      run: npm install cunit
+      run: sudo apt-get install libcunit1-dev libcunit1-doc libcunit1
     - name: make compile
       run: make compile
     - name: make val_tests
