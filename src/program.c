@@ -21,6 +21,11 @@ person_t *person_create(char *first_name, char *last_name, int age)
   return new_person;
 }
 
+void person_kill(person_t *person)
+{
+  free(person);
+}
+
 void cray_party()
 {
   person_t *olle = person_create("Olle", "Olsson", 99);
