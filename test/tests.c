@@ -77,6 +77,21 @@ void test_rc()
   release(alloc);
   CU_ASSERT_EQUAL(1,rc(alloc));
   release(alloc);
+
+void test_cascade_limit()
+{
+  int expected = 100;
+  set_cascade_limit(100);
+  size_t limit = get_cascade_limit();
+  CU_ASSERT_EQUAL(limit, expected);
+  set_cascade_limit(40);
+  limit = get_cascade_limit();
+  CU_ASSERT_NOT_EQUAL(limit, expected);
+  set_cascade_limit(-20);
+  limit = get_cascade_limit();
+  expected = 40;
+  CU_ASSERT_EQUAL(limit, expected);
+
 }
 
 int init_suite(void)
@@ -109,7 +124,7 @@ int main()
       (NULL == CU_add_test(test_suite1, "retain", test_retain))||
       (NULL == CU_add_test(test_suite1, "retain null", test_retain_null))|
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
-      (NULL == CU_add_test(test_suite1, "rc", test_rc))
+      (NULL == CU_add_test(test_suite1, "rc", test_rc))||
       )
     {
       CU_cleanup_registry();
