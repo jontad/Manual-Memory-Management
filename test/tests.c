@@ -8,14 +8,14 @@
 
 void test_alloc()
 {
-  test_t *alloc = allocate(sizeof(test_t), NULL);
+  string_t *alloc = allocate(sizeof(string_t), NULL);
   CU_ASSERT_PTR_NOT_NULL(alloc);
   deallocate(alloc);
 }
 
 void test_alloc_array()
 {
-  test_t *alloc = allocate_array(10, sizeof(test_t), NULL);
+  string_t *alloc = allocate_array(10, sizeof(string_t), NULL);
   alloc->str = "test";
   CU_ASSERT_PTR_NOT_NULL(alloc);
   deallocate(alloc);
@@ -24,14 +24,14 @@ void test_alloc_array()
 
 void test_destructor_null()
 {
-  test_t *alloc = allocate_array(10, sizeof(test_t), NULL);
+  string_t *alloc = allocate_array(10, sizeof(string_t), NULL);
   deallocate(alloc);
  
 }
 
 void test_destruct_string()
 {
-  test_t *alloc = allocate(sizeof(test_t), destructor_string);
+  string_t *alloc = allocate(sizeof(string_t), destructor_string);
   alloc->str = strdup("test");
   deallocate(alloc);
 }
