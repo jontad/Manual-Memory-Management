@@ -38,7 +38,7 @@ void test_destruct_string()
 
 void test_retain()
 {
-  test_t *alloc = allocate(sizeof(test_t), NULL);
+  string_t *alloc = allocate(sizeof(string_t), NULL);
   retain(alloc);
   CU_ASSERT_EQUAL(1,rc(alloc));
   release(alloc);
@@ -46,7 +46,7 @@ void test_retain()
 
 void test_retain_null()
 {
-  test_t *alloc = NULL;
+  string_t *alloc = NULL;
   retain(alloc);
   CU_ASSERT_PTR_NULL(alloc);
 }
@@ -54,7 +54,7 @@ void test_retain_null()
 
 void test_release_null()
 {
-  test_t *alloc = NULL;
+  string_t *alloc = NULL;
   release(alloc);
   CU_ASSERT_PTR_NULL(alloc);
 }
@@ -62,13 +62,14 @@ void test_release_null()
 
 void test_rc()
 {
-  test_t *alloc = allocate(sizeof(test_t), NULL);
+  string_t *alloc = allocate(sizeof(string_t), NULL);
   retain(alloc);
   retain(alloc);
   CU_ASSERT_EQUAL(2,rc(alloc));
   release(alloc);
   CU_ASSERT_EQUAL(1,rc(alloc));
   release(alloc);
+}
 
 void test_cascade_limit()
 {
@@ -83,7 +84,6 @@ void test_cascade_limit()
   limit = get_cascade_limit();
   expected = 40;
   CU_ASSERT_EQUAL(limit, expected);
-
 }
 
 int init_suite(void)
@@ -117,6 +117,7 @@ int main()
       (NULL == CU_add_test(test_suite1, "retain null", test_retain_null))|
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
+      (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit))
       )
     {
       CU_cleanup_registry();
