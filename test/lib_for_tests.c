@@ -20,7 +20,15 @@ void destructor_string(obj *object)
 void destructor_linked_list(obj *object)
 {
   list_t *list = dereference_list(object);
-  
+  link_t *link = list->head;
+  link_t *tmp;
+  while (cache != NULL)
+    {
+      tmp = link->next;
+      free(link->str);
+      free(link);
+      cache = tmp;
+    }
 }
 
 //------linked list functions-------//

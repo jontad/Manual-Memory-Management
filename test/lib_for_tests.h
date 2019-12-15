@@ -15,6 +15,7 @@
  */
 typedef struct string_struct string_t;
 typedef struct linked_list list_t;
+typedef struct link link_t;
 
 struct string_struct
 {
@@ -32,7 +33,15 @@ struct link
 {
   link_t *next;
   char *str;
-}
+};
 
 /// @brief the following function is ment to deallocate a string
 void destructor_string(obj *object);
+
+/// @brief the following function is ment to deallocate a linked list
+void destructor_linked_list(obj *object);
+
+void linked_list_append(obj *object, obj * obj);
+
+size_t linked_list_size(obj *object);
+
