@@ -2,13 +2,6 @@
 #include "../src/refmem.h"
 #include "lib_for_tests.h"
 
-list_t *dereference_list(obj *object)
-{
-  list_t **ptr = object;
-  list_t *list = *ptr;
-  return list;
-}
-
 
 void destructor_string(obj *object)
 {
@@ -19,15 +12,16 @@ void destructor_string(obj *object)
 
 void destructor_linked_list(obj *object)
 {
-  list_t *list = dereference_list(object);
+  list_t **ptr = object;
+  list_t *list = *ptr;
   link_t *link = list->head;
   link_t *tmp;
-  while (cache != NULL)
+  while (link != NULL)
     {
       tmp = link->next;
       free(link->str);
       free(link);
-      cache = tmp;
+      link = tmp;
     }
 }
 
@@ -35,27 +29,10 @@ void destructor_linked_list(obj *object)
 
 void linked_list_append(obj *object, obj *obj)
 {
-  list_t *list = dereference_list(object);
+  list_t **ptr = object;
+  list_t *list = *ptr;
   char **pointer = obj;
   char *str = *pointer;
-
-  if(list->head == NULL)
-    {
-      link_t *link = allocate(sizeof(link_t), NULL);
-      link->next = NULL;
-      link->str = str;
-      list->head = link;
-      list->size +=1;
-    }
-  
-  if(list->tail == NULL)
-    {
-      link_t *link = allocate(sizeof(link_t), NULL);
-      link->next = NULL;
-      link->str = str;
-      list->tail = link;
-      list->size +=1;
-    }
 
   if(list->tail != NULL)
     {
@@ -66,11 +43,29 @@ void linked_list_append(obj *object, obj *obj)
       list->tail = link;
       list->size +=1;
     }
+    
+  if(list->head == NULL)
+    {
+      link_t *link = allocate(sizeof(link_t), NULL);
+      link->next = NULL;
+      link->str = str;
+      list->head = link;
+    }
+  
+  if(list->tail == NULL)
+    {
+      link_t *link = allocate(sizeof(link_t), NULL);
+      link->next = NULL;
+      link->str = str;
+      list->tail = link;
+      list->size +=1;
+    }
 }
 
 size_t linked_list_size(obj *object)
 {
-  list_t *list = dereference_list(object);
+  list_t **ptr = object;
+  list_t *list = *ptr;
   size_t size = list->size;
   return size;
 }
