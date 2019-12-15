@@ -23,6 +23,7 @@ void destructor_linked_list(obj *object)
       free(link);
       link = tmp;
     }
+
 }
 
 //------linked list functions-------//

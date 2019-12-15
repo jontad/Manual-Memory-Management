@@ -54,15 +54,14 @@ void test_cascade_limit()
 void test_destructor_linked_list()
 {
   list_t *list = allocate(sizeof(list_t), destructor_linked_list);
-
   list->head = NULL;
   list->tail = NULL;
   list->size = 0;
   
   char *str = strdup("hello");
   char *string = strdup("world");
-  linked_list_append(&list, &str);
-  linked_list_append(&list, string);
+  linked_list_append(list, str);
+  linked_list_append(list, string);
   size_t actual_size = linked_list_size(&list);
   CU_ASSERT_EQUAL(actual_size, 2);
   deallocate(list);
