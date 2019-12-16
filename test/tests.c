@@ -22,6 +22,18 @@ void test_alloc_array()
 }
 
 
+void test_alloc_array_loop()
+{
+  char **alloc = allocate_array(10, sizeof(char *), destructor_string_array);
+  for(int i = 0; i < 10; i++)
+    {
+      alloc[i] = strdup("test");
+    }
+  CU_ASSERT_PTR_NOT_NULL(alloc);
+  deallocate(alloc);
+}
+
+
 void test_destructor_null()
 {
   string_t *alloc = allocate_array(10, sizeof(string_t), NULL);
@@ -130,7 +142,8 @@ int main()
       (NULL == CU_add_test(test_suite1, "destruct string", test_destruct_string)) ||
       (NULL == CU_add_test(test_suite1, "destructor null", test_destructor_null)) ||
       (NULL == CU_add_test(test_suite1, "retain", test_retain))||
-      (NULL == CU_add_test(test_suite1, "retain null", test_retain_null))|
+      (NULL == CU_add_test(test_suite1, "retain null", test_retain_null))||
+      (NULL == CU_add_test(test_suite1, "alloc array loop", test_alloc_array_loop))||
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
       (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||

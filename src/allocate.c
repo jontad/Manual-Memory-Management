@@ -34,6 +34,7 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   memset(alloc,0,1);
   memcpy(alloc+1,&destructor,sizeof(destructor));
   alloc += sizeof(destructor) + 1;
+  memset(alloc,0,elements*bytes);
   return alloc;
 }
 

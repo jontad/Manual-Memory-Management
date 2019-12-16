@@ -38,10 +38,11 @@ struct link
 /// @brief the following function is ment to deallocate a string
 void destructor_string(obj *object);
 
+void destructor_string_array(obj* object);
+
 /// @brief the following function is ment to deallocate a linked list
 void destructor_linked_list(obj *object);
 
 void linked_list_append(obj *object, obj * obj);
 
 size_t linked_list_size(obj *object);
-
