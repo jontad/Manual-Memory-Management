@@ -14,9 +14,24 @@
  * @see http://wrigstad.com/ioopm19/projects/project1.html
  */
 typedef struct string_struct string_t;
+typedef struct linked_list list_t;
+typedef struct link link_t;
 
 struct string_struct
 {
+  char *str;
+};
+
+struct linked_list
+{
+  link_t *head;
+  link_t *tail;
+  size_t size;
+};
+
+struct link
+{
+  link_t *next;
   char *str;
 };
 
@@ -24,3 +39,10 @@ struct string_struct
 void destructor_string(obj *object);
 
 void destructor_string_array(obj* object);
+
+/// @brief the following function is ment to deallocate a linked list
+void destructor_linked_list(obj *object);
+
+void linked_list_append(obj *object, obj * obj);
+
+size_t linked_list_size(obj *object);

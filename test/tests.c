@@ -98,6 +98,22 @@ void test_cascade_limit()
   CU_ASSERT_EQUAL(limit, expected);
 }
 
+void test_destructor_linked_list()
+{
+  list_t *list = allocate(sizeof(list_t), destructor_linked_list);
+  list->head = NULL;
+  list->tail = NULL;
+  list->size = 0;
+  
+  char *str = strdup("hello");
+  char *string = strdup("world");
+  linked_list_append(list, str);
+  linked_list_append(list, string);
+  size_t actual_size = linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 2);
+  deallocate(list);
+}
+
 int init_suite(void)
 {
   return 0;
@@ -130,7 +146,8 @@ int main()
       (NULL == CU_add_test(test_suite1, "alloc array loop", test_alloc_array_loop))||
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
-      (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit))
+      (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
+      (NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list))
       )
     {
       CU_cleanup_registry();
