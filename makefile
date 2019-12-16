@@ -19,6 +19,10 @@ tests: test_compile
 val_tests: test_compile
 	valgrind --leak-check=full ./test/tests
 
+crayparty_val_test: src/allocate.c src/crayparty.c
+	$(C_COMPILER) $(C_OPTIONS) $^ -o test/crayparty
+	valgrind --leak-check=full test/crayparty
+
 clean:	
 	rm ./test/tests
 
