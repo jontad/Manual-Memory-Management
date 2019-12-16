@@ -9,7 +9,7 @@ C_LCOV 	       = --coverage
 compile: src/allocate.c
 	$(C_COMPILER) $(C_OPTIONS) -c src/allocate.c
 
-test_compile: test/tests.c src/allocate.c
+test_compile: test/tests.c src/allocate.c src/cascade.c test/lib_for_tests.c
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/tests $(CUNIT_LINK)
 
 
