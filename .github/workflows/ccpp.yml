@@ -1,0 +1,19 @@
+name: Team-13 CI
+
+on: [pull_request]
+
+jobs:
+  val_tests:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cunit & valgrind
+      run: sudo apt-get install libcunit1-dev libcunit1-doc libcunit1 valgrind
+    - name: make compile
+      run: make compile
+    - name: make tests
+      run: make tests
+    - name: make val_tests
+      run: make val_tests
