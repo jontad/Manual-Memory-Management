@@ -88,10 +88,7 @@ void test_cascade_limit()
 
 void test_destructor_linked_list()
 {
-  list_t *list = allocate(sizeof(list_t), destructor_linked_list);
-  list->head = NULL;
-  list->tail = NULL;
-  list->size = 0;
+  list_t *list = linked_list_create();
   
   char *str = strdup("hello");
   char *string = strdup("world");
@@ -99,6 +96,23 @@ void test_destructor_linked_list()
   linked_list_append(list, string);
   size_t actual_size = linked_list_size(list);
   CU_ASSERT_EQUAL(actual_size, 2);
+  deallocate(list);
+}
+
+void test_destructor_linked_list2()
+{
+  list_t *list = linked_list_create();
+  
+  for (int i = 0; i < 1000; i++)
+    {
+      char *str = strdup("hello");
+      linked_list_append(list, str);
+    }
+
+  size_t actual_size = linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 1000);
+
+  set_cascade_limit(100);
   deallocate(list);
 }
 
@@ -125,15 +139,15 @@ int main()
     }
 
   if (
-      (NULL == CU_add_test(test_suite1, "alloc", test_alloc)) ||
+      /*(NULL == CU_add_test(test_suite1, "alloc", test_alloc)) ||
       (NULL == CU_add_test(test_suite1, "alloc array", test_alloc_array))||
       (NULL == CU_add_test(test_suite1, "destruct string", test_destruct_string)) ||
       (NULL == CU_add_test(test_suite1, "destructor null", test_destructor_null)) ||
       (NULL == CU_add_test(test_suite1, "retain", test_retain))||
       (NULL == CU_add_test(test_suite1, "retain null", test_retain_null))|
-      (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
-      (NULL == CU_add_test(test_suite1, "rc", test_rc))||
-      (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
+      (NULL == CU_add_test(test_suite1, "release null", test_release_null))||*/
+      //(NULL == CU_add_test(test_suite1, "rc", test_rc))||
+      //(NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
       (NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list))
       )
     {

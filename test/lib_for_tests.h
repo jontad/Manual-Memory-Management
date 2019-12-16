@@ -32,14 +32,18 @@ struct linked_list
 struct link
 {
   link_t *next;
-  char *str;
+  obj *elem;
 };
 
 /// @brief the following function is ment to deallocate a string
 void destructor_string(obj *object);
 
+void destructor_link(obj *object);
+
 /// @brief the following function is ment to deallocate a linked list
 void destructor_linked_list(obj *object);
+
+list_t *linked_list_create();
 
 void linked_list_append(obj *object, obj * obj);
 
