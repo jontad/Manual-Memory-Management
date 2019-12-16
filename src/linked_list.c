@@ -101,7 +101,7 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t element){
 void link_destroy(ioopm_list_t *list, link_t *link)
 {
   list->size = list->size - 1;
-  free(link);
+  deallocate(link);
 }
 
 static void remove_first(ioopm_list_t *list)
@@ -174,6 +174,53 @@ option_t ioopm_linked_list_remove(obj *object, int index)
   }
 }
 
+link_t *ioopm_linked_list_remove_link(obj *object, int index)
+{
+  ioopm_list_t *list = object;
+  bool ok = (!ioopm_linked_list_is_empty(list)) &&
+            (index < ioopm_linked_list_size(list)) &&
+            (index >= 0);
+  if (ok)
+  {
+    if (index == 0)
+    {
+      link_t *return_value = list->first;
+
+      if (ioopm_linked_list_size(list) == 1)
+      {
+        link_destroy(list, list->first);
+        list->first = NULL;
+        list->last = NULL;
+      }
+      else
+      {
+        remove_first(list);
+      }
+
+      return return_value;
+    }
+    else
+    {
+      link_t *prev = find_previous_link(list, index);
+      link_t *return_value = prev->next;
+
+      if (prev->next == list->last)
+      {
+        remove_last(list, prev);
+      }
+      else
+      {
+        remove_next(list, prev);
+      }
+
+      return return_value;
+    }
+  }
+  else
+  {
+    return NULL;
+  }
+}
 
 option_t ioopm_linked_list_get(obj *object, int index)
 {

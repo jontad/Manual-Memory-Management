@@ -3,6 +3,7 @@
 #include "lib_for_tests.h"
 #include <stdio.h>
 
+
 void destructor_string(obj *object)
 {
   char **ptr = object;
@@ -22,8 +23,8 @@ void destructor_string_array(obj *object)
 void destructor_linked_list(obj *object)
 {
   list_t *list = object;
-  link_t *link = list->head;
-  link_t *tmp;
+  new_link_t *link = list->head;
+  new_link_t *tmp;
   while (link != NULL)
     {
       tmp = link->next;
@@ -42,7 +43,7 @@ void linked_list_append(obj *object, obj *obj)
 
   if(list->tail != NULL)
     {
-      link_t *link = allocate(sizeof(link_t), NULL);
+      new_link_t *link = allocate(sizeof(new_link_t), NULL);
       link->next = NULL;
       link->str = str;
       list->tail->next = link;
@@ -50,7 +51,7 @@ void linked_list_append(obj *object, obj *obj)
     }
   else
      {
-      link_t *link = allocate(sizeof(link_t), NULL);
+      new_link_t *link = allocate(sizeof(new_link_t), NULL);
       link->next = NULL;
       link->str = str;
       list->head = link;

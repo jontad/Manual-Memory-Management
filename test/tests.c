@@ -2,6 +2,7 @@
 #include "../src/refmem.h"
 #include "lib_for_tests.h"
 #include <CUnit/Basic.h>
+#include "../src/linked_list.h"
 
 
 
@@ -97,7 +98,7 @@ void test_cascade_limit()
   expected = 40;
   CU_ASSERT_EQUAL(limit, expected);
 }
-
+/*
 void test_destructor_linked_list()
 {
   list_t *list = allocate(sizeof(list_t), destructor_linked_list);
@@ -112,6 +113,29 @@ void test_destructor_linked_list()
   size_t actual_size = linked_list_size(list);
   CU_ASSERT_EQUAL(actual_size, 2);
   deallocate(list);
+}
+*/
+void test_shutdown()
+{
+  create_list();
+  shutdown();
+}
+
+void test_cleanup()
+{
+  ioopm_list_t *list = create_list();
+  // ioopm_list_t *list = linked_list_get();
+
+  char *str = "hello";
+  char *string = "world";
+  ioopm_linked_list_append(list, str_elem(str));
+  ioopm_linked_list_append(list, str_elem(string));
+  size_t actual_size = ioopm_linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 2);
+  cleanup();
+  actual_size = ioopm_linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 0);
+  shutdown();
 }
 
 int init_suite(void)
@@ -147,7 +171,8 @@ int main()
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
       (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
-      (NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list))
+      /*(NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list)) ||*/
+      (NULL == CU_add_test(test_suite1, "cleanup", test_cleanup))
       )
     {
       CU_cleanup_registry();

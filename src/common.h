@@ -1,6 +1,7 @@
+#ifndef __COMMON_H__
+#define __COMMON_H__
 
 #include <stdbool.h>
-#include "refmem.h"
 
 /**
  * @file common.h
@@ -23,6 +24,13 @@
 typedef union elem elem_t;
 // Option
 typedef struct option option_t;
+
+/// @brief 
+typedef void obj;
+
+/// @brief
+/// @param
+typedef void(*function1_t)(obj *);
 
 /// @brief function for comparing two elements
 /// @param a first element
@@ -137,3 +145,5 @@ struct iter
     link_t *current;
     ioopm_list_t *list;
 };
+
+#endif

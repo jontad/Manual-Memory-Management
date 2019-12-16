@@ -1,6 +1,8 @@
-#pragma once
-#include <stdlib.h>
+#ifndef __REFMEM_H__
+#define __REFMEM_H__
 
+#include <stdlib.h>
+#include "common.h"
 
 #define Free(ptr) {free(ptr); ptr = NULL;}
 /**
@@ -20,6 +22,8 @@ typedef void obj;
 /// @brief
 /// @param
 typedef void(*function1_t)(obj *);
+
+ioopm_list_t *create_list();
 
 /// @brief Increments reference count of object by 1
 /// @param Object where reference count will be increased
@@ -68,3 +72,5 @@ void cleanup();
 
 /// @brief Completely tears down library and associated data
 void shutdown();
+
+#endif

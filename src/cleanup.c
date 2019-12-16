@@ -3,9 +3,15 @@
 
 ioopm_list_t *list = NULL;
 
-void create_list()
+ioopm_list_t *create_list()
 {
   list = ioopm_linked_list_create();
+  return list;
+}
+
+ioopm_list_t *linked_list_get()
+{
+  return list;
 }
 
 void cleanup()
@@ -14,9 +20,10 @@ void cleanup()
   for (int i = 0; cursor != NULL; i++)
     {
       link_t *tmp = cursor->next;
-      obj *object = ioopm_linked_list_get(list, i).value.obj_val;
+      link_t *object = ioopm_linked_list_remove_link(list, i);
       if (rc(object) == 0)
 	{
+	  i--;
 	  deallocate(object); //deallocate_aux instead
 	}
       cursor = tmp;

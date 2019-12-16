@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __LINKED_LIST_H_
+#define __LINKED_LIST_H__
 /**************** LIBRARIES ****************/
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,6 +55,8 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t value);
 /// @return the value from index if removed successfully. Else return invalid input.
 option_t ioopm_linked_list_remove(obj *object, int index);
 
+link_t *ioopm_linked_list_remove_link(obj *object, int index);
+
 /// @brief Retrieve an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
 /// where 0 means the first element and n-1 means the last element.
@@ -103,3 +106,5 @@ bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_predicate prop, void *extra
 /// @param fun the function to be applied
 /// @param extra an additional argument (may be NULL) that will be passed to all internal calls of fun
 void ioopm_linked_apply_to_all(ioopm_list_t *list, ioopm_apply_function fun, void *extra);
+
+#endif
