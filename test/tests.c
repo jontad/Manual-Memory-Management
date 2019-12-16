@@ -97,7 +97,7 @@ void test_destructor_linked_list()
   char *string = strdup("world");
   linked_list_append(list, str);
   linked_list_append(list, string);
-  size_t actual_size = linked_list_size(&list);
+  size_t actual_size = linked_list_size(list);
   CU_ASSERT_EQUAL(actual_size, 2);
   deallocate(list);
 }
@@ -133,7 +133,8 @@ int main()
       (NULL == CU_add_test(test_suite1, "retain null", test_retain_null))|
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
-      (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit))
+      (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
+      (NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list))
       )
     {
       CU_cleanup_registry();
