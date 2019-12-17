@@ -52,6 +52,12 @@ void destructor_string_array(obj* object);
 /// @brief the following function is ment to deallocate a linked list
 void destructor_linked_list(obj *object);
 
-void linked_list_append(obj *object, obj * obj);
+void linked_list_append(char *);
 
-size_t linked_list_size(obj *object);
+size_t linked_list_size();
+
+void link_destructor(obj *c);
+
+list_t *list_create();
+
+void list_negate();

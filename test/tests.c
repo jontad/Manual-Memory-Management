@@ -105,8 +105,6 @@ void test_shutdown()
   shutdown();
 }
 
-
-
 void test_cleanup()
 {
   ioopm_list_t *list = linked_list_get();
@@ -205,6 +203,24 @@ void test_allocate_dif_structs()
 
 }
 
+void test_cascade_free()
+{
+
+  list_t *list = list_create();
+  set_cascade_limit(100);
+  for(int i = 0; i < 10000; ++i)
+    {
+      linked_list_append(strdup("Test"));
+    }
+  printf("SIZE: %ld\n", linked_list_size());
+  deallocate(list);
+  printf("SIZE: %ld\n", linked_list_size());
+  CU_ASSERT_EQUAL(9900,linked_list_size());
+  shutdown();
+}
+
+
+
 int init_suite(void)
 {
   return 0;
@@ -244,7 +260,8 @@ int main()
       (NULL == CU_add_test(test_suite1, "cleanup and deallocate", test_cleanup_and_deallocate))||
       (NULL == CU_add_test(test_suite1, "cleanup with retain", test_cleanup_retain))||
       (NULL == CU_add_test(test_suite1, "shutdown with allocs", test_shutdown_with_allocs))||
-      (NULL == CU_add_test(test_suite1, "allocate different types", test_allocate_dif_structs))
+      (NULL == CU_add_test(test_suite1, "allocate different types", test_allocate_dif_structs))||
+      (NULL == CU_add_test(test_suite1, "cascade free", test_cascade_free))
       )
     {
       CU_cleanup_registry();

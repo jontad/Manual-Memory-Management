@@ -53,7 +53,9 @@ void shutdown()
       obj *object = ioopm_linked_list_get(list,0).value.obj_val;
       deallocate_aux(object);
     }
-  
+  ioopm_list_t *cas_list = get_cascade_list();
+  if(cas_list) ioopm_linked_list_destroy(cas_list);
   ioopm_linked_list_destroy(list);
   list = NULL;
+  set_cascade_list_to_null();
 }
