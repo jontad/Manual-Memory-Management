@@ -58,6 +58,9 @@ obj *allocate_array(size_t elements, size_t elem_size, function1_t destructor);
 /// @param obj
 void deallocate(obj *);
 
+
+void deallocate_aux(obj *);
+
 /// @brief Set upper limit of how many objects are allowed to be free'd at once
 /// @param Limit that will be set
 void set_cascade_limit(size_t);

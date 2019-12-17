@@ -20,7 +20,7 @@
 
 /// @brief Create a new empty list
 /// @return an empty linked list
-ioopm_list_t *ioopm_linked_list_create();
+ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function func);
 
 /// @brief Tear down the linked list and return all its memory (but not the memory of the elements)
 /// @param list the list to be destroyed
@@ -56,6 +56,9 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t value);
 option_t ioopm_linked_list_remove(obj *object, int index);
 
 link_t *ioopm_linked_list_remove_link(obj *object, int index);
+
+/// @brief finds index of element
+int ioopm_linked_list_position(ioopm_list_t *list, elem_t element);
 
 /// @brief Retrieve an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
