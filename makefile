@@ -1,9 +1,9 @@
-C_COMPILER	= gcc
-C_OPTIONS	= -Wall -ggdb -pedantic -g
+C_COMPILER	    = gcc
+C_OPTIONS	      = -Wall -ggdb -pedantic -g
 C_LINK_OPTIONS	= -lm
-CUNIT_LINK	= -lcunit
-C_LCOV		= --coverage
-C_VALGRIND	= valgrind --leak-check=full
+CUNIT_LINK	    = -lcunit
+C_LCOV	    	  = --coverage
+C_VALGRIND  	  = valgrind --leak-check=full
 
 clean:	
 	rm *.o ./test/tests *.gcno *.gcda

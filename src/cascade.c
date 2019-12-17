@@ -5,8 +5,10 @@ size_t cascade_limit = 0;
  
 void set_cascade_limit(size_t limit)
 {
-  assert(limit >= 0 && "Can not set cascade limit to a negative value");
-  cascade_limit = limit;
+  int limit_int = (int) limit;
+  //assert(limit_int >= 0 && "Can not set cascade limit to a negative value");
+  if(limit_int >= 0)
+    cascade_limit = limit;
 }
 
 
