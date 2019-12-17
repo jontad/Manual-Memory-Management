@@ -19,33 +19,19 @@ struct deallocate_queue
   size_t amount;
   list_t *list;
 };
-
-
-struct deallocate_queue init()
-{
-  struct deallocate_queue deallocate_queue = { .amount = 0, .list = linked_list_create() };
-  return deallocate_queue;
-}
-//struct deallocate_queue dealloqate_queue = init();
-//struct deallocate_queue init();
-
+  
 struct deallocate_queue deallocate_queue = { .amount = 100, .list = NULL };
+
 
 
 obj *allocate(size_t bytes, function1_t destructor)
 {
-  /*alloc_t *info = malloc(sizeof(alloc_t));
-  info->ref_count = 0;
-  info->destructor = destructor;
-  */
   obj *alloc = malloc(1 + sizeof(function1_t) + bytes);
   memset(alloc,0,1);
   memcpy(alloc+1,&destructor,sizeof(destructor));
   alloc += sizeof(destructor) + 1;
   return alloc;
-
 }
-
 
 obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 {
@@ -55,7 +41,6 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   alloc += sizeof(destructor) + 1;
   return alloc;
 }
-
 
 bool has_destructor(alloc_t *obj){
   return obj->destructor;
@@ -69,34 +54,52 @@ void set_destructor(obj *object, function1_t destructor)
   obj->destructor = destructor;
 }
 
-//char *str = ((list_t *)object)->head->elem;
-//puts(str);
+/*
+void deallocate(obj *object)
+{
+  while (!is_empty(stack))
+      {
+	obj *tmp = pop(stack);
+	function1_t destructor = *(function1_t *)(tmp-sizeof(function1_t));
+	if (deallocate_queue.amount > 0 && destructor)
+	  {
+	    destructor(tmp);
+	  }
+	if (deallocate_queue.amount == 0)
+	  {
+	    return;
+	  }
+	free(tmp-sizeof(function1_t)-sizeof(uint8_t));
+	linked_list_remove(deallocate_queue.list, 0);
+      }
+}
+*/
 
+/*
 void deallocate(obj *object)
 {
   if (deallocate_queue.list == NULL) { deallocate_queue.list = linked_list_create(); }
 
-  linked_list_append(deallocate_queue.list, object);
+  //linked_list_append(deallocate_queue.list, object);
   while (deallocate_queue.list->tail)
     {
-      //Ta tail så att det inte blir samma varje gång...
+      //tail->elem så att det inte blir en loop... Betyder att det blir LIFO prioritet på denna funktion
       obj *tmp = deallocate_queue.list->tail->elem;
-      tmp = tmp-sizeof(function1_t);
-      function1_t destructor = *(function1_t *)(tmp);
-      if(destructor)
+      function1_t destructor = *(function1_t *)(tmp-sizeof(function1_t));
+      if (destructor)
 	{
-	  destructor(deallocate_queue.list->tail->elem);
+	  destructor(tmp);
 	}
       if (deallocate_queue.amount == 0)
 	{
 	  return;
 	}
-      free(tmp-1);
+      free(tmp-sizeof(function1_t)-sizeof(uint8_t));
     }
 }
 //Måste lägga till så att element tas bort från deallocate_queue.list också!!!
+*/
 
-/*
 void deallocate(obj *object)
 {
   obj *tmp = object-sizeof(function1_t)-1;
@@ -108,7 +111,6 @@ void deallocate(obj *object)
 	}
   Free(tmp);
 }
-*/
 
 void retain(obj *object)
 {

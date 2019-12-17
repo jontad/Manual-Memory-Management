@@ -3,9 +3,6 @@
 #include "lib_for_tests.h"
 #include <CUnit/Basic.h>
 
-
-
-
 void test_alloc()
 {
   string_t *alloc = allocate(sizeof(string_t), NULL);
@@ -89,11 +86,10 @@ void test_cascade_limit()
 void test_destructor_linked_list()
 {
   list_t *list = linked_list_create();
-  
-  char *str = strdup("hello");
-  char *string = strdup("world");
-  linked_list_append(list, str);
-  linked_list_append(list, string);
+  char *str1 = strdup("hello");
+  char *str2 = strdup("world");
+  linked_list_append(list, str1);
+  linked_list_append(list, str2);
   size_t actual_size = linked_list_size(list);
   CU_ASSERT_EQUAL(actual_size, 2);
   deallocate(list);
@@ -148,7 +144,8 @@ int main()
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||*/
       //(NULL == CU_add_test(test_suite1, "rc", test_rc))||
       //(NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
-      (NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list))
+      (NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list)) //||
+      //(NULL == CU_add_test(test_suite1, "linked_list2", test_destructor_linked_list2))
       )
     {
       CU_cleanup_registry();

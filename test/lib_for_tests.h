@@ -45,7 +45,8 @@ void destructor_linked_list(obj *object);
 
 list_t *linked_list_create();
 
-void linked_list_append(obj *object, obj * obj);
+void linked_list_append(list_t *list, obj *obj);
 
 size_t linked_list_size(obj *object);
 
+link_t *linked_list_remove(list_t *list, int index);
