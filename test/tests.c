@@ -205,17 +205,16 @@ void test_allocate_dif_structs()
 
 void test_cascade_free()
 {
-
+  size_reset();
   list_t *list = list_create();
+  retain(list);
   set_cascade_limit(100);
-  for(int i = 0; i < 10000; ++i)
+  for(int i = 0; i < 200; ++i)
     {
-      linked_list_append(strdup("Test"));
+      linked_list_append();
     }
-  printf("SIZE: %ld\n", linked_list_size());
-  deallocate(list);
-  printf("SIZE: %ld\n", linked_list_size());
-  CU_ASSERT_EQUAL(9900,linked_list_size());
+  release(list);
+  CU_ASSERT_EQUAL(100,linked_list_size());
   shutdown();
 }
 

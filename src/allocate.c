@@ -8,14 +8,6 @@
 #include "linked_list.h"
 #include "../test/lib_for_tests.h"
 
-/*
-bool eq_func(elem_t a, elem_t b)
-{
-  obj *a_ptr = (obj *)a.obj_val;
-  obj *b_ptr = (obj *)b.obj_val;
-  return a_ptr == b_ptr;
-  }*/
-
 ioopm_list_t *cascade_list = NULL;
 
 ioopm_list_t *get_cascade_list()
@@ -33,7 +25,7 @@ obj *allocate(size_t bytes, function1_t destructor)
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
   if(ioopm_linked_list_size(cascade_list))
     {
-      deallocate(ioopm_linked_list_remove_link(cascade_list,0));
+      deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
     }
   
   obj *alloc = malloc(1 + sizeof(function1_t) + bytes);
@@ -47,6 +39,7 @@ obj *allocate(size_t bytes, function1_t destructor)
   memset(alloc,0,1);
   memcpy((obj *)((char *)alloc+1),&destructor,sizeof(destructor));
   alloc = (obj *)((char *)alloc + sizeof(destructor) + 1);
+  
   ioopm_list_t *list = linked_list_get();
   if (list) ioopm_linked_list_append(list, (elem_t){.obj_val = alloc});
   return alloc;
@@ -60,7 +53,7 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
   if(ioopm_linked_list_size(cascade_list))
     {
-      deallocate(ioopm_linked_list_remove_link(cascade_list,0));
+      deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
     }
   
   obj *alloc = malloc(1 + sizeof(function1_t) + elements*bytes);
@@ -109,7 +102,7 @@ void deallocate(obj *object)
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
 
   counter++;
-  list_negate();
+  list_negate(); // THIS IS FOR TESTING!
   if(counter == get_cascade_limit())
     {
       ioopm_linked_list_append(cascade_list, (elem_t){.obj_val = object});

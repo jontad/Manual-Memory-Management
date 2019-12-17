@@ -54,3 +54,8 @@ lcov: lcov_generate
 
 lcov_open: lcov_generate
 	google-chrome-stable test/tests-lcov/index.html
+
+
+example: test/example.c src/allocate.c src/cascade.c src/linked_list.c test/lib_for_tests.c src/cleanup.c
+	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/example $(CUNIT_LINK)
+	valgrind --leak-check=full test/example

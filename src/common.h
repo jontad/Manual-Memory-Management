@@ -150,5 +150,4 @@ struct iter
 bool eq_func(elem_t a, elem_t b);
 ioopm_list_t *get_cascade_list();
 void set_cascade_list_to_null();
-
 #endif

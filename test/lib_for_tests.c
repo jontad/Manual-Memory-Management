@@ -44,12 +44,14 @@ void list_negate()
   list_size--;
 }
 
+void size_reset()
+{
+  list_size = 0;
+}
+
 void link_destructor(obj *c)
 {
-  new_link_t *link = (new_link_t *) c;
-  free(link->str);
-  list_size--;
-  release(link->next);
+  release(((new_link_t *) c)->next);
 }
 
 list_t *list_create()
@@ -62,7 +64,7 @@ list_t *list_create()
 
 //------linked list functions-------//
 
-void linked_list_append(char *str)
+void linked_list_append()
 {
   //list_t *list = object;
 
@@ -70,7 +72,6 @@ void linked_list_append(char *str)
     {
       new_link_t *link = allocate(sizeof(new_link_t), link_destructor);
       link->next = NULL;
-      link->str = str;
       list_cascade->tail->next = link;
       list_cascade->tail = link;
       retain(link);
@@ -79,10 +80,8 @@ void linked_list_append(char *str)
     {
       new_link_t *link = allocate(sizeof(new_link_t), link_destructor);
       link->next = NULL;
-      link->str = str;
       list_cascade->head = link;
       list_cascade->tail = link;
-      retain(link);
     }
   list_size++;
   list_cascade->size +=1;
