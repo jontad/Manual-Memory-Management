@@ -17,14 +17,16 @@ ioopm_list_t *linked_list_get()
 void cleanup()
 {
   link_t *cursor = list->first;
-  for (int i = 0; cursor != NULL; i++)
+  int counter = 0;
+  while(cursor)
     {
       link_t *tmp = cursor->next;
-      link_t *object = ioopm_linked_list_remove_link(list, i);
+      obj *object = (obj *)cursor->element.obj_val;
       if (rc(object) == 0)
 	{
-	  i--;
 	  deallocate(object); //deallocate_aux instead
+	  ioopm_linked_list_remove_link(list,0);
+	  counter++;
 	}
       cursor = tmp;
     }
@@ -33,5 +35,5 @@ void cleanup()
 
 void shutdown()
 {
-  deallocate(list);
+  ioopm_linked_list_destroy(list);
 }
