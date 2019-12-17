@@ -30,7 +30,7 @@ void destructor_link(obj *object)
     {
       return;
     }
-  link_t *link = (link_t *) object;
+  new_link_t *link = (new_link_t *) object;
   destructor_string(link->elem); //Egentligen borde det här vara en obj så att man kallar på deallocate(obj)...
   if (link->elem != NULL)
     {
@@ -44,12 +44,20 @@ void destructor_link(obj *object)
     }
 }
 
+void destructor_string_array(obj *object)
+{
+  char **array_ptr = object;
+  for(int i = 0; i < 10; i++)
+    {
+      free(array_ptr[i]);
+    }
+}
 
 void destructor_linked_list(obj *object)
 {
   list_t *list = object;
-  link_t *link = list->head;
-  link_t *tmp;
+  new_link_t *link = list->head;
+  new_link_t *tmp;
   while (link != NULL && deallocate_queue.amount > 0)
     {
       tmp = link->next;
@@ -90,7 +98,7 @@ void linked_list_append(list_t *list, obj *obj)
 {
   if(list->tail != NULL)
     {
-      link_t *link = allocate(sizeof(link_t), destructor_link);
+      new_link_t *link = allocate(sizeof(new_link_t), destructor_link);
       link->next = NULL;
       link->elem = obj;
       list->tail->next = link;
@@ -99,7 +107,7 @@ void linked_list_append(list_t *list, obj *obj)
   else
     {
       //Create the first link of the list
-      link_t *link = allocate(sizeof(link_t), destructor_link);
+      new_link_t *link = allocate(sizeof(new_link_t), destructor_link);
       link->next = NULL;
       link->elem = obj;
       list->head = link;
@@ -120,8 +128,8 @@ link_t *linked_list_remove(list_t *list, int index)
 {
     if (list && list->head)
     {
-      link_t **ptr_current = &(list->head);
-      link_t *previous;
+      new_link_t **ptr_current = &(list->head);
+      new_link_t *previous;
       for (int i = 0; i < index; i++)
 	{
 	  previous = *ptr_current;
@@ -136,7 +144,7 @@ link_t *linked_list_remove(list_t *list, int index)
 	}
       else
 	{
-	  link_t *tmp;
+	  new_link_t *tmp;
 	  tmp = (*ptr_current)->next;
 	  //deallocate(*ptr_current); //Vi har redan tagit bort objektet
 	  *ptr_current = tmp;

@@ -5,13 +5,33 @@ CUNIT_LINK     = -lcunit
 C_LCOV 	       = --coverage 	
 
 
+clean:	
+	rm *.o ./test/tests *.gcno *.gcda
 
-compile: src/allocate.c src/cascade.c test/lib_for_tests.c
-	$(C_COMPILER) $(C_OPTIONS) -c $^
+################ COMPILES ###################
 
-test_compile: test/tests.c src/allocate.c src/cascade.c test/lib_for_tests.c
+allocate.o: src/allocate.c src/refmem.h
+	$(C_COMPILER) $(C_OPTIONS) -c src/allocate.c 
+
+cleanup.o: src/cleanup.c src/refmem.h
+	$(C_COMPILER) $(C_OPTIONS) -c src/cleanup.c
+
+cascade.o: src/cascade.c src/refmem.h
+	$(C_COMPILER) $(C_OPTIONS) -c src/cascade.c
+
+linked_list.o: src/linked_list.c src/linked_list.h src/common.h
+	$(C_COMPILER) $(C_OPTIONS) -c src/linked_list.c
+
+crayparty.o: src/crayparty.c
+	$(C_COMPILER) $(C_OPTIONS) -c $?
+
+compile: allocate.o cleanup.o cascade.o linked_list.o crayparty.o
+
+test_compile: test/tests.c allocate.o cleanup.o cascade.o linked_list.o test/lib_for_tests.c
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/tests $(CUNIT_LINK)
 
+
+################### TEST RUNS ######################
 
 tests: test_compile
 	./test/tests	
@@ -19,8 +39,12 @@ tests: test_compile
 val_tests: test_compile
 	valgrind --leak-check=full ./test/tests
 
-clean:	
-	rm ./test/tests
+crayparty_val_test: src/allocate.c src/crayparty.c
+	$(C_COMPILER) $(C_OPTIONS) $^ -o test/crayparty
+	valgrind --leak-check=full test/crayparty
+
+
+############# LCOV ##################
 
 lcov_generate: tests
 	lcov --capture --rc lcov_branch_coverage=1 --directory . --output-file test/tests.info

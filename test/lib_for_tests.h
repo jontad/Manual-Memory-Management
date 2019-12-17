@@ -14,31 +14,42 @@
  * @see http://wrigstad.com/ioopm19/projects/project1.html
  */
 typedef struct string_struct string_t;
+typedef struct int_struct ourInt_t;
 typedef struct linked_list list_t;
-typedef struct link link_t;
+typedef struct new_link new_link_t;
 
 struct string_struct
 {
   char *str;
 };
 
+
+struct int_struct
+{
+  int k;
+};
+
+
 struct linked_list
 {
-  link_t *head;
-  link_t *tail;
+  new_link_t *head;
+  new_link_t *tail;
   size_t size;
 };
 
-struct link
+struct new_link
 {
-  link_t *next;
+  new_link_t *next;
   obj *elem;
 };
+
 
 /// @brief the following function is ment to deallocate a string
 void destructor_string(obj *object);
 
 void destructor_link(obj *object);
+
+void destructor_string_array(obj* object);
 
 /// @brief the following function is ment to deallocate a linked list
 void destructor_linked_list(obj *object);

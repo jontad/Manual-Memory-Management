@@ -1,6 +1,8 @@
-#pragma once
-#include <stdlib.h>
+#ifndef __REFMEM_H__
+#define __REFMEM_H__
 
+#include <stdlib.h>
+#include "common.h"
 
 #define Free(ptr) {free(ptr); ptr = NULL;}
 /**
@@ -20,6 +22,8 @@ typedef void obj;
 /// @brief
 /// @param
 typedef void(*function1_t)(obj *);
+
+ioopm_list_t *create_list();
 
 /// @brief Increments reference count of object by 1
 /// @param Object where reference count will be increased
@@ -54,6 +58,9 @@ obj *allocate_array(size_t elements, size_t elem_size, function1_t destructor);
 /// @param obj
 void deallocate(obj *);
 
+
+void deallocate_aux(obj *);
+
 /// @brief Set upper limit of how many objects are allowed to be free'd at once
 /// @param Limit that will be set
 void set_cascade_limit(size_t);
@@ -68,3 +75,7 @@ void cleanup();
 
 /// @brief Completely tears down library and associated data
 void shutdown();
+
+/// @brief Gets the list with all object pointers.
+ioopm_list_t *linked_list_get();
+#endif
