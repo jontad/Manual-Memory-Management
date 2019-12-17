@@ -1,9 +1,9 @@
-C_COMPILER     = gcc
-C_OPTIONS      = -Wall -ggdb -pedantic -g
-C_LINK_OPTIONS = -lm 
-CUNIT_LINK     = -lcunit
-C_LCOV 	       = --coverage 	
-
+C_COMPILER     	= gcc
+C_OPTIONS      	= -Wall -ggdb -pedantic -g
+C_LINK_OPTIONS 	= -lm 
+CUNIT_LINK     	= -lcunit
+C_LCOV 	       	= --coverage 	
+C_VALGRIND	= valgrind --leak-check=full
 
 clean:	
 	rm *.o ./test/tests *.gcno *.gcda
@@ -34,11 +34,11 @@ tests: test_compile
 	./test/tests	
 
 val_tests: test_compile
-	valgrind --leak-check=full ./test/tests
+	$(C_VALGRIND) ./test/tests
 
 crayparty_val_test: linked_list.o cleanup.o allocate.o src/crayparty.c
 	$(C_COMPILER) $(C_OPTIONS) $^ -o test/crayparty
-	valgrind --leak-check=full test/crayparty
+	$(C_VALGRIND) test/crayparty
 
 
 ############# LCOV ##################
