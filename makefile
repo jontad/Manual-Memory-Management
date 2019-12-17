@@ -9,7 +9,7 @@ C_LCOV 	       = --coverage
 compile: src/allocate.c
 	$(C_COMPILER) $(C_OPTIONS) -c src/allocate.c
 
-test_compile: test/tests.c src/allocate.c src/cascade.c test/lib_for_tests.c
+test_compile: test/tests.c src/allocate.c src/cascade.c test/lib_for_tests.c src/linked_list.c src/cleanup.c
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/tests $(CUNIT_LINK)
 
 
@@ -18,6 +18,10 @@ tests: test_compile
 
 val_tests: test_compile
 	valgrind --leak-check=full ./test/tests
+
+crayparty_val_test: src/allocate.c src/crayparty.c
+	$(C_COMPILER) $(C_OPTIONS) $^ -o test/crayparty
+	valgrind --leak-check=full test/crayparty
 
 clean:	
 	rm ./test/tests

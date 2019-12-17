@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
+
 typedef struct allocate alloc_t;
 
 struct allocate
@@ -51,19 +53,23 @@ void set_destructor(obj *object, function1_t destructor)
   obj->destructor = destructor;
 }
 
-void deallocate(obj *object)
+void deallocate_aux(obj *object)
 {
   obj *tmp = object-sizeof(function1_t)-1;
   uint8_t ref_count = *(uint8_t *)tmp;
-  function1_t destructor = *(function1_t *)(tmp+1);
-  if((ref_count == 0))
+  function1_t destructor = *(function1_t *)(tmp+1); 
+  if(destructor)
     {
-      if(destructor)
-	{
-	  destructor(object);	  
-	}
-      Free(tmp);
+      destructor(object);
     }
+  Free(tmp);
+}
+  
+void deallocate(obj *object)
+{
+  assert(rc(object) == 0);
+  deallocate_aux(object);
+
 }
 
 void retain(obj *object)
