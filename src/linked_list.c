@@ -14,7 +14,7 @@ void destructor_linked_list_2(obj *object)
 
 ioopm_list_t *ioopm_linked_list_create()
 {
-  ioopm_list_t *list = allocate(sizeof(ioopm_list_t), destructor_linked_list_2);
+  ioopm_list_t *list = calloc(1,sizeof(ioopm_list_t));//allocate(sizeof(ioopm_list_t), destructor_linked_list_2);
   list->first = NULL;
   list->last = NULL;
   list->size = 0;
@@ -31,7 +31,7 @@ void ioopm_linked_list_destroy(ioopm_list_t *list)
 
 static link_t *create_link(ioopm_list_t *list, elem_t element, link_t *next)
 {
-  link_t *link = allocate(sizeof(link_t), NULL);
+  link_t *link = calloc(1,sizeof(link_t));//allocate(sizeof(link_t), NULL);
   link->element = element;
   link->next = next;
   list->size = list->size + 1;
@@ -101,7 +101,8 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t element){
 void link_destroy(ioopm_list_t *list, link_t *link)
 {
   list->size = list->size - 1;
-  deallocate(link);
+  free(link);
+  //deallocate(link);
 }
 
 static void remove_first(ioopm_list_t *list)

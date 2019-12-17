@@ -73,4 +73,6 @@ void cleanup();
 /// @brief Completely tears down library and associated data
 void shutdown();
 
+/// @brief Gets the list with all object pointers.
+ioopm_list_t *linked_list_get();
 #endif
