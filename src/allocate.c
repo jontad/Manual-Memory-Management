@@ -5,14 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-
-typedef struct allocate alloc_t;
-
-struct allocate
-{
-  uint8_t ref_count;
-  function1_t destructor;
-};
+#include "linked_list.h"
 
 
 obj *allocate(size_t bytes, function1_t destructor)
@@ -25,6 +18,8 @@ obj *allocate(size_t bytes, function1_t destructor)
   memset(alloc,0,1);
   memcpy(alloc+1,&destructor,sizeof(destructor));
   alloc += sizeof(destructor) + 1;
+  ioopm_list_t *list = linked_list_get();
+  if (list) ioopm_linked_list_append(list, (elem_t){.obj_val = alloc});
   return alloc;
 
 }
@@ -37,26 +32,14 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   memcpy(alloc+1,&destructor,sizeof(destructor));
   alloc += sizeof(destructor) + 1;
   memset(alloc,0,elements*bytes);
+  ioopm_list_t *list = linked_list_get();
+  if (list) ioopm_linked_list_append(list, (elem_t){.obj_val = alloc});
   return alloc;
-}
-
-
-bool has_destructor(alloc_t *obj){
-  return obj->destructor;
-}
-
-//Might not be needed!
-void set_destructor(obj *object, function1_t destructor)
-{
-  alloc_t *obj = object;
-
-  obj->destructor = destructor;
 }
 
 void deallocate_aux(obj *object)
 {
   obj *tmp = object-sizeof(function1_t)-1;
-  uint8_t ref_count = *(uint8_t *)tmp;
   function1_t destructor = *(function1_t *)(tmp+1); 
   if(destructor)
     {
@@ -67,9 +50,7 @@ void deallocate_aux(obj *object)
   
 void deallocate(obj *object)
 {
-  assert(rc(object) == 0);
-  deallocate_aux(object);
-
+  if(rc(object) == 0) deallocate_aux(object);
 }
 
 void retain(obj *object)

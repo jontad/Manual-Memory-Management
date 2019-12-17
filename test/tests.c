@@ -123,13 +123,11 @@ void test_shutdown()
 
 void test_cleanup()
 {
-  ioopm_list_t *list = create_list();
-  // ioopm_list_t *list = linked_list_get();
-
-  char *str = "hello";
-  char *string = "world";
-  ioopm_linked_list_append(list, str_elem(str));
-  ioopm_linked_list_append(list, str_elem(string));
+  ioopm_list_t *list = create_list(); 
+  string_t *str = allocate(sizeof(string_t),NULL);
+  string_t *string = allocate(sizeof(string_t),NULL);
+  str->str = "Hello";
+  string->str = "World";
   size_t actual_size = ioopm_linked_list_size(list);
   CU_ASSERT_EQUAL(actual_size, 2);
   cleanup();
