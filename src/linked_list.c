@@ -12,13 +12,13 @@ void destructor_linked_list_2(obj *object)
   ioopm_linked_list_clear(object);
 }
 
-ioopm_list_t *ioopm_linked_list_create()
+ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function func)
 {
   ioopm_list_t *list = calloc(1,sizeof(ioopm_list_t));//allocate(sizeof(ioopm_list_t), destructor_linked_list_2);
   list->first = NULL;
   list->last = NULL;
   list->size = 0;
-  list->eq_fun = NULL;
+  list->eq_fun = func;
   return list;
 }
 
@@ -255,6 +255,23 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t element)
   }
   return false;
 }
+
+int ioopm_linked_list_position(ioopm_list_t *list, elem_t element)
+{
+  link_t *link = list->first;
+  int counter = 0;
+  while (link != NULL)
+  {
+    if (list->eq_fun(link->element, element))
+    {
+      return counter;
+    }
+    counter++;
+    link = link->next;
+  }
+  return -1;
+}
+
 
 
 size_t ioopm_linked_list_size(ioopm_list_t *list)

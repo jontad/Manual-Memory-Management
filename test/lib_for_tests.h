@@ -14,6 +14,7 @@
  * @see http://wrigstad.com/ioopm19/projects/project1.html
  */
 typedef struct string_struct string_t;
+typedef struct int_struct ourInt_t;
 typedef struct linked_list list_t;
 typedef struct new_link new_link_t;
 
@@ -21,6 +22,13 @@ struct string_struct
 {
   char *str;
 };
+
+
+struct int_struct
+{
+  int k;
+};
+
 
 struct linked_list
 {
@@ -31,7 +39,7 @@ struct linked_list
 
 struct new_link
 {
-  link_t *next;
+  new_link_t *next;
   char *str;
 };
 

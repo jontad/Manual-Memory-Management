@@ -32,19 +32,30 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   memcpy((obj *)((char *)alloc+1),&destructor,sizeof(destructor));
   alloc = (obj *)((char *)alloc + sizeof(destructor) + 1);
   memset(alloc,0,elements*bytes);
+  
   ioopm_list_t *list = linked_list_get();
   if (list) ioopm_linked_list_append(list, (elem_t){.obj_val = alloc});
+  
   return alloc;
 }
 
 void deallocate_aux(obj *object)
 {
   obj *tmp = (obj *)((char *)object-sizeof(function1_t)-1);
-  function1_t destructor = *(function1_t *)((obj *)((char *)tmp+1)); 
+  function1_t destructor = *(function1_t *)((obj *)((char *)tmp+1));
+  
   if(destructor)
     {
       destructor(object);
     }
+  
+  ioopm_list_t *list = linked_list_get();
+  if(list)
+    {
+      int index = ioopm_linked_list_position(list, (elem_t){.obj_val = object});
+      if (index >= 0) ioopm_linked_list_remove_link(list, index);
+    }
+  
   Free(tmp);
 }
   
