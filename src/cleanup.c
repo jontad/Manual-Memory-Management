@@ -6,8 +6,8 @@ ioopm_list_t *list = NULL;
 
 bool eq_func(elem_t a, elem_t b)
 {
-  obj *a_ptr = (obj *)a.obj_val;
-  obj *b_ptr = (obj *)b.obj_val;
+  obj *a_ptr = a.obj_val;
+  obj *b_ptr = b.obj_val;
   return a_ptr == b_ptr;
 }
 
