@@ -20,6 +20,7 @@ typedef void obj;
 /// @param Object that will be destroyed
 typedef void(*function1_t)(obj *);
 
+/// @brief Create an empty linked list that will store all the allocated objects
 ioopm_list_t *create_list();
 
 /// @brief Increments reference count of object by 1
@@ -41,7 +42,6 @@ size_t rc(obj *);
 /// @param bytes Size on heap that will be allocated
 /// @param destructor Associated destructor to free what will be allocated 
 /// @return Allocated object
-
 obj *allocate(size_t bytes, function1_t destructor);
 
 /// @brief Allocate array of objects in memory on heap 
@@ -55,7 +55,6 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor);
 /// @param obj Object that will be deallocated
 /// @pre Object has to have reference count 0
 void deallocate(obj *);
-
 
 /// @brief Auxillary function for deallocate. Deallocate object regardless of reference count. 
 /// @param obj Object that will be deallocated
