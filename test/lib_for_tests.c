@@ -30,7 +30,6 @@ void destructor_linked_list(obj *object)
 
 }
 
-
 void link_destructor(obj *c)
 {
   release(((new_link_t *) c)->next);

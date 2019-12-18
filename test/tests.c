@@ -220,7 +220,6 @@ void test_shutdown_with_allocs()
   
   shutdown();
 
-  //CU_ASSERT_PTR_NULL(list);
 }
 
 void test_allocate_dif_structs()
@@ -289,16 +288,15 @@ int main()
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
       (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
-      /*(NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list)) ||*/
       (NULL == CU_add_test(test_suite1, "cleanup", test_cleanup))||
       (NULL == CU_add_test(test_suite1, "cleanup empty list", test_cleanup_empty))||
       (NULL == CU_add_test(test_suite1, "cleanup and deallocate", test_cleanup_and_deallocate))||
       (NULL == CU_add_test(test_suite1, "cleanup with retain", test_cleanup_retain))||
       (NULL == CU_add_test(test_suite1, "shutdown with allocs", test_shutdown_with_allocs))||
       (NULL == CU_add_test(test_suite1, "allocate different types", test_allocate_dif_structs))||
-      (NULL == CU_add_test(test_suite1, "cascade free", test_cascade_free)) //||
-      /*(NULL == CU_add_test(test_suite1, "default destructor", test_destruct_default))||
-	(NULL == CU_add_test(test_suite1, "default destructor with many ptrs", test_destruct_default_several_ptrs))*/
+      (NULL == CU_add_test(test_suite1, "cascade free", test_cascade_free)) ||
+      (NULL == CU_add_test(test_suite1, "default destructor", test_destruct_default))||
+      (NULL == CU_add_test(test_suite1, "default destructor with many ptrs", test_destruct_default_several_ptrs))
       )
     {
       CU_cleanup_registry();

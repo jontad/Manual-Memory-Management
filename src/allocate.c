@@ -23,14 +23,16 @@ void set_cascade_list_to_null()
 obj *allocate(size_t bytes, function1_t destructor)
 {
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
+  /// Every time we allocate memory we try to clear up our cascade list
   if(ioopm_linked_list_size(cascade_list))
     {
-      deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
+      release(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
     }
   
-  
+  ///2*sizeof(uint8_t), 1 byte for rc, 1 for hops
   obj *alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + bytes);
 
+  /// If malloc fails to reserve memory we try to empty our cascade list.
   while(alloc == NULL && ioopm_linked_list_size(cascade_list))
     {
       deallocate(ioopm_linked_list_remove_link(cascade_list,0));
@@ -38,16 +40,16 @@ obj *allocate(size_t bytes, function1_t destructor)
     }
 
 
-  uint8_t hops = bytes / sizeof(void *);
-  memset(alloc, hops, 1);
+  uint8_t hops = bytes / sizeof(void *); // How many pointers our object can hold
+  memset(alloc, hops, sizeof(uint8_t));
   alloc = (obj *)((char *)alloc + sizeof(uint8_t));
  
 
-  memset(alloc,0,1);
-  memcpy((obj *)((char *)alloc+1),&destructor,sizeof(destructor));
+  memset(alloc,0,sizeof(uint8_t));
+  memcpy((obj *)((char *)alloc+sizeof(uint8_t)),&destructor,sizeof(destructor));
 
-  alloc = (obj *)((char *)alloc + sizeof(destructor) + 1);
-  memset(alloc,0,bytes);
+  alloc = (obj *)((char *)alloc + sizeof(destructor) + sizeof(uint8_t));
+  memset(alloc,0,bytes); /// Set all bytes to 0, like calloc would do
   ioopm_list_t *list = linked_list_get();
   if (list) ioopm_linked_list_append(list, (elem_t){.obj_val = alloc});
 
@@ -62,14 +64,14 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
   if(ioopm_linked_list_size(cascade_list))
     {
-      deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
+      release(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
     }
   
   obj *alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
 
   uint8_t hops = bytes / sizeof(void *);
   
-  memset(alloc, hops, 1);
+  memset(alloc, hops, sizeof(uint8_t));
   alloc = (obj *)((char *)alloc + sizeof(uint8_t));
   
   
@@ -79,9 +81,9 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
       alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
     }
 
-  memset(alloc,0,1);
+  memset(alloc,0,sizeof(uint8_t));
   memcpy((obj *)((char *)alloc+1),&destructor,sizeof(destructor));
-  alloc = (obj *)((char *)alloc + sizeof(destructor) + 1);
+  alloc = (obj *)((char *)alloc + sizeof(destructor) + sizeof(uint8_t));
   memset(alloc,0,elements*bytes);
   
   ioopm_list_t *list = linked_list_get();
@@ -104,14 +106,16 @@ void remove_from_list(obj *object)
 void default_destruct(obj *object)
 {
   obj *start = (obj *)((char *)object-sizeof(function1_t)-2*sizeof(uint8_t));
-  uint8_t hops = *(uint8_t *)start;
+  uint8_t hops = *(uint8_t *)start; //We get how many pointers this object can hold
   ioopm_list_t *list = linked_list_get(); //ALL ALLOCS
 
+  ///Checks all possible pointer locations
   for(uint8_t i = 0; i < hops; i++)
     {
       obj **pointer = (obj **)((char *)object + i*sizeof(obj *));      
       obj *ptr = *(obj **)pointer;
-      
+
+      /// if pointer exists in our list we release it
       if(list && ioopm_linked_list_contains(list, (elem_t){.obj_val = ptr}))
 	{
 	  release(ptr);	      
@@ -153,7 +157,6 @@ void deallocate(obj *object)
       return;
     }
   else if(rc(object) == 0) deallocate_aux(object);
-   
   counter = 0;
 }
 
@@ -161,9 +164,9 @@ void retain(obj *object)
 {
   if(object)
     {
-      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-1);
+      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));
       uint8_t ref_count = *(uint8_t *)tmp;
-      ref_count++;
+      if(ref_count != 255) ref_count++;
       memset(tmp,ref_count,1);
     }
 }
@@ -172,9 +175,9 @@ void release(obj *object)
 {
   if(object)
     {
-      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-1);;
+      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));
       uint8_t ref_count = *(uint8_t *)tmp;
-      ref_count--;
+      if(ref_count != 0) ref_count--;
       memset(tmp,ref_count,1);
       if(ref_count == 0) deallocate(object);
     }
@@ -182,7 +185,7 @@ void release(obj *object)
 
 size_t rc(obj *object)
 {
-  obj *tmp = (obj *)((char *)object-sizeof(function1_t)-1);
+  obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));
   uint8_t ref_count = *(uint8_t *)tmp;
   return ref_count;
 }
