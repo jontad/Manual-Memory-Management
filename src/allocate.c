@@ -28,17 +28,17 @@ obj *allocate(size_t bytes, function1_t destructor)
       deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
     }
   
-  obj *alloc = malloc(1 + sizeof(function1_t) + bytes);
+  obj *alloc = malloc(sizeof(uint8_t) + sizeof(function1_t) + bytes);
 
   while(alloc == NULL && ioopm_linked_list_size(cascade_list))
     {
       deallocate(ioopm_linked_list_remove_link(cascade_list,0));
-      alloc = malloc(1 + sizeof(function1_t) + bytes);
+      alloc = malloc(sizeof(uint8_t) + sizeof(function1_t) + bytes);
     }
 
   memset(alloc,0,1);
-  memcpy((obj *)((char *)alloc+1),&destructor,sizeof(destructor));
-  alloc = (obj *)((char *)alloc + sizeof(destructor) + 1);
+  memcpy((obj *)((char *)alloc+sizeof(uint8_t)),&destructor,sizeof(destructor));
+  alloc = (obj *)((char *)alloc + sizeof(destructor) + sizeof(uint8_t));
   
   ioopm_list_t *list = linked_list_get();
   if (list) ioopm_linked_list_append(list, (elem_t){.obj_val = alloc});
@@ -56,17 +56,17 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
       deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
     }
   
-  obj *alloc = malloc(1 + sizeof(function1_t) + elements*bytes);
+  obj *alloc = malloc(sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
 
   while(alloc == NULL && ioopm_linked_list_size(cascade_list))
     {
       deallocate(ioopm_linked_list_remove_link(cascade_list,0));
-      alloc = malloc(1 + sizeof(function1_t) + elements*bytes);
+      alloc = malloc(sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
     }
 
   memset(alloc,0,1);
-  memcpy((obj *)((char *)alloc+1),&destructor,sizeof(destructor));
-  alloc = (obj *)((char *)alloc + sizeof(destructor) + 1);
+  memcpy((obj *)((char *)alloc+sizeof(uint8_t)),&destructor,sizeof(destructor));
+  alloc = (obj *)((char *)alloc + sizeof(destructor) + sizeof(uint8_t));
   memset(alloc,0,elements*bytes);
   
   ioopm_list_t *list = linked_list_get();
@@ -77,8 +77,8 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 
 void deallocate_aux(obj *object)
 {
-  obj *tmp = (obj *)((char *)object-sizeof(function1_t)-1);
-  function1_t destructor = *(function1_t *)((obj *)((char *)tmp+1));
+  obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));
+  function1_t destructor = *(function1_t *)((obj *)((char *)tmp+sizeof(uint8_t)));
   
   if(destructor)
     {
@@ -118,7 +118,7 @@ void retain(obj *object)
 {
   if(object)
     {
-      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-1);
+      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));
       uint8_t ref_count = *(uint8_t *)tmp;
       ref_count++;
       memset(tmp,ref_count,1);
@@ -129,7 +129,7 @@ void release(obj *object)
 {
   if(object)
     {
-      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-1);;
+      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));;
       uint8_t ref_count = *(uint8_t *)tmp;
       ref_count--;
       memset(tmp,ref_count,1);
@@ -139,7 +139,7 @@ void release(obj *object)
 
 size_t rc(obj *object)
 {
-  obj *tmp = (obj *)((char *)object-sizeof(function1_t)-1);
+  obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));
   uint8_t ref_count = *(uint8_t *)tmp;
   return ref_count;
 }
