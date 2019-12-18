@@ -20,7 +20,7 @@ typedef void obj;
 /// @param Object that will be destroyed
 typedef void(*function1_t)(obj *);
 
-/// @brief Create an empty linked list that will store all the allocated objects
+/// @brief Create an empty linked list that will store pointers to all allocated objects
 ioopm_list_t *create_list();
 
 /// @brief Increments reference count of object by 1
