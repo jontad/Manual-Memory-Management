@@ -202,10 +202,10 @@ void test_allocate_dif_structs()
 void test_cascade_free()
 {
   size_reset();
-  list_t *list = list_create(); //i list lägger vi pekaren till globala listvariabeln list_cascade i lib_for_tests.c. Dock används inte list som en list_cascade utan som en vanlig lista... skapar en 
+  list_t *list = list_create(); //i list lägger vi pekaren till globala listvariabeln i lib_for_tests.c
   retain(list);
   set_cascade_limit(100);
-  for(int i = 0; i < 200; ++i)
+  for(int i = 0; i < 100; ++i)
     {
       linked_list_append(); //Skapar bara en ny link och låter elem vara null
     }

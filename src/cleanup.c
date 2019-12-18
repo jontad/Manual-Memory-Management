@@ -10,7 +10,6 @@ bool eq_func(elem_t a, elem_t b)
   return a_ptr == b_ptr;
 }
 
-
 ioopm_list_t *create_list()
 {
   pointer_list = ioopm_linked_list_create(eq_func);
@@ -42,8 +41,6 @@ void cleanup()
 	}
     }
 }
-
-
 
 void shutdown()
 {
