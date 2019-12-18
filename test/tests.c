@@ -106,24 +106,24 @@ void test_shutdown()
 
 void test_cleanup()
 {
-  ioopm_list_t *list = linked_list_get();
+  ioopm_list_t *pointer_list = linked_list_get();
   string_t *str = allocate(sizeof(string_t),NULL);
   string_t *string = allocate(sizeof(string_t),NULL);
   str->str = "Hello";
   string->str = "World";
-  size_t actual_size = ioopm_linked_list_size(list);
+  size_t actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 2);
   cleanup();
-  actual_size = ioopm_linked_list_size(list);
+  actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 0);
   shutdown();
 }
 
 void test_cleanup_empty()
 {
-  ioopm_list_t *list = linked_list_get();
+  ioopm_list_t *pointer_list = linked_list_get();
   cleanup();
-  CU_ASSERT_EQUAL(ioopm_linked_list_size(list),0);
+  CU_ASSERT_EQUAL(ioopm_linked_list_size(pointer_list),0);
   shutdown();
 }
 
@@ -135,19 +135,19 @@ void test_cleanup_and_deallocate()
   str1->str = "Hello";
   str2->str = "World";
 
-  ioopm_list_t *list = linked_list_get();
+  ioopm_list_t *pointer_list = linked_list_get();
   
-  size_t actual_size = ioopm_linked_list_size(list);
+  size_t actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 2);
 
   deallocate(str1);
   
-  actual_size = ioopm_linked_list_size(list);
+  actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 1);
 
   cleanup();
 
-  actual_size = ioopm_linked_list_size(list);
+  actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 0);
   
   shutdown();
@@ -160,16 +160,16 @@ void test_cleanup_retain()
   str1->str = "Hello";
   str2->str = "World";
 
-  ioopm_list_t *list = linked_list_get();
+  ioopm_list_t *pointer_list = linked_list_get();
   
-  size_t actual_size = ioopm_linked_list_size(list);
+  size_t actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 2);
 
   retain(str1);
   
   cleanup();
 
-  actual_size = ioopm_linked_list_size(list);
+  actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 1);
   
   shutdown();
@@ -182,13 +182,11 @@ void test_shutdown_with_allocs()
   string_t *str3 = allocate(sizeof(string_t),NULL);
   string_t *str4 = allocate(sizeof(string_t),NULL);
 
-  ioopm_list_t *list = linked_list_get();
-  size_t actual_size = ioopm_linked_list_size(list);
+  ioopm_list_t *pointer_list = linked_list_get();
+  size_t actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 4);
   
   shutdown();
-
-  //CU_ASSERT_PTR_NULL(list);
 }
 
 void test_allocate_dif_structs()
@@ -199,13 +197,12 @@ void test_allocate_dif_structs()
   ourInt_t *int2 = allocate(sizeof(ourInt_t),NULL);
   cleanup();
   shutdown();
-
 }
 
 void test_cascade_free()
 {
   size_reset();
-  list_t *list = list_create(); //list får pekaren till den globala variabeln list_cascade i lib_for_tests.c
+  list_t *list = list_create(); //i list lägger vi pekaren till globala listvariabeln list_cascade i lib_for_tests.c. Dock används inte list som en list_cascade utan som en vanlig lista... skapar en 
   retain(list);
   set_cascade_limit(100);
   for(int i = 0; i < 200; ++i)

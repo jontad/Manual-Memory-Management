@@ -3,7 +3,7 @@
 #include "lib_for_tests.h"
 #include <stdio.h>
 
-list_t *list_cascade = NULL;
+list_t *list = NULL;
 
 size_t list_size = 0;
 
@@ -57,31 +57,31 @@ void size_reset()
 
 list_t *list_create()
 {
-  list_cascade = allocate(sizeof(list_t), destructor_linked_list);
-  list_cascade->head = list_cascade->tail = NULL;
-  list_cascade->size = 0;
-  return list_cascade;
+  list = allocate(sizeof(list_t), destructor_linked_list);
+  list->head = list->tail = NULL;
+  list->size = 0;
+  return list;
 }
 
 void linked_list_append()
 {
-  if(list_cascade->tail != NULL)
+  if(list->tail != NULL)
     {
       new_link_t *link = allocate(sizeof(new_link_t), link_destructor);
       link->next = NULL;
-      list_cascade->tail->next = link;
-      list_cascade->tail = link;
+      list->tail->next = link;
+      list->tail = link;
       retain(link);
     }
   else
     {
       new_link_t *link = allocate(sizeof(new_link_t), link_destructor);
       link->next = NULL;
-      list_cascade->head = link;
-      list_cascade->tail = link;
+      list->head = link;
+      list->tail = link;
     }
   list_size++;
-  list_cascade->size += 1;
+  list->size += 1;
 }
 
 size_t linked_list_size()
