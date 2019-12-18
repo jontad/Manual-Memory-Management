@@ -98,23 +98,7 @@ void test_cascade_limit()
   expected = 40;
   CU_ASSERT_EQUAL(limit, expected);
 }
-/*
-void test_destructor_linked_list()
-{
-  list_t *list = allocate(sizeof(list_t), destructor_linked_list);
-  list->head = NULL;
-  list->tail = NULL;
-  list->size = 0;
-  
-  char *str = strdup("hello");
-  char *string = strdup("world");
-  linked_list_append(list, str);
-  linked_list_append(list, string);
-  size_t actual_size = linked_list_size(list);
-  CU_ASSERT_EQUAL(actual_size, 2);
-  deallocate(list);
-}
-*/
+
 void test_shutdown()
 {
   create_list();
@@ -123,7 +107,7 @@ void test_shutdown()
 
 void test_cleanup()
 {
-  ioopm_list_t *list = create_list(); 
+  ioopm_list_t *list = linked_list_get();
   string_t *str = allocate(sizeof(string_t),NULL);
   string_t *string = allocate(sizeof(string_t),NULL);
   str->str = "Hello";
@@ -135,6 +119,106 @@ void test_cleanup()
   CU_ASSERT_EQUAL(actual_size, 0);
   shutdown();
 }
+
+void test_cleanup_empty()
+{
+  ioopm_list_t *list = linked_list_get();
+  cleanup();
+  CU_ASSERT_EQUAL(ioopm_linked_list_size(list),0);
+  shutdown();
+}
+
+
+void test_cleanup_and_deallocate()
+{
+  string_t *str1 = allocate(sizeof(string_t),NULL);
+  string_t *str2 = allocate(sizeof(string_t),NULL);
+  str1->str = "Hello";
+  str2->str = "World";
+
+  ioopm_list_t *list = linked_list_get();
+  
+  size_t actual_size = ioopm_linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 2);
+
+  deallocate(str1);
+  
+  actual_size = ioopm_linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 1);
+
+  cleanup();
+
+  actual_size = ioopm_linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 0);
+  
+  shutdown();
+}
+
+void test_cleanup_retain()
+{
+  string_t *str1 = allocate(sizeof(string_t),NULL);
+  string_t *str2 = allocate(sizeof(string_t),NULL);
+  str1->str = "Hello";
+  str2->str = "World";
+
+  ioopm_list_t *list = linked_list_get();
+  
+  size_t actual_size = ioopm_linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 2);
+
+  retain(str1);
+  
+  cleanup();
+
+  actual_size = ioopm_linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 1);
+  
+  shutdown();
+}
+
+void test_shutdown_with_allocs()
+{
+  string_t *str1 = allocate(sizeof(string_t),NULL);
+  string_t *str2 = allocate(sizeof(string_t),NULL);
+  string_t *str3 = allocate(sizeof(string_t),NULL);
+  string_t *str4 = allocate(sizeof(string_t),NULL);
+
+  ioopm_list_t *list = linked_list_get();
+  size_t actual_size = ioopm_linked_list_size(list);
+  CU_ASSERT_EQUAL(actual_size, 4);
+  
+  shutdown();
+
+  //CU_ASSERT_PTR_NULL(list);
+}
+
+void test_allocate_dif_structs()
+{
+  string_t *str1 = allocate(sizeof(string_t),NULL);
+  string_t *str2 = allocate(sizeof(string_t),NULL);
+  ourInt_t *int1 = allocate(sizeof(ourInt_t),NULL);
+  ourInt_t *int2 = allocate(sizeof(ourInt_t),NULL);
+  cleanup();
+  shutdown();
+
+}
+
+void test_cascade_free()
+{
+  size_reset();
+  list_t *list = list_create();
+  retain(list);
+  set_cascade_limit(100);
+  for(int i = 0; i < 200; ++i)
+    {
+      linked_list_append();
+    }
+  release(list);
+  CU_ASSERT_EQUAL(100,linked_list_size());
+  shutdown();
+}
+
+
 
 int init_suite(void)
 {
@@ -170,7 +254,13 @@ int main()
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
       (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
       /*(NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list)) ||*/
-      (NULL == CU_add_test(test_suite1, "cleanup", test_cleanup))
+      (NULL == CU_add_test(test_suite1, "cleanup", test_cleanup))||
+      (NULL == CU_add_test(test_suite1, "cleanup empty list", test_cleanup_empty))||
+      (NULL == CU_add_test(test_suite1, "cleanup and deallocate", test_cleanup_and_deallocate))||
+      (NULL == CU_add_test(test_suite1, "cleanup with retain", test_cleanup_retain))||
+      (NULL == CU_add_test(test_suite1, "shutdown with allocs", test_shutdown_with_allocs))||
+      (NULL == CU_add_test(test_suite1, "allocate different types", test_allocate_dif_structs))||
+      (NULL == CU_add_test(test_suite1, "cascade free", test_cascade_free))
       )
     {
       CU_cleanup_registry();
