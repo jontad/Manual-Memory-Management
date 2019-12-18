@@ -10,6 +10,8 @@
 
 ioopm_list_t *cascade_list = NULL;
 
+size_t counter = 0;
+
 ioopm_list_t *get_cascade_list()
 {
   return cascade_list;
@@ -23,6 +25,8 @@ void set_cascade_list_to_null()
 obj *allocate(size_t bytes, function1_t destructor)
 {
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
+
+  //If entries exist in cascade_list, begin by freeing them
   if(ioopm_linked_list_size(cascade_list))
     {
       deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
@@ -30,20 +34,24 @@ obj *allocate(size_t bytes, function1_t destructor)
   
   obj *alloc = malloc(sizeof(uint8_t) + sizeof(function1_t) + bytes);
 
+  //If malloc fails but there are entries in cascade_list, continue freeing allocated memory
   while(alloc == NULL && ioopm_linked_list_size(cascade_list))
     {
       deallocate(ioopm_linked_list_remove_link(cascade_list,0));
       alloc = malloc(sizeof(uint8_t) + sizeof(function1_t) + bytes);
     }
 
+  //Set ref_count to 0 in alloc
   memset(alloc,0,1);
+
+  //Put address of destructor starting from alloc+sizeof(uint8_t)
   memcpy((obj *)((char *)alloc+sizeof(uint8_t)),&destructor,sizeof(destructor));
   alloc = (obj *)((char *)alloc + sizeof(destructor) + sizeof(uint8_t));
-  
-  ioopm_list_t *list = linked_list_get();
-  if (list) ioopm_linked_list_append(list, (elem_t){.obj_val = alloc});
-  return alloc;
 
+  //Add pointer to the global pointer list (declared in cleanup.c)
+  ioopm_list_t *pointer_list = linked_list_get();
+  if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
+  return alloc;
 }
 
 
@@ -69,8 +77,8 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   alloc = (obj *)((char *)alloc + sizeof(destructor) + sizeof(uint8_t));
   memset(alloc,0,elements*bytes);
   
-  ioopm_list_t *list = linked_list_get();
-  if (list) ioopm_linked_list_append(list, (elem_t){.obj_val = alloc});
+  ioopm_list_t *pointer_list = linked_list_get();
+  if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
   
   return alloc;
 }
@@ -85,26 +93,26 @@ void deallocate_aux(obj *object)
       destructor(object);
     }
   
-  ioopm_list_t *list = linked_list_get();
-  if(list)
+  ioopm_list_t *pointer_list = linked_list_get();
+  if(pointer_list) //TODO: Currently this will always be true
     {
-      int index = ioopm_linked_list_position(list, (elem_t){.obj_val = object});
-      if (index >= 0) ioopm_linked_list_remove_link(list, index);
+      //Get the position of the object pointer in the global pointer list
+      int index = ioopm_linked_list_position(pointer_list, (elem_t){.obj_val = object});
+      if (index >= 0) ioopm_linked_list_remove_link(pointer_list, index);
     }
   
   Free(tmp);
 }
-
-size_t counter = 0;
 
 void deallocate(obj *object)
 {
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
 
   counter++;
-  list_negate(); // THIS IS FOR TESTING!
+  list_negate(); //THIS IS FOR TESTING! (from lib_for_tests.c)
   if(counter == get_cascade_limit())
     {
+      //If cascade limit is reached, add object to the global cascade list
       ioopm_linked_list_append(cascade_list, (elem_t){.obj_val = object});
       counter = 0;
       return;

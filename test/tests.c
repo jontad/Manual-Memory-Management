@@ -6,7 +6,6 @@
 
 
 
-
 void test_alloc()
 {
   string_t *alloc = allocate(sizeof(string_t), NULL);
@@ -206,15 +205,17 @@ void test_allocate_dif_structs()
 void test_cascade_free()
 {
   size_reset();
-  list_t *list = list_create();
+  list_t *list = list_create(); //list får pekaren till den globala variabeln list_cascade i lib_for_tests.c
   retain(list);
   set_cascade_limit(100);
   for(int i = 0; i < 200; ++i)
     {
-      linked_list_append();
+      linked_list_append(); //Skapar bara en ny link och låter elem vara null
     }
+  CU_ASSERT_EQUAL(200,linked_list_size());
   release(list);
-  CU_ASSERT_EQUAL(100,linked_list_size());
+  //printf("%d\n", linked_list_size());
+  CU_ASSERT_EQUAL(100,linked_list_size()); //list_size ger värdet på globala variabeln list_size. I list_cascade kan man nå en size också genom list_cascade->size
   shutdown();
 }
 

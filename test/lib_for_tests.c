@@ -3,6 +3,9 @@
 #include "lib_for_tests.h"
 #include <stdio.h>
 
+list_t *list_cascade = NULL;
+
+size_t list_size = 0;
 
 void destructor_string(obj *object)
 {
@@ -18,6 +21,12 @@ void destructor_string_array(obj *object)
     {
       free(array_ptr[i]);
     }
+}
+
+void link_destructor(obj *c)
+{
+  release(((new_link_t *) c)->next); //Det är den här som gör att loopen fortsätter. Vi gör en deallocate på den här länken efter att vi gått in och gjort en deallocate på nästa... Detta betyder att list->head aldrig tas bort?
+  //release(c);
 }
 
 void destructor_linked_list(obj *object)
@@ -36,9 +45,6 @@ void destructor_linked_list(obj *object)
   */
 }
 
-list_t *list_cascade = NULL;
-size_t list_size = 0;
-
 void list_negate()
 {
   list_size--;
@@ -49,11 +55,6 @@ void size_reset()
   list_size = 0;
 }
 
-void link_destructor(obj *c)
-{
-  release(((new_link_t *) c)->next);
-}
-
 list_t *list_create()
 {
   list_cascade = allocate(sizeof(list_t), destructor_linked_list);
@@ -62,12 +63,8 @@ list_t *list_create()
   return list_cascade;
 }
 
-//------linked list functions-------//
-
 void linked_list_append()
 {
-  //list_t *list = object;
-
   if(list_cascade->tail != NULL)
     {
       new_link_t *link = allocate(sizeof(new_link_t), link_destructor);
@@ -84,7 +81,7 @@ void linked_list_append()
       list_cascade->tail = link;
     }
   list_size++;
-  list_cascade->size +=1;
+  list_cascade->size += 1;
 }
 
 size_t linked_list_size()
@@ -92,3 +89,15 @@ size_t linked_list_size()
   return list_size;
 }
 
+/*
+new_link_t *linked_list_get(list_t *list, int index)
+{
+  if (list == NULL) { return NULL; }
+
+  new_link_t *link = list->
+  for (int i = 0; i < index; i++)
+    {
+      
+    }
+}
+*/
