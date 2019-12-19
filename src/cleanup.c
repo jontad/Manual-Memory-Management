@@ -38,6 +38,7 @@ void cleanup()
 	  cursor = tmp;
 	}
     }
+  return;
 }
 
 void shutdown()

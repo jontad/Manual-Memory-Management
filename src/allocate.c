@@ -24,7 +24,9 @@ void set_cascade_list_to_null()
 
 obj *allocate(size_t bytes, function1_t destructor)
 {
+
   return allocate_array(1, bytes, destructor);
+
 }
 
 obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
@@ -38,13 +40,16 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 
   //2*sizeof(uint8_t), 1 byte for rc, 1 byte for hops
   obj *alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
-
   //If malloc fails to reserve memory we try to empty our cascade list
+
   while(alloc == NULL && ioopm_linked_list_size(cascade_list))
     {
       deallocate(ioopm_linked_list_remove_link(cascade_list,0));
       alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
     }
+  if(!alloc) return alloc; //Return NULL if we fail to allocate memory
+  
+
   
   uint8_t hops = (elements*bytes) / sizeof(void *); //How many pointers our object can hold
   memset(alloc, hops, sizeof(uint8_t));
@@ -127,6 +132,7 @@ void deallocate(obj *object)
     }
   else if(rc(object) == 0) deallocate_aux(object);
   counter = 0;
+  //  object = NULL;
 }
 
 void retain(obj *object)
@@ -149,6 +155,7 @@ void release(obj *object)
       if(ref_count != 0) ref_count--;
       memset(tmp,ref_count,1);
       if(ref_count == 0) deallocate(object);
+	
     }
 }
 
