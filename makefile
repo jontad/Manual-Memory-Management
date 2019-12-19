@@ -11,8 +11,8 @@ clean:
 
 ################ COMPILES ###################
 
-linked_list.o: src/linked_list.c src/linked_list.h src/common.h
-	$(C_COMPILER) $(C_OPTIONS) -c src/linked_list.c
+linked_list.o: inlupp2/linked_list.c inlupp2/linked_list.h inlupp2/common.h
+	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/linked_list.c
 
 cascade.o: src/cascade.c src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/cascade.c
@@ -20,7 +20,7 @@ cascade.o: src/cascade.c src/refmem.h
 cleanup.o: src/cleanup.c src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/cleanup.c
 
-allocate.o: src/allocate.c src/refmem.h src/linked_list.h
+allocate.o: src/allocate.c src/refmem.h inlupp2/linked_list.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/allocate.c
 
 compile: allocate.o cleanup.o cascade.o linked_list.o
@@ -54,6 +54,6 @@ lcov_open: lcov_generate
 	google-chrome-stable test/tests-lcov/index.html
 
 
-example: test/example.c src/allocate.c src/cascade.c src/linked_list.c test/lib_for_tests.c src/cleanup.c
+example: test/example.c src/allocate.c src/cascade.c inlupp2/linked_list.c test/lib_for_tests.c src/cleanup.c
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/example $(CUNIT_LINK)
 	valgrind --leak-check=full test/example

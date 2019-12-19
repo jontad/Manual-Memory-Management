@@ -2,8 +2,7 @@
 #include "../src/refmem.h"
 #include "lib_for_tests.h"
 #include <CUnit/Basic.h>
-#include "../src/linked_list.h"
-
+#include "../inlupp2/linked_list.h"
 
 
 

@@ -8,36 +8,7 @@
 #include "../src/refmem.h"
 
 
-#define Success(v)      (option_t) {.success = true, .value = v};
-#define Failure()       (option_t) {.success = false};
-#define Successful(o)   (o.success == true)
-#define Unsuccessful(o) (o.success == false)
-
-#define int_elem(i) (elem_t) {.ioopm_int = (i)}
-#define unsigned_elem(u) (elem_t) {.ioopm_u_int = (u)}
-#define bool_elem(b) (elem_t) {.ioopm_bool = (b)}
-#define str_elem(s) (elem_t) {.ioopm_str = (s)}
-#define float_elem(f) (elem_t) {.ioopm_float = (f)}
-#define void_elem(v) (elem_t) {.ioopm_void_ptr = (v)}
-#define merch_elem(m) (elem_t) {.ioopm_merch = (m)}
-
-
-typedef struct list ioopm_list_t;
-typedef struct link ioopm_link_t;
-
-struct link 
-{
-  elem_t value; 
-  ioopm_link_t *next;
-};
-
-struct list
-{
-  size_t list_size; 
-  ioopm_eq_function equal;
-  ioopm_link_t *first;
-  ioopm_link_t *last;
-};
+///////////////////////////// STRUCTS ///////////////////////////////
 
 struct entry
 {
@@ -46,17 +17,10 @@ struct entry
   entry_t *next; // points to the next entry (possibly NULL)
 };
 
+////////////////////////////////////////////////////////////
 
-struct hash_table
-{
-  float load_factor;
-  size_t capacity;
-  entry_t **buckets;
-  hash_function hash_func;
-  ioopm_eq_function key_eq_func;
-  ioopm_eq_function value_eq_func;
-  size_t size;
-};
+
+
 
 static entry_t *entry_create(elem_t key, elem_t value, entry_t *next)
 {
@@ -186,6 +150,28 @@ static entry_t *find_previous_entry_for_key(entry_t *first_entry, elem_t key, ha
     }
   return first_entry;
 } 
+/*{
+
+  entry_t *current_entry = first_entry;
+  entry_t *temp_entry = first_entry;
+  while(hash_func(current_entry->key) < hash_func(key) && current_entry->next != NULL)
+    {
+      temp_entry = current_entry;
+      current_entry = current_entry->next;
+    }
+  if(hash_func(current_entry->key) < hash_func(key) && current_entry->next == NULL)
+    {
+      return current_entry;
+    }
+  else
+    {
+      return temp_entry;
+    }
+
+}
+*/
+
+
 
 
 
@@ -235,6 +221,24 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
       return Failure();
     }
 }
+
+
+/*
+option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
+{
+  /// Find the previous entry for key
+  entry_t *previous_entry = find_previous_entry_for_key(ht->buckets[ht->hash_func(key) % ht->capacity], key, ht->hash_func);
+  entry_t *next = previous_entry->next;
+
+  if (next && (next->value.ioopm_int || next->value.ioopm_u_int || next->value.ioopm_bool || next->value.ioopm_float || next->value.ioopm_void_ptr)) // will not work if value is false (boolean)
+    {
+      return Success(next->value);
+    }
+  else
+    {
+      return Failure();
+    }
+}*/
 
 
 
