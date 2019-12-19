@@ -249,7 +249,7 @@ elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key)
   if (exist.success)
     {
       entry_t *previous_entry = find_previous_entry_for_key(ht->buckets[ht->hash_func(key) % ht->capacity], key, ht->hash_func);
-      retain(previous_entry)
+      retain(previous_entry);
 	
       entry_t *temp_entry = previous_entry->next;
       retain(temp_entry);
@@ -492,7 +492,7 @@ void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function 
 	{
 	  release(current_entry);
 	  current_entry = current_entry->next;
-	  retain(current_entrya);
+	  retain(current_entry);
 	  
 	  apply_fun(current_entry->key, &current_entry->value, arg);
 	}

@@ -22,7 +22,7 @@ ioopm_database_t *database_create_database()
   db->id_counter = 0;
 
   retain(db->merch_ht);
-  retain(db->merch_shelves_ht);
+  retain(db->shelves_ht);
   retain(db->carts);
   return db;
 }
