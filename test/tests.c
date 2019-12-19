@@ -10,6 +10,7 @@
 void test_alloc()
 {
   string_t *alloc = allocate(sizeof(string_t), NULL);
+  alloc->str = NULL;
   CU_ASSERT_PTR_NOT_NULL(alloc);
   deallocate(alloc);
 }
@@ -38,8 +39,33 @@ void test_alloc_array_loop()
 void test_destructor_null()
 {
   string_t *alloc = allocate_array(10, sizeof(string_t), NULL);
+  alloc->str = NULL;
   deallocate(alloc);
  
+}
+
+void test_destruct_default()
+{
+  string_t *alloc = allocate(sizeof(string_t), NULL);
+  alloc->str = allocate(sizeof(char *), NULL);
+  deallocate(alloc);
+
+  shutdown();
+}
+void test_destruct_default_several_ptrs()
+{
+  ptr_t *alloc = allocate(sizeof(ptr_t), NULL);
+  
+  alloc->str_struct = allocate(sizeof(string_t),NULL);
+  alloc->int_struct = allocate(sizeof(ourInt_t),NULL);
+  alloc->str = allocate(sizeof(char *), NULL);
+  
+  retain(alloc->str_struct);
+  retain(alloc->int_struct);
+  retain(alloc->str);
+
+  deallocate(alloc);  
+  shutdown();
 }
 
 void test_destruct_string()
@@ -52,6 +78,7 @@ void test_destruct_string()
 void test_retain()
 {
   string_t *alloc = allocate(sizeof(string_t), NULL);
+  alloc->str = NULL;
   retain(alloc);
   CU_ASSERT_EQUAL(1,rc(alloc));
   release(alloc);
@@ -76,6 +103,7 @@ void test_release_null()
 void test_rc()
 {
   string_t *alloc = allocate(sizeof(string_t), NULL);
+  alloc->str = NULL;
   retain(alloc);
   retain(alloc);
   CU_ASSERT_EQUAL(2,rc(alloc));
@@ -182,14 +210,16 @@ void test_shutdown_with_allocs()
   string_t *str2 = allocate(sizeof(string_t),NULL);
   string_t *str3 = allocate(sizeof(string_t),NULL);
   string_t *str4 = allocate(sizeof(string_t),NULL);
-
+  str1->str = NULL;
+  str2->str = NULL;
+  str3->str = NULL;
+  str4->str = NULL;
   ioopm_list_t *list = linked_list_get();
   size_t actual_size = ioopm_linked_list_size(list);
   CU_ASSERT_EQUAL(actual_size, 4);
   
   shutdown();
 
-  //CU_ASSERT_PTR_NULL(list);
 }
 
 void test_allocate_dif_structs()
@@ -198,6 +228,11 @@ void test_allocate_dif_structs()
   string_t *str2 = allocate(sizeof(string_t),NULL);
   ourInt_t *int1 = allocate(sizeof(ourInt_t),NULL);
   ourInt_t *int2 = allocate(sizeof(ourInt_t),NULL);
+  str1->str = NULL;
+  str2->str = NULL;
+  int1->k = 0;
+  int2->k = 0;
+
   cleanup();
   shutdown();
 
@@ -253,14 +288,15 @@ int main()
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
       (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
-      /*(NULL == CU_add_test(test_suite1, "linked_list", test_destructor_linked_list)) ||*/
       (NULL == CU_add_test(test_suite1, "cleanup", test_cleanup))||
       (NULL == CU_add_test(test_suite1, "cleanup empty list", test_cleanup_empty))||
       (NULL == CU_add_test(test_suite1, "cleanup and deallocate", test_cleanup_and_deallocate))||
       (NULL == CU_add_test(test_suite1, "cleanup with retain", test_cleanup_retain))||
       (NULL == CU_add_test(test_suite1, "shutdown with allocs", test_shutdown_with_allocs))||
       (NULL == CU_add_test(test_suite1, "allocate different types", test_allocate_dif_structs))||
-      (NULL == CU_add_test(test_suite1, "cascade free", test_cascade_free))
+      (NULL == CU_add_test(test_suite1, "cascade free", test_cascade_free)) ||
+      (NULL == CU_add_test(test_suite1, "default destructor", test_destruct_default))||
+      (NULL == CU_add_test(test_suite1, "default destructor with many ptrs", test_destruct_default_several_ptrs))
       )
     {
       CU_cleanup_registry();

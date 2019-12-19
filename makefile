@@ -3,7 +3,8 @@ C_OPTIONS	      = -Wall -ggdb -pedantic -g
 C_LINK_OPTIONS	= -lm
 CUNIT_LINK	    = -lcunit
 C_LCOV	    	  = --coverage
-C_VALGRIND  	  = valgrind --leak-check=full
+C_VALGRIND  	  = valgrind --leak-check=full --show-leak-kinds=all
+
 
 clean:	
 	rm *.o ./test/tests *.gcno *.gcda
