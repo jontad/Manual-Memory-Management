@@ -18,12 +18,11 @@ typedef struct int_struct ourInt_t;
 typedef struct linked_list list_t;
 typedef struct new_link new_link_t;
 typedef struct many_pointers ptr_t;
+
 struct string_struct
 {
   char *str;
 };
-
-
 
 struct many_pointers
 {
@@ -32,12 +31,10 @@ struct many_pointers
   char *str;
 };
 
-
 struct int_struct
 {
   int k;
 };
-
 
 struct linked_list
 {
@@ -49,14 +46,13 @@ struct linked_list
 struct new_link
 {
   new_link_t *next;
-  char *str;
+  void *elem;
 };
-
 
 /// @brief the following function is ment to deallocate a string
 void destructor_string(obj *object);
 
-void destructor_string_array(obj* object);
+void destructor_string_array(obj *object);
 
 /// @brief the following function is ment to deallocate a linked list
 void destructor_linked_list(obj *object);
