@@ -1,8 +1,7 @@
-#pragma once
+#ifndef __LIB_FOR_TESTS_H__
+#define __LIB_FOR_TESTS_H__
 #include <stdbool.h>
 #include "../src/refmem.h"
-
-
 /**
  * @file lib_for_tests.h
  * @author Elias Insulander, Jonathan Tadese, Robert Paananen, Daniel Westberg, Alex Kangas, Georgios Davakos, Joel Waldenbäck
@@ -18,12 +17,13 @@ typedef struct int_struct ourInt_t;
 typedef struct linked_list list_t;
 typedef struct new_link new_link_t;
 typedef struct many_pointers ptr_t;
+typedef struct bucket bucket_t;
+typedef struct hash hash_t;
+
 struct string_struct
 {
   char *str;
 };
-
-
 
 struct many_pointers
 {
@@ -52,6 +52,20 @@ struct new_link
   char *str;
 };
 
+struct bucket
+{
+  int key;
+  char *value;
+  bucket_t* next;
+};
+
+struct hash
+{
+  int size;
+  int num_buckets;
+  bucket_t *buckets[];
+};
+
 
 /// @brief the following function is ment to deallocate a string
 void destructor_string(obj *object);
@@ -72,3 +86,14 @@ list_t *list_create();
 void list_negate();
 
 void size_reset();
+
+hash_t *demo_hash_table_create();
+
+void demo_hash_table_insert(hash_t *ht, int key, char *value);
+
+void demo_hash_table_remove(hash_t *ht, int key);
+
+size_t demo_hash_table_size(hash_t *ht);
+
+void demo_hash_table_clear(hash_t *ht);
+#endif

@@ -253,7 +253,25 @@ void test_cascade_free()
   shutdown();
 }
 
-
+void test_scuffed_table()
+{
+  hash_t *ht = demo_hash_table_create();
+  retain(ht);
+  size_t size = demo_hash_table_size(ht);
+  CU_ASSERT_EQUAL(size, 0);
+  for(int i= 0; i < 100; ++i)
+    {
+      demo_hash_table_insert(ht, i, "Xmas");
+    }
+  size = demo_hash_table_size(ht);
+  CU_ASSERT_EQUAL(size, 100);
+  demo_hash_table_remove(ht, 10);
+  demo_hash_table_remove(ht, 11);
+  size = demo_hash_table_size(ht);
+  CU_ASSERT_EQUAL(size,98);
+  release(ht);
+  shutdown();
+}
 
 int init_suite(void)
 {
@@ -296,7 +314,9 @@ int main()
       (NULL == CU_add_test(test_suite1, "allocate different types", test_allocate_dif_structs))||
       (NULL == CU_add_test(test_suite1, "cascade free", test_cascade_free)) ||
       (NULL == CU_add_test(test_suite1, "default destructor", test_destruct_default))||
-      (NULL == CU_add_test(test_suite1, "default destructor with many ptrs", test_destruct_default_several_ptrs))
+      (NULL == CU_add_test(test_suite1, "default destructor with many ptrs", test_destruct_default_several_ptrs)) ||
+      (NULL == CU_add_test(test_suite1, "generic hash table",  test_scuffed_table))
+     
       )
     {
       CU_cleanup_registry();
