@@ -83,6 +83,7 @@ void list_negate();
 
 void size_reset();
 
+
 hash_t *demo_hash_table_create();
 
 void demo_hash_table_insert(hash_t *ht, int key, char *value);
@@ -91,5 +92,4 @@ void demo_hash_table_remove(hash_t *ht, int key);
 
 size_t demo_hash_table_size(hash_t *ht);
 
-void demo_hash_table_clear(hash_t *ht);
 #endif

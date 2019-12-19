@@ -92,7 +92,7 @@ size_t linked_list_size()
 
 static bucket_t *entry_create(int k, char *v, bucket_t *n)
 {
-  bucket_t *entry = allocate(sizeof(entry_t), NULL);
+  bucket_t *entry = allocate(sizeof(bucket_t), NULL);
   entry->key = k;
   entry->value = v;
   entry->next = n;

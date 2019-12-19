@@ -2,7 +2,7 @@
 #define __REFMEM_H__
 
 #include <stdlib.h>
-#include "common.h"
+#include "../inlupp2/common.h"
 
 #define Free(ptr) {free(ptr); ptr = NULL;}
 /**

@@ -6,12 +6,6 @@
  * @author Emanuel Jansson & Elias Insulander
  * @date 1 Sep 2019
  * @brief Hash table that maps keys to values.
- *
- * Here typically goes a more extensive explanation of what the header
- * defines. Doxygens tags are words preceeded by either a backslash @\
- * or by an at symbol @@.
- *
- * @see http://wrigstad.com/ioopm19/assignments/assignment1.html
  */
 
 #include <stdlib.h>
@@ -24,7 +18,7 @@
 /// @param hash_func hash function for appropriate key datatype
 /// @param key_eq key_equivalent function for appropriate key datatype
 /// @param value_eq value_equivalent function for appropriate value datatype
-/// @param load-factor maximum load-factor before resizing
+/// @param load_factor maximum load-factor before resizing
 /// @param capacity Initial number of buckets
 /// @return A new empty hash table
 ioopm_hash_table_t *ioopm_hash_table_create(hash_function hash_func, ioopm_eq_function key_eq, ioopm_eq_function value_eq, float load_factor, size_t capacity);
@@ -52,7 +46,7 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key);
 elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key);
 
 /// @brief returns the number of key => value entries in the hash table
-/// @param h hash table operated upon
+/// @param ht hash table operated upon
 /// @return the number of key => value entries in the hash table
 size_t ioopm_hash_table_size(ioopm_hash_table_t *ht);
 
@@ -105,22 +99,44 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
 
 
+
+
 /// @brief apply a hash function to a key
-/// @param elem_t operated upon
-/// @return An int value based on element
+/// @param key key operated upon
+/// @return An unsigned int value based on element
 unsigned long int_hash_func(elem_t key);
 
+
+/// @brief apply a hash function to a key
+/// @param uns_int uns_int operated upon
+/// @return An unsigned int value based on element
 unsigned long uns_int_hash_func(elem_t uns_int);
 
+/// @brief apply a hash function to a key
+/// @param boolean boolean operated upon
+/// @return An unsigned int value based on element
 unsigned long bool_hash_func(elem_t boolean);
 
+/// @brief apply a hash function to a key
+/// @param float_num float_num operated upon
+/// @return An unsigned int value based on element
 unsigned long float_hash_func(elem_t float_num);
 
+/// @brief apply a hash function to a key
+/// @param string string operated upon
+/// @return An unsigned int value based on element
 unsigned long str_hash_func(elem_t string);
 
+/// @brief apply a hash function to a key
+/// @param pointer pointer operated upon
+/// @return An unsigned int value based on element
 unsigned long pointer_hash_func(elem_t pointer);
 
+/// @brief apply a hash function to a key
+/// @param merch merch operated upon
+/// @return An unsigned int value based on element
 unsigned long merch_hash_func(elem_t merch);
+
 
 /// @brief check if a and b are equal
 /// @param a elem_t to compare
@@ -128,15 +144,39 @@ unsigned long merch_hash_func(elem_t merch);
 /// @return true if a and b are equal, false if not
 bool equality_function_int(elem_t a, elem_t b);
 
+/// @brief check if a and b are equal
+/// @param a elem_t to compare
+/// @param b elem_t to compare
+/// @return true if a and b are equal, false if not
 bool equality_function_uns_int(elem_t a, elem_t b);
 
+/// @brief check if a and b are equal
+/// @param a elem_t to compare
+/// @param b elem_t to compare
+/// @return true if a and b are equal, false if not
 bool equality_function_bool(elem_t a, elem_t b);
 
+/// @brief check if a and b are equal
+/// @param a elem_t to compare
+/// @param b elem_t to compare
+/// @return true if a and b are equal, false if not
 bool equality_function_float(elem_t a, elem_t b);
 
+/// @brief check if a and b are equal
+/// @param a elem_t to compare
+/// @param b elem_t to compare
+/// @return true if a and b are equal, false if not
 bool equality_function_str(elem_t a, elem_t b);
 
+/// @brief check if a and b are equal
+/// @param a elem_t to compare
+/// @param b elem_t to compare
+/// @return true if a and b are equal, false if not
 bool equality_function_pointer(elem_t a, elem_t b);
 
+/// @brief check if a and b are equal
+/// @param a elem_t to compare
+/// @param b elem_t to compare
+/// @return true if a and b are equal, false if not
 bool equality_function_merch(elem_t a, elem_t b);
 #endif
