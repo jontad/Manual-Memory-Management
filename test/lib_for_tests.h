@@ -17,9 +17,18 @@ typedef struct string_struct string_t;
 typedef struct int_struct ourInt_t;
 typedef struct linked_list list_t;
 typedef struct new_link new_link_t;
-
+typedef struct many_pointers ptr_t;
 struct string_struct
 {
+  char *str;
+};
+
+
+
+struct many_pointers
+{
+  string_t *str_struct;
+  ourInt_t *int_struct;
   char *str;
 };
 
