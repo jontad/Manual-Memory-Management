@@ -9,20 +9,18 @@
  * @file refmem.h
  * @author Elias Insulander, Jonathan Tadese, Robert Paananen, Daniel Westberg, Alex Kangas, Georgios Davakos, Joel Waldenbäck
  * @date 11 December 2019
- * @brief Manual memory management using reference counting.
- *
- * More indepth explanation here of what the header defines
- * 
+ * @brief Manual memory management using reference counting. 
  * @see http://wrigstad.com/ioopm19/projects/project1.html
  */
 
-/// @brief 
+/// @brief Renaming void to object
 typedef void obj;
 
-/// @brief
-/// @param
+/// @brief Destructor function that recieves an object to deallocate
+/// @param Object that will be destroyed
 typedef void(*function1_t)(obj *);
 
+/// @brief Create an empty linked list that will store pointers to all allocated objects
 ioopm_list_t *create_list();
 
 /// @brief Increments reference count of object by 1
@@ -40,25 +38,26 @@ void release(obj *);
 /// @return Reference count
 size_t rc(obj *);
 
-/// @brief 
-/// @param bytes
-/// @param destructor
-/// @return
-
+/// @brief Allocate memory on heap 
+/// @param bytes Size on heap that will be allocated
+/// @param destructor Associated destructor to free what will be allocated 
+/// @return Allocated object
 obj *allocate(size_t bytes, function1_t destructor);
 
-/// @brief 
-/// @param elements
-/// @param elem_size
-/// @param destructor
-/// @return
-obj *allocate_array(size_t elements, size_t elem_size, function1_t destructor);
+/// @brief Allocate array of objects in memory on heap 
+/// @param bytes Size on heap that will be allocated per element
+/// @param destructor Associated destructor to free what will be allocated
+/// @param elements How many elements in array
+/// @return Allocated array of objects
+obj *allocate_array(size_t elements, size_t bytes, function1_t destructor);
 
-/// @brief 
-/// @param obj
+/// @brief Deallocate object if reference count is 0
+/// @param obj Object that will be deallocated
+/// @pre Object has to have reference count 0
 void deallocate(obj *);
 
-
+/// @brief Auxillary function for deallocate. Deallocate object regardless of reference count. 
+/// @param obj Object that will be deallocated
 void deallocate_aux(obj *);
 
 /// @brief Set upper limit of how many objects are allowed to be free'd at once
@@ -67,7 +66,6 @@ void set_cascade_limit(size_t);
 
 /// @brief Get the current cascade limit
 /// @return Current cascade limit
-
 size_t get_cascade_limit();
 
 /// @brief Frees all objects with reference count 0, regardless of cascade limit

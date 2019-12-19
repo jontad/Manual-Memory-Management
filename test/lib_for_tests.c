@@ -3,6 +3,9 @@
 #include "lib_for_tests.h"
 #include <stdio.h>
 
+list_t *list = NULL;
+
+size_t list_size = 0;
 
 void destructor_string(obj *object)
 {
@@ -24,19 +27,13 @@ void destructor_linked_list(obj *object)
 {
   list_t *list = object;
   new_link_t *link = list->head;
-
-
   release(link);
-
 }
 
-void link_destructor(obj *c)
+void link_destructor(obj *link)
 {
-  release(((new_link_t *) c)->next);
+  release(((new_link_t *) link)->next);
 }
-
-list_t *list_cascade = NULL;
-size_t list_size = 0;
 
 void list_negate()
 {
@@ -48,42 +45,37 @@ void size_reset()
   list_size = 0;
 }
 
-
 list_t *list_create()
 {
-  list_cascade = allocate(sizeof(list_t), destructor_linked_list);
-  list_cascade->head = list_cascade->tail = NULL;
-  list_cascade->size = 0;
-  return list_cascade;
+  list = allocate(sizeof(list_t), destructor_linked_list);
+  list->head = list->tail = NULL;
+  list->size = 0;
+  return list;
 }
-
-//------linked list functions-------//
 
 void linked_list_append()
 {
-  //list_t *list = object;
-
-  if(list_cascade->tail != NULL)
+  if(list->tail != NULL)
     {
       new_link_t *link = allocate(sizeof(new_link_t), link_destructor);
       link->next = NULL;
-      release(list_cascade->tail);
-      list_cascade->tail->next = link;
+      release(list->tail);
+      list->tail->next = link;
       retain(link);
-      list_cascade->tail = link;
-      retain(list_cascade->tail);
+      list->tail = link;
+      retain(list->tail);
     }
   else
     {
       new_link_t *link = allocate(sizeof(new_link_t), link_destructor);
       link->next = NULL;
-      list_cascade->head = link;
+      list->head = link;
       retain(link);
-      list_cascade->tail = link;
+      list->tail = link;
       retain(link);
     }
   list_size++;
-  list_cascade->size +=1;
+  list->size += 1;
 }
 
 size_t linked_list_size()
