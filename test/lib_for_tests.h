@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __LIB_FOR_TESTS_H__
+#define __LIB_FOR_TESTS_H__
+
 #include <stdbool.h>
 #include "../src/refmem.h"
 
@@ -68,3 +70,5 @@ list_t *list_create();
 void list_negate();
 
 void size_reset();
+
+#endif

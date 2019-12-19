@@ -26,7 +26,7 @@ void cleanup()
 {
   if(pointer_list)
     {
-      link_t *cursor = pointer_list->first;
+      ioopm_link_t *cursor = pointer_list->first;
       while(cursor)
 	{
 	  ioopm_link_t *tmp = cursor->next;
@@ -45,7 +45,7 @@ void shutdown()
 {
   while(ioopm_linked_list_size(pointer_list))
     {
-      obj *object = ioopm_linked_list_get(pointer_list,0).value.obj_val;
+      obj *object = ioopm_linked_list_get(pointer_list,0).obj_val;
       deallocate_aux(object);
     }
   
