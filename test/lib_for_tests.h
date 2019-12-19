@@ -32,12 +32,10 @@ struct many_pointers
   char *str;
 };
 
-
 struct int_struct
 {
   int k;
 };
-
 
 struct linked_list
 {
@@ -49,7 +47,7 @@ struct linked_list
 struct new_link
 {
   new_link_t *next;
-  char *str;
+  void *elem;
 };
 
 struct bucket
@@ -65,12 +63,10 @@ struct hash
   int num_buckets;
   bucket_t *buckets[];
 };
-
-
 /// @brief the following function is ment to deallocate a string
 void destructor_string(obj *object);
 
-void destructor_string_array(obj* object);
+void destructor_string_array(obj *object);
 
 /// @brief the following function is ment to deallocate a linked list
 void destructor_linked_list(obj *object);
