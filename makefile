@@ -25,7 +25,7 @@ allocate.o: src/allocate.c src/refmem.h src/linked_list.h
 
 compile: allocate.o cleanup.o cascade.o linked_list.o
 
-test_compile: test/tests.c allocate.o cleanup.o cascade.o linked_list.o test/lib_for_tests.c
+test_compile: test/tests.c src/allocate.c src/cleanup.c src/cascade.c src/linked_list.c test/lib_for_tests.c
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/tests $(CUNIT_LINK)
 
 
@@ -44,7 +44,7 @@ crayparty_val_test: linked_list.o cleanup.o allocate.o src/crayparty.c
 
 ############# LCOV ##################
 
-lcov_generate: tests
+lcov_generate: val_tests
 	lcov --capture --rc lcov_branch_coverage=1 --directory . --output-file test/tests.info
 
 lcov: lcov_generate

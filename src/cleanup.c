@@ -42,6 +42,7 @@ void cleanup()
 	  cursor = tmp;
 	}
     }
+  return;
 }
 
 
