@@ -49,15 +49,15 @@ obj *allocate_array(size_t bytes, function1_t destructor, size_t elements)
   uint8_t hops = bytes / sizeof(void *); //How many pointers our object can hold
   memset(alloc, hops, sizeof(uint8_t));
   
-  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //Alloc is now pointing to the byte where refcount is stored
+  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The location of the byte where refcount is stored
   memset(alloc,0,sizeof(uint8_t)); //Refcount is initially set to 0
-  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //Alloc is now pointing to location where the pointer to the destructor is stored
+  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The location where the pointer to the destructor is stored
   memcpy(alloc, &destructor, sizeof(destructor));
   
   alloc = (obj *)((char *)alloc + sizeof(destructor));
   memset(alloc,0,elements*bytes); //Set all bytes to 0, like calloc would do
 
-		  //Add pointer to the global pointer list
+  //Add pointer to the global pointer list
   ioopm_list_t *pointer_list = linked_list_get();
   if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
   
@@ -74,7 +74,6 @@ void remove_from_list(obj *object)
       if (index >= 0) ioopm_linked_list_remove_link(pointer_list, index);
     }
 }
-
 
 void default_destruct(obj *object)
 {
@@ -95,8 +94,6 @@ void default_destruct(obj *object)
 	}
     }
 }
-
-
 
 void deallocate_aux(obj *object)
 {

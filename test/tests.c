@@ -9,7 +9,7 @@ void test_alloc()
   string_t *alloc = allocate(sizeof(string_t), NULL);
   alloc->str = NULL;
   CU_ASSERT_PTR_NOT_NULL(alloc);
-  deallocate(alloc);
+  release(alloc);
 }
 
 void test_alloc_array()
@@ -17,7 +17,7 @@ void test_alloc_array()
   string_t *alloc = allocate_array(sizeof(string_t), NULL, 10);
   alloc->str = "test";
   CU_ASSERT_PTR_NOT_NULL(alloc);
-  deallocate(alloc);
+  release(alloc);
 }
 
 void test_alloc_array_loop()
@@ -28,14 +28,14 @@ void test_alloc_array_loop()
       alloc[i] = strdup("test");
     }
   CU_ASSERT_PTR_NOT_NULL(alloc);
-  deallocate(alloc);
+  release(alloc);
 }
 
 void test_destructor_null()
 {
   string_t *alloc = allocate_array(sizeof(string_t), NULL, 10);
   alloc->str = NULL;
-  deallocate(alloc);
+  release(alloc);
  
 }
 
@@ -43,7 +43,7 @@ void test_destruct_default()
 {
   string_t *alloc = allocate(sizeof(string_t), NULL);
   alloc->str = allocate(sizeof(char *), NULL);
-  deallocate(alloc);
+  release(alloc);
 
   shutdown();
 }
@@ -60,7 +60,7 @@ void test_destruct_default_several_ptrs()
   retain(alloc->int_struct);
   retain(alloc->str);
 
-  deallocate(alloc);  
+  release(alloc);  
   shutdown();
 }
 
@@ -68,7 +68,7 @@ void test_destruct_string()
 {
   string_t *alloc = allocate(sizeof(string_t), destructor_string);
   alloc->str = strdup("test");
-  deallocate(alloc);
+  release(alloc);
 }
 
 void test_retain()
