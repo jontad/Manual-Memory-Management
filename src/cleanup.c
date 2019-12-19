@@ -1,7 +1,7 @@
 #include "refmem.h"
 #include "linked_list.h"
 
-ioopm_list_t *list = NULL;
+ioopm_list_t *pointer_list = NULL;
 
 bool eq_func(elem_t a, elem_t b)
 {
@@ -12,21 +12,21 @@ bool eq_func(elem_t a, elem_t b)
 
 ioopm_list_t *create_list()
 {
-  list = ioopm_linked_list_create(eq_func);
-  return list;
+  pointer_list = ioopm_linked_list_create(eq_func);
+  return pointer_list;
 }
 
 ioopm_list_t *linked_list_get()
 {
-  if(list) return list;
+  if(pointer_list) return pointer_list;
   else return create_list();
 }
 
 void cleanup()
 {
-  if(list)
+  if(pointer_list)
     {
-      link_t *cursor = list->first;
+      link_t *cursor = pointer_list->first;
       int counter = 0;
       while(cursor)
 	{
@@ -44,14 +44,14 @@ void cleanup()
 
 void shutdown()
 {
-  while(ioopm_linked_list_size(list))
+  while(ioopm_linked_list_size(pointer_list))
     {
-      obj *object = ioopm_linked_list_get(list,0).value.obj_val;
+      obj *object = ioopm_linked_list_get(pointer_list,0).value.obj_val;
       deallocate_aux(object);
     }
   ioopm_list_t *cas_list = get_cascade_list();
   if(cas_list) ioopm_linked_list_destroy(cas_list);
-  ioopm_linked_list_destroy(list);
-  list = NULL;
+  ioopm_linked_list_destroy(pointer_list);
+  pointer_list = NULL;
   set_cascade_list_to_null();
 }
