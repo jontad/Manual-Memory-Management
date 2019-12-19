@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include "linked_list.h"
+#include "../inlupp2/linked_list.h"
 #include "../test/lib_for_tests.h"
 
 ioopm_list_t *cascade_list = NULL;
@@ -35,7 +35,7 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
   if(ioopm_linked_list_size(cascade_list))
     {
-      release(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
+      release(ioopm_linked_list_remove(cascade_list,0).obj_val);
     }
 
   //2*sizeof(uint8_t), 1 byte for rc, 1 byte for hops

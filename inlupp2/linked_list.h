@@ -4,8 +4,13 @@
 #include <stdbool.h>
 #include "common.h"
 
-typedef struct list ioopm_list_t;
-typedef struct link ioopm_link_t;
+
+/**
+ * @file linked_list.h
+ * @author Fredrik Yngve & Jonathan Tadese
+ * @brief Linked list that stores values 
+ */
+
 
 /// @brief Creates a new empty linked list
 /// @return an empty linked list
@@ -42,6 +47,14 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t value);
 /// @return the removed value
 elem_t ioopm_linked_list_remove(ioopm_list_t *list, int index);
 
+/// @brief Remove a link from a linked list in O(n) time.
+/// The valid values of index are [0,n-1] for a list of n elements,
+/// where 0 means the first element and n-1 means the last element.
+/// @param list: the linked list that will be shortened
+/// @param index: the position in the list
+/// @return the removed link
+ioopm_link_t *ioopm_linked_list_remove_link(obj *object, int index);
+
 /// @brief Retrieve an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
 /// where 0 means the first element and n-1 means the last element.
@@ -52,9 +65,15 @@ elem_t ioopm_linked_list_get(ioopm_list_t *list, int index);
 
 /// @brief Check if an element is in the list
 /// @param list: the linked list that will be checked
-/// @param element: the element sought
+/// @param value: the element sought
 /// @return true if element is in the list, else false
 bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t value);
+
+/// @brief finds index of element
+/// @param list: the linked list searched
+/// @param element: element searched for 
+/// @return Found index
+int ioopm_linked_list_position(ioopm_list_t *list, elem_t element);
 
 /// @brief Lookup the number of elements in the linked list in O(1) time
 /// @param list: the linked list that will be counted
