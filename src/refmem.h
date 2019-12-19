@@ -45,11 +45,11 @@ size_t rc(obj *);
 obj *allocate(size_t bytes, function1_t destructor);
 
 /// @brief Allocate array of objects in memory on heap 
-/// @param elements How many elements in array
 /// @param bytes Size on heap that will be allocated per element
-/// @param destructor Associated destructor to free what will be allocated 
+/// @param destructor Associated destructor to free what will be allocated
+/// @param elements How many elements in array
 /// @return Allocated array of objects
-obj *allocate_array(size_t elements, size_t bytes, function1_t destructor);
+obj *allocate_array(size_t bytes, function1_t destructor, size_t elements);
 
 /// @brief Deallocate object if reference count is 0
 /// @param obj Object that will be deallocated
