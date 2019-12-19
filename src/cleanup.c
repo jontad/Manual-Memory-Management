@@ -27,7 +27,6 @@ void cleanup()
   if(pointer_list)
     {
       link_t *cursor = pointer_list->first;
-      int counter = 0;
       while(cursor)
 	{
 	  link_t *tmp = cursor->next;
@@ -36,7 +35,6 @@ void cleanup()
 	    {
 	      deallocate_aux(object);
 	    }
-	  else counter++;
 	  cursor = tmp;
 	}
     }
@@ -49,9 +47,14 @@ void shutdown()
       obj *object = ioopm_linked_list_get(pointer_list,0).value.obj_val;
       deallocate_aux(object);
     }
-  ioopm_list_t *cas_list = get_cascade_list();
-  if(cas_list) ioopm_linked_list_destroy(cas_list);
+  
+  ioopm_list_t *cascade_list = get_cascade_list();
+  if(cascade_list)
+    {
+      ioopm_linked_list_destroy(cascade_list);
+      set_cascade_list_to_null();
+    }
+  
   ioopm_linked_list_destroy(pointer_list);
   pointer_list = NULL;
-  set_cascade_list_to_null();
 }
