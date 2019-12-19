@@ -46,7 +46,7 @@ obj *allocate_array(size_t bytes, function1_t destructor, size_t elements)
       alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
     }
   
-  uint8_t hops = bytes / sizeof(void *); //How many pointers our object can hold
+  uint8_t hops = (elements*bytes) / sizeof(void *); //How many pointers our object can hold
   memset(alloc, hops, sizeof(uint8_t));
   
   alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The location of the byte where refcount is stored
