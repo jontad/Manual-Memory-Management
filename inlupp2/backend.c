@@ -9,36 +9,45 @@
 #include "utils.h"
 #include <assert.h>
 
-
+#include "../src/refmem.h"
 
 //////////////////////////// CREATE/DESTROY DATABASE //////////////////////////////////
 
 ioopm_database_t *database_create_database()
 {
-  ioopm_database_t *db = calloc(1, sizeof(ioopm_database_t));
+  ioopm_database_t *db = allocate(sizeof(ioopm_database_t), NULL);
   db->merch_ht = ioopm_hash_table_create(str_hash_func, equality_function_str, equality_function_merch, 0.75, 17);
   db->shelves_ht = ioopm_hash_table_create(str_hash_func, equality_function_str, equality_function_merch, 0.75, 17);
   db->carts = ioopm_hash_table_create(uns_int_hash_func, equality_function_uns_int, equality_function_pointer, 0.75, 17);
-  db->id_counter = 0;
-  return db;
+db->id_counter = 0;
+
+retain(db->merch_ht);
+retain(db->merch_shelves_ht);
+retain(db->carts);
+
+return db;
 }
 
 static void free_items_in_cart(ioopm_link_t **element, void *extra)
 {
-  free((*element)->value.ioopm_item);
+  //free((*element)->value.ioopm_item);
+  release((*element)->value.ioopm_item);
 }
 
 static void free_shelves_in_stock(ioopm_link_t **element, void *extra)
 {
-  free((*element)->value.ioopm_shelf->shelf_name);
-  free((*element)->value.ioopm_shelf);
+  //free((*element)->value.ioopm_shelf->shelf_name);
+  //free((*element)->value.ioopm_shelf);
+  release((*element)->value.ioopm_shelf->shelf_name);
+  release((*element)->value.ioopm_shelf);
 }
 
 static void free_carts_apply_func(elem_t key, elem_t *value, void *extra)
 {
   ioopm_linked_apply_to_all(value->ioopm_cart->basket, free_items_in_cart, NULL);
   ioopm_linked_list_destroy(value->ioopm_cart->basket);
-  free(value->ioopm_cart);
+  //free(value->ioopm_cart);
+  release(value->ioopm_cart);
 }
 
 static void clear_stock(ioopm_list_t *stock)
@@ -47,8 +56,10 @@ static void clear_stock(ioopm_list_t *stock)
   for (int i = 0; i < stock->list_size; ++i)
     {
       element = ioopm_linked_list_get(stock, i);
-      free(element.ioopm_shelf->shelf_name);
-      free(element.ioopm_shelf);
+      //free(element.ioopm_shelf->shelf_name);
+      //free(element.ioopm_shelf);
+      release(element.ioopm_shelf->shelf_name);
+      release(element.ioopm_shelf);
     }
 }
 
@@ -67,7 +78,8 @@ static void destroy_merch(ioopm_database_t *db, merch_t *merch) //Note: remember
     }
   clear_stock(stock);
   ioopm_linked_list_destroy(stock); //2. free list of shelves_ht
-  free(merch);
+  //free(merch);
+  release(merch);
 }
 
 static void free_merch_apply_func(elem_t key, elem_t *value, void *db)
@@ -83,7 +95,8 @@ void database_destroy_database(ioopm_database_t *db)
   ioopm_hash_table_destroy(db->merch_ht);
   ioopm_hash_table_destroy(db->shelves_ht);
 
-  free(db);
+  //free(db);
+  release(db);
 }
 
 
@@ -91,7 +104,7 @@ void database_destroy_database(ioopm_database_t *db)
 /////////////////////////////////// ADD /////////////////////////////////////////////////
 merch_t *database_add_merch(ioopm_database_t *db, char *new_name, char *new_desc, unsigned int new_price) 
 {  
-  merch_t *merch = calloc(1, sizeof(merch_t));
+  merch_t *merch = allocate(sizeof(merch_t), NULL);
   merch->name = new_name;
   merch->desc = new_desc;
   merch->price_per_unit = new_price;
@@ -117,7 +130,7 @@ char **database_sort_list(ioopm_list_t *list) //returns a sorted list of merch n
   ioopm_link_t *current_link = list->first;
   
   size_t size = ioopm_linked_list_size(list);
-  char **merch_list = calloc(size, sizeof(char *));
+  char **merch_list = allocate_array(size, sizeof(char *), NULL);
   
   for(int i = 0; i < size; ++i)
     {
@@ -144,7 +157,8 @@ option_t database_choose_merch(ioopm_database_t *db, int result)
 
   assert(Successful(merch) && "Merch not found");
   
-  free(merch_list);
+  //free(merch_list);
+  release(merch_list);
   ioopm_linked_list_destroy(names);
   return merch;
 }
@@ -164,7 +178,7 @@ void database_remove_merch(ioopm_database_t *db, merch_t *merch)
 
 static merch_t *rename_merch(char *name, merch_t *merch)
 {
-  merch_t *new_merch = calloc(1, sizeof(merch_t));
+  merch_t *new_merch = allocate(sizeof(merch_t), NULL);
   new_merch->name = name; 
   new_merch->desc = merch->desc;
   new_merch->price_per_unit = merch->price_per_unit;
@@ -181,7 +195,8 @@ static merch_t *insert_merch(ioopm_database_t *db, char *new_name, merch_t *merc
   ioopm_hash_table_remove(db->merch_ht, str_elem(merch->name));
   
   ioopm_linked_apply_to_all(merch->stock, free_shelves_in_stock, NULL);
-  free(merch);
+  //free(merch);
+  release(merch);
   ioopm_hash_table_insert(db->merch_ht, str_elem(new_name), merch_elem(new_merch));    
   return new_merch;
 }
@@ -223,7 +238,7 @@ void database_show_stock(merch_t *merch)
 
 shelf_t *database_create_shelf(char *shelf_name, int amount)
 {
-  shelf_t *new_shelf = calloc(1, sizeof(shelf_t));
+  shelf_t *new_shelf = allocate(sizeof(shelf_t), NULL);
   new_shelf->shelf_name = shelf_name;
   new_shelf->amount = amount;
 
@@ -296,7 +311,7 @@ void database_replenish_stock(ioopm_database_t *db, merch_t *merch, shelf_t *new
 
 cart_t *database_create_cart(ioopm_database_t *db)
 {
-  cart_t *cart = calloc(1, sizeof(cart_t));
+  cart_t *cart = allocate(sizeof(cart_t), NULL);
   cart->id = db->id_counter;
   ++db->id_counter;
   cart->basket = ioopm_linked_list_create(equality_function_merch);
@@ -312,7 +327,7 @@ void database_delete_cart(ioopm_database_t *db, cart_t *cart)
   ioopm_linked_apply_to_all(cart->basket, free_items_in_cart, NULL);
   ioopm_hash_table_remove(db->carts, unsigned_elem(cart->id));
   ioopm_linked_list_destroy(cart->basket);
-  free(cart);
+  //free(cart);
 }
 
 void database_remove_cart(ioopm_database_t *db, cart_t *cart)
@@ -324,7 +339,7 @@ void database_remove_cart(ioopm_database_t *db, cart_t *cart)
 
 static item_t *item_create(merch_t *merch, int amount)
 {
-  item_t *item = calloc(1, sizeof(item_t));
+  item_t *item = allocate(sizeof(item_t), NULL);
   item->name = merch->name;
   item->amount = amount;
   item->price_per_unit = merch->price_per_unit;
@@ -388,7 +403,7 @@ void database_remove_from_cart(cart_t *cart, item_t *item, int amount)
       if(item->amount == 0)
 	{
 	  ioopm_linked_list_remove(cart->basket, index); 
-	  free(item);
+	  //free(item);
 	}
       merch->available_amount = merch->available_amount + amount;
     }

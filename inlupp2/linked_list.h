@@ -53,7 +53,7 @@ elem_t ioopm_linked_list_remove(ioopm_list_t *list, int index);
 /// @param list: the linked list that will be shortened
 /// @param index: the position in the list
 /// @return the removed link
-ioopm_link_t *ioopm_linked_list_remove_link(ioopm_list_t *list, int index);
+ioopm_link_t *ioopm_linked_list_remove_link(obj *object, int index);
 
 /// @brief Retrieve an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,

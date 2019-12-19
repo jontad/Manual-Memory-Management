@@ -76,7 +76,7 @@ static elem_t remove_aux(ioopm_list_t *list, int index, ioopm_link_t *prev, ioop
 
 static ioopm_link_t *remove_link(ioopm_list_t *list, int index, ioopm_link_t *prev, ioopm_link_t *elem)
 {
-  ioopm_link_t link = elem;
+  ioopm_link_t *link = elem;
 
   prev->next = elem->next;
   link_destroy(elem);
@@ -219,11 +219,11 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t value)
 
 int ioopm_linked_list_position(ioopm_list_t *list, elem_t element)
 {
-  link_t *link = list->first;
+  ioopm_link_t *link = list->first;
   int counter = 0;
   while (link != NULL)
   {
-    if (list->eq_fun(link->element, element))
+    if (list->equal(link->value, element))
     {
       return counter;
     }
