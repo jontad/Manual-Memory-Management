@@ -1,4 +1,4 @@
-#include <stdio.h>
+ #include <stdio.h>
 
 #include "hash_table.h"
 #include "linked_list.h"
@@ -6,98 +6,6 @@
 #include "backend.h"
 #include "common.h"
 #include "utils.h"
-
-#include "../src/refmem.h" 
-
-struct option
-{
-  bool success;
-  elem_t value; 
-};
-
-
-#define Success(v)      (option_t) { .success = true, .value = v };
-#define Failure()       (option_t) { .success = false };
-#define Successful(o)   (o.success == true)
-#define Unsuccessful(o) (o.success == false)
-
-#define int_elem(i) (elem_t) {.ioopm_int = (i)}
-#define unsigned_elem(u) (elem_t) {.ioopm_u_int = (u)}
-#define bool_elem(b) (elem_t) {.ioopm_bool = (b)}
-#define str_elem(s) (elem_t) {.ioopm_str = (s)}
-#define float_elem(f) (elem_t) {.ioopm_float = (f)}
-#define void_elem(v) (elem_t) {.ioopm_void_ptr = (v)}
-#define merch_elem(m) (elem_t) {.ioopm_merch = (m)}
-#define shelf_elem(sh) (elem_t) {.ioopm_shelf = (sh)}
-#define cart_elem(c) (elem_t) {.ioopm_cart = (c)}
-#define item_elem(ci) (elem_t) {.ioopm_item = (ci)}
-
-
-///////////////////////////// STRUCTS ///////////////////////////////
-
-
-struct database
-{
-  ioopm_hash_table_t *merch_ht;
-  ioopm_hash_table_t *shelves_ht;
-  ioopm_hash_table_t *carts;
-  unsigned int id_counter; 
-};
-
-struct hash_table
-{
-  float load_factor;
-  size_t capacity;
-  entry_t **buckets;
-  hash_function hash_func;
-  ioopm_eq_function key_eq_func;
-  ioopm_eq_function value_eq_func;
-  size_t size;
-};
-
-struct link
-{
-  elem_t value;
-  ioopm_link_t *next;
-};
-
-struct list
-{
-  size_t list_size; 
-  ioopm_eq_function equal;
-  ioopm_link_t *first;
-  ioopm_link_t *last;
-};
-
-struct item
-{
-  char *name;
-  unsigned int amount; // amount of merch in cart
-  unsigned int price_per_unit;
-  merch_t *pointer; //pointer to merch in ht
-};
-
-struct cart
-{
-  unsigned int id; // key 
-  ioopm_list_t *basket;                                     
-};
-
-struct shelf
-{
-  char *shelf_name;
-  unsigned int amount; //amount on shelf
-};
-
-struct merch
-{
-  char *name; //key
-  char *desc;
-  unsigned int price_per_unit;
-  unsigned int available_amount; //amount of merch in stock that is not in cart
-  ioopm_list_t *stock;
-};
-
 
 ///////////////////////////////// MISC ////////////////////////////////////////
 
@@ -109,8 +17,7 @@ bool ioopm_ask_to_continue(char *question)
 
   do //asks to continue listing merchandise after printing 20 items
     {
-      //free(answer);
-      release(answer);
+      free(answer);
       answer = ask_question_string(question);
 
       cont = (toupper(answer[0]) == 'Y' && (strlen(answer) == 1));
@@ -118,12 +25,9 @@ bool ioopm_ask_to_continue(char *question)
     }
   while (!cont && !quit);
 
-  //free(answer);
-  release(answer);
+  free(answer);
   return !quit;
 }
-
-
 
 
 
@@ -162,8 +66,7 @@ void ioopm_add_merch(ioopm_database_t *db)
   else
     {
       printf("%s already exists!\n", name);
-      //free(name);
-      release(name);
+      free(name);
     }
 }
 
@@ -191,8 +94,7 @@ void ioopm_list_merch(ioopm_database_t *db)
        printf("%d. %s\n", i+1, merch_list[i]); //i+1: remember, arrays start a 0
      }
    printf("\n");
-   //free(merch_list);
-   release(merch_list);
+   free(merch_list);
    ioopm_linked_list_destroy(names);
  }
 
@@ -243,8 +145,7 @@ void event_loop_edit(ioopm_database_t *db, merch_t *merch)
   option_t lookup_result;
   do
     {
-      //free(answer);
-      release(answer);
+      free(answer);
       answer = ask_question_string("Edit [n]ame\nEdit [d]escription\nEdit [p]rice\n[Q]uit\n");
       if(strlen(answer) == 1)
 	{
@@ -258,8 +159,7 @@ void event_loop_edit(ioopm_database_t *db, merch_t *merch)
 		{
 		  if (Unsuccessful(lookup_result))
 		    {
-		      //free(merch->name);
-		      release(merch->name);
+		      free(merch->name);
 		      merch = database_edit_name(db, new_name, merch);
 		      print_item(merch->name, merch->desc, merch->price_per_unit);
 
@@ -267,14 +167,12 @@ void event_loop_edit(ioopm_database_t *db, merch_t *merch)
 		  else
 		    {
 		      printf("%s already exists!\n", new_name);
-		      //free(new_name);
-		      release(new_name);
+		      free(new_name);
 		    }
 		}
 	      else
 		{
-		  //free(new_name);
-		  release(new_name);
+		  free(new_name);
 		}
 	    }
 	  if(toupper(answer[0]) == 'D')
@@ -283,15 +181,13 @@ void event_loop_edit(ioopm_database_t *db, merch_t *merch)
 	      bool cont = ioopm_ask_to_continue("Continue? [Y/N]");
 	      if (cont)
 		{
-		  //free(merch->desc);
-		  release(merch->desc);
+		  free(merch->desc);
 		  database_edit_desc(merch, new_desc);
 		  print_item(merch->name, merch->desc, merch->price_per_unit);
 		}
 	      else
 		{
-		  //free(new_desc);
-		  release(new_desc);
+		  free(new_desc);
 		  print_item(merch->name, merch->desc, merch->price_per_unit);
 		}
 	    }
@@ -308,8 +204,8 @@ void event_loop_edit(ioopm_database_t *db, merch_t *merch)
     }
   while(toupper(answer[0]) != 'Q' || strlen(answer) != 1);
 
-  //free(answer);
-  release(answer);    
+  free(answer);
+       
 }
 
 void ioopm_edit_merch(ioopm_database_t *db)
@@ -413,8 +309,7 @@ static void list_id(ioopm_database_t *db)
      }
    printf("\n");
    ioopm_linked_list_destroy(id);
-   //free(id_list);
-   release(id_list);
+   free(id_list);
  }
 
 
@@ -532,8 +427,7 @@ void ioopm_remove_from_cart(ioopm_database_t *db)
 	  
 	  database_remove_from_cart(cart, item, amount);
 	}
-      //free(wanted_item);
-      release(wanted_item);
+      free(wanted_item);
     }
 }
 
@@ -587,8 +481,7 @@ void event_loop(ioopm_database_t *db)
   char answer = ' ';
   while (answer != 'Q')
     {
-      //free(temp);
-      release(temp);
+      free(temp);
       temp = ask_question_menu("");
       answer = toupper(temp[0]);
       
@@ -641,8 +534,7 @@ void event_loop(ioopm_database_t *db)
 	  ioopm_checkout(db);
 	} 
     }
-  //free(temp);
-  release(temp);
+  free(temp);
   return;
 }
 

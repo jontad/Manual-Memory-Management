@@ -1,5 +1,5 @@
 #include "refmem.h"
-#include "linked_list.h"
+#include "../inlupp2/linked_list.h"
 
 ioopm_list_t *list = NULL;
 
@@ -28,12 +28,12 @@ void cleanup()
 {
   if(list)
     {
-      link_t *cursor = list->first;
+      ioopm_link_t *cursor = list->first;
       int counter = 0;
       while(cursor)
 	{
-	  link_t *tmp = cursor->next;
-	  obj *object = (obj *)cursor->element.obj_val;
+	  ioopm_link_t *tmp = cursor->next;
+	  obj *object = (obj *)cursor->value.obj_val;
 	  if (rc(object) == 0)
 	    {
 	      deallocate_aux(object);
@@ -50,7 +50,7 @@ void shutdown()
 {
   while(ioopm_linked_list_size(list))
     {
-      obj *object = ioopm_linked_list_get(list,0).value.obj_val;
+      obj *object = ioopm_linked_list_get(list,0).obj_val;
       deallocate_aux(object);
     }
   ioopm_list_t *cas_list = get_cascade_list();
