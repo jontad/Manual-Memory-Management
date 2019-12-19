@@ -49,7 +49,7 @@ obj *allocate(size_t bytes, function1_t destructor);
 /// @param destructor Associated destructor to free what will be allocated
 /// @param elements How many elements in array
 /// @return Allocated array of objects
-obj *allocate_array(size_t bytes, function1_t destructor, size_t elements);
+obj *allocate_array(size_t elements, size_t bytes, function1_t destructor);
 
 /// @brief Deallocate object if reference count is 0
 /// @param obj Object that will be deallocated

@@ -24,10 +24,10 @@ void set_cascade_list_to_null()
 
 obj *allocate(size_t bytes, function1_t destructor)
 {
-  return allocate_array(bytes, destructor, 1);
+  return allocate_array(1, bytes, destructor);
 }
 
-obj *allocate_array(size_t bytes, function1_t destructor, size_t elements)
+obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 {
   //Every time we allocate memory we try to clear up our cascade list
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);

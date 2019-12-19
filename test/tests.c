@@ -14,7 +14,7 @@ void test_alloc()
 
 void test_alloc_array()
 {
-  string_t *alloc = allocate_array(sizeof(string_t), NULL, 10);
+  string_t *alloc = allocate_array(10, sizeof(string_t), NULL);
   alloc->str = "test";
   CU_ASSERT_PTR_NOT_NULL(alloc);
   release(alloc);
@@ -22,7 +22,7 @@ void test_alloc_array()
 
 void test_alloc_array_loop()
 {
-  char **alloc = allocate_array(sizeof(char *), destructor_string_array, 10);
+  char **alloc = allocate_array(10, sizeof(char *), destructor_string_array);
   for(int i = 0; i < 10; i++)
     {
       alloc[i] = strdup("test");
@@ -33,7 +33,7 @@ void test_alloc_array_loop()
 
 void test_destructor_null()
 {
-  string_t *alloc = allocate_array(sizeof(string_t), NULL, 10);
+  string_t *alloc = allocate_array(10, sizeof(string_t), NULL);
   alloc->str = NULL;
   release(alloc);
  
