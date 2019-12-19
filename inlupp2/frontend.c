@@ -7,6 +7,8 @@
 #include "common.h"
 #include "utils.h"
 
+#include "../src/refmem.h"
+
 ///////////////////////////////// MISC ////////////////////////////////////////
 
 bool ioopm_ask_to_continue(char *question)
@@ -30,8 +32,6 @@ bool ioopm_ask_to_continue(char *question)
 }
 
 
-
-
 static void print_item(char *name, char *desc, int price)
 {
   printf("\nName: %s\n", name);
@@ -45,7 +45,6 @@ static void print_item(char *name, char *desc, int price)
 
 void ioopm_add_merch(ioopm_database_t *db)
 {
-
   char *name = ask_question_string("Name of merchandise: ");
   option_t result = ioopm_hash_table_lookup(db->merch_ht, str_elem(name)); //Check if a merch of that name already exists
   
@@ -76,6 +75,7 @@ void ioopm_add_merch(ioopm_database_t *db)
 void ioopm_list_merch(ioopm_database_t *db)
  {
    ioopm_list_t *names = ioopm_hash_table_keys(db->merch_ht); // generate list
+   retain(names);
    size_t size = ioopm_linked_list_size(names);
    char **merch_list = database_sort_list(names);             // sort list
 
@@ -94,7 +94,7 @@ void ioopm_list_merch(ioopm_database_t *db)
        printf("%d. %s\n", i+1, merch_list[i]); //i+1: remember, arrays start a 0
      }
    printf("\n");
-   free(merch_list);
+   release(merch_list);
    ioopm_linked_list_destroy(names);
  }
 
@@ -131,6 +131,7 @@ void ioopm_remove_merch(ioopm_database_t *db)
       if (!cont) return;
       
       merch_t *merch = result.value.ioopm_merch;
+      retain(merch);
       database_remove_merch(db, merch);
     }
 }
@@ -204,8 +205,7 @@ void event_loop_edit(ioopm_database_t *db, merch_t *merch)
     }
   while(toupper(answer[0]) != 'Q' || strlen(answer) != 1);
 
-  free(answer);
-       
+  free(answer);       
 }
 
 void ioopm_edit_merch(ioopm_database_t *db)
@@ -214,6 +214,7 @@ void ioopm_edit_merch(ioopm_database_t *db)
   if(Successful(result))
     {
       merch_t *merch = result.value.ioopm_merch;
+      retain(merch);
       print_item(merch->name, merch->desc, merch->price_per_unit);
       event_loop_edit(db, merch); 
     }
@@ -229,6 +230,7 @@ void ioopm_show_stock(ioopm_database_t *db)
   if(Successful(result))
     {
       merch_t *merch = result.value.ioopm_merch;
+      retain(merch);
       database_show_stock(merch);
     }
 }
@@ -245,12 +247,14 @@ void ioopm_replenish_stock(ioopm_database_t *db)
   if(Successful(result))
     {
       merch_t *merch = result.value.ioopm_merch;
+      retain(merch);
       
       char *shelf_name = ask_question_shelf("Storage location: ");
       int amount = ask_question_int("Amount: ");
 
       shelf_t *new_shelf = database_create_shelf(shelf_name, amount);
-     
+      retain(new_shelf);
+      
       database_replenish_stock(db, merch, new_shelf);
     }
 }
@@ -273,15 +277,18 @@ void ioopm_create_cart(ioopm_database_t *db)
  static unsigned int *array_from_list_id(ioopm_list_t *list) //returns a sorted list of id
 {
   ioopm_link_t *current_link = list->first;
+  retain(current_link);
   
   size_t size = ioopm_linked_list_size(list);
   
-  unsigned int *id_list = calloc(size, sizeof(unsigned int));
+  unsigned int *id_list = allocate_array(size, sizeof(unsigned int), NULL);
   
   for(int i = 0; i < size; ++i)
     {
       id_list[i] = current_link->value.ioopm_u_int;
+      release(current_link);
       current_link = current_link->next;
+      retain(current_link);
     }
   return id_list;
 }
@@ -290,8 +297,11 @@ void ioopm_create_cart(ioopm_database_t *db)
 static void list_id(ioopm_database_t *db)
  {
    ioopm_list_t *id = ioopm_hash_table_keys(db->carts); // generate list
+   retain(id);
+
    size_t size = ioopm_linked_list_size(id);
    unsigned int *id_list = array_from_list_id(id);
+   retain(id_list);
 
    if(size == 0)
      {
@@ -309,7 +319,7 @@ static void list_id(ioopm_database_t *db)
      }
    printf("\n");
    ioopm_linked_list_destroy(id);
-   free(id_list);
+   release(id_list);
  }
 
 
@@ -344,6 +354,7 @@ void ioopm_remove_cart(ioopm_database_t *db)
       bool cont = ioopm_ask_to_continue("Continue? [Y/N]");
       if (!cont) return;
       cart_t *cart = result.value.ioopm_cart;
+      retain(cart);
       database_remove_cart(db, cart);
     }
 }
@@ -365,29 +376,33 @@ static int get_amount_merch(merch_t *merch)
 void ioopm_add_to_cart(ioopm_database_t *db)
 {
   option_t result_carts = choose_cart(db); //Choose cart
-   if (Successful(result_carts))
-     {
-       cart_t *cart = result_carts.value.ioopm_cart;
-       
-       option_t result_merch = choose_merch(db); //Choose merch
-       merch_t *merch = result_merch.value.ioopm_merch;
+  if (Successful(result_carts))
+    {
+      cart_t *cart = result_carts.value.ioopm_cart;
+      retain(cart);
       
-       if(Successful(result_merch))
-	 {      
-	   if(merch->available_amount != 0) //Check if merch is in stock
-	     {
+      option_t result_merch = choose_merch(db); //Choose merch
+      
+      if(Successful(result_merch))
+	{
+	  merch_t *merch = result_merch.value.ioopm_merch;
+	  retain(merch);
+	  
+	  if(merch->available_amount != 0) //Check if merch is in stock
+	    {
 
-	       printf("Available amount: %d\n", merch->available_amount);
-	       int amount = get_amount_merch(merch); //Choose amount to add
+	      printf("Available amount: %d\n", merch->available_amount);
+	      int amount = get_amount_merch(merch); //Choose amount to add
 	       	       
-	       database_add_to_cart(db, cart, merch, amount);
-	     }
-	   else
-	     {
-	       printf("\n%s not available in stock!\n", merch->name);
-	     }
-	 }
-     }
+	      database_add_to_cart(db, cart, merch, amount);
+	    }
+	  else
+	    {
+	      printf("\n%s not available in stock!\n", merch->name);
+	    }
+	  release(merch);
+	}
+    }
 }
 
 
@@ -412,6 +427,7 @@ void ioopm_remove_from_cart(ioopm_database_t *db)
   if (Successful(result_cart))
     {
       cart_t *cart = result_cart.value.ioopm_cart;
+      retain(cart);
 
       database_print_cart(cart);
       char *wanted_item = ask_question_string("Name of item: ");
@@ -420,12 +436,14 @@ void ioopm_remove_from_cart(ioopm_database_t *db)
       if(Successful(result_item))
 	{
 	  item_t *item = result_item.value.ioopm_item;
+	  retain(item);
 	  int amount = get_amount_item(item);
 
 	  bool cont = ioopm_ask_to_continue("Continue? [Y/N]");
 	  if (!cont) return;
 	  
 	  database_remove_from_cart(cart, item, amount);
+	  release(item);
 	}
       free(wanted_item);
     }
@@ -440,7 +458,9 @@ void ioopm_calculate_cost(ioopm_database_t *db)
   if (Successful(result))
     {
       cart_t *cart = result.value.ioopm_cart;
+      retain(cart);
       database_print_cart(cart);
+      release(cart);
     }
 }
 
@@ -453,6 +473,7 @@ void ioopm_checkout(ioopm_database_t *db)
   if (Successful(result_cart))
     {
       cart_t *cart = result_cart.value.ioopm_cart;
+      retain(cart);
       bool exists = database_items_in_cart_exist(db, cart); //Make sure the items in cart haven't been removed
       if(exists)
 	{
@@ -468,6 +489,7 @@ void ioopm_checkout(ioopm_database_t *db)
 	  puts("An item in your cart no longer exists. Aborting checkout and deleting cart.");
 	  database_delete_cart(db, cart);
 	}
+      release(cart);
     }
 }
 
@@ -544,6 +566,7 @@ void event_loop(ioopm_database_t *db)
 int main()
 {
   ioopm_database_t *db = database_create_database();
+  retain(db);
   event_loop(db);
   database_destroy_database(db);
   return 0;
