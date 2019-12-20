@@ -54,9 +54,9 @@ lib_for_tests.o: test/lib_for_tests.c test/lib_for_tests.h src/refmem.h allocate
 
 ################### TEST RUNS ######################
 
-.PHONY: test
-test: src
-	./test/tests	
+.PHONY: tests
+tests: src
+	./test/tests
 
 val_tests: src
 	$(C_VALGRIND) ./test/tests
