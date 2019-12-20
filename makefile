@@ -6,10 +6,10 @@ C_LCOV	    	  = --coverage
 C_VALGRIND  	  = valgrind --leak-check=full --show-leak-kinds=all
 
 
-clean:	
-	rm *.o ./test/tests *.gcno *.gcda
-
 ################ COMPILES ###################
+
+compile: test/tests.c allocate.o cleanup.o cascade.o linked_list.o lib_for_tests.o
+	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/tests $(CUNIT_LINK)
 
 linked_list.o: inlupp2/linked_list.c inlupp2/linked_list.h inlupp2/common.h
 	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/linked_list.c
@@ -26,8 +26,6 @@ allocate.o: src/allocate.c src/refmem.h inlupp2/linked_list.h
 lib_for_tests.o: test/lib_for_tests.c test/lib_for_tests.h src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c test/lib_for_tests.c
 
-compile: test/tests.c allocate.o cleanup.o cascade.o linked_list.o lib_for_tests.o
-	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/tests $(CUNIT_LINK)
 
 
 ################### TEST RUNS ######################
@@ -43,6 +41,10 @@ crayparty_val_test: linked_list.o cleanup.o allocate.o src/crayparty.c cascade.o
 	$(C_COMPILER) $(C_OPTIONS) $^ -o test/crayparty
 	$(C_VALGRIND) test/crayparty
 
+example: test/example.c allocate.o cascade.o linked_list.o lib_for_tests.o cleanup.o
+	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/example $(CUNIT_LINK)
+	$(C_VALGRIND) test/example
+
 
 ############# LCOV ##################
 
@@ -56,6 +58,5 @@ lcov_open: lcov_generate
 	google-chrome-stable test/tests-lcov/index.html
 
 
-example: test/example.c allocate.o cascade.o linked_list.o lib_for_tests.o cleanup.o
-	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/example $(CUNIT_LINK)
-	$(C_VALGRIND) test/example
+clean:	
+	rm *.o ./test/tests *.gcno *.gcda
