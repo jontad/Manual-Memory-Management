@@ -7,7 +7,7 @@
 #include "common.h"
 #include "backend.h"
 #include "utils.h"
-
+#include "../src/refmem.h"
 
 int init_suite(void)
 {
@@ -74,7 +74,7 @@ static void clear_stock(ioopm_list_t *stock)
     {
       element = ioopm_linked_list_get(stock, i);
       //free(element.ioopm_shelf->shelf_name); This is not needed when not taking input from ask_question
-      free(element.ioopm_shelf);
+      release(element.ioopm_shelf);
     }
 }
 
@@ -95,7 +95,7 @@ static void destroy_merch(ioopm_database_t *db, merch_t *merch) //Note: remember
   ioopm_linked_list_destroy(stock); //2. free list of shelves_ht
   //free(merch->name); //These are not needed when not taking input from ask question!
   //free(merch->desc);
-  free(merch);
+  release(merch);
 }
 
 static void free_merch_apply_func(elem_t key, elem_t *value, void *db)
@@ -111,7 +111,7 @@ void tests_destroy_database(ioopm_database_t *db)
   ioopm_hash_table_destroy(db->merch_ht);
   ioopm_hash_table_destroy(db->shelves_ht);
 
-  free(db);
+  release(db);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
