@@ -16,55 +16,55 @@
 //typedef struct merch merch_t;
 
 /// @brief contains information to build hash table
-///typedef struct hash_table ioopm_hash_table_t;
+///typedef struct hash_table hash_table_t;
 
 /// @brief Creates a database with hash tables of merch, shelves and carts
 /// @return a new empty database
-ioopm_database_t *ioopm_create_database();
+database_t *create_database();
   
 /// @brief Add merch into the database
 /// @param db database to add merch to
-void ioopm_add_merch(ioopm_database_t *db);
+void add_merch(database_t *db);
 
 /// @brief print entries to the terminal 20 at a time 
 /// @param db database containing merch to list
-void ioopm_list_merch(ioopm_database_t *db);
+void list_merch(database_t *db);
 
 /// @brief remove merch from database
 /// @param db database to remove merch from
-void ioopm_remove_merch(ioopm_database_t *db);
+void remove_merch(database_t *db);
 
 /// @brief edit name, description or price of merch
 /// @param db database containing merch to edit
-void ioopm_edit_merch(ioopm_database_t *db);
+void edit_merch(database_t *db);
 
 /// @brief print shelf and amount of merch
 /// @param db database containing merch
-void ioopm_show_stock(ioopm_database_t *db);
+void show_stock(database_t *db);
 
 /// @brief increase stock of merch at a particular shelf
 /// @param db database of merch
-void ioopm_replenish_stock(ioopm_database_t *db);
+void replenish_stock(database_t *db);
 
 /// @brief removes a shopping cart from database and frees its memory
 /// @param db database of merch
-void ioopm_remove_cart(ioopm_database_t *db);
+void remove_cart(database_t *db);
 
 /// @brief adds an item to a specific cart
 /// @param db database of merch
-void ioopm_add_to_cart(ioopm_database_t *db);
+void add_to_cart(database_t *db);
 
 /// @brief removes an item from a specific cart
 /// @param db database of merch
-void ioopm_remove_from_cart(ioopm_database_t *db);
+void remove_from_cart(database_t *db);
 
 /// @brief calculates cost of items in a specific cart
 /// @param db database in cart
-void ioopm_calculate_cost(ioopm_database_t *db);
+void calculate_cost(database_t *db);
 
 /// @brief remove a specific cart and decrease the stock for merch in the cart
 /// @param db database in cart
-void ioopm_checkout(ioopm_database_t *db);
+void checkout(database_t *db);
 
 /// @brief get input from the user whether to continue or not
 /// @return true if input is 'y', false if 'n'

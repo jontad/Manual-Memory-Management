@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #include "hash_table.h"
-#include "linked_list.h"
+#include "inlupp_linked_list.h"
 #include "common.h"
 #include "backend.h"
 #include "utils.h"
@@ -55,44 +55,44 @@ static item_t *item_create(merch_t *merch, int amount)
 
 //The tests use a modified version of the database, since it doesn't have to free ask_question
 /////////////////////////////////////////////////////////////////////////////////////////////////
-static void free_items_in_cart(ioopm_link_t **element, void *extra)
+static void free_items_in_cart(link_t **element, void *extra)
 {
-  free((*element)->value.ioopm_item);
+  release((*element)->value.item);
 }
 
 static void free_carts_apply_func(elem_t key, elem_t *value, void *extra)
 {
-  ioopm_linked_apply_to_all(value->ioopm_cart->basket, free_items_in_cart, NULL);
-  ioopm_linked_list_destroy(value->ioopm_cart->basket);
-  free(value->ioopm_cart);
+  linked_apply_to_all(value->cart->basket, free_items_in_cart, NULL);
+  linked_list_destroy(value->cart->basket);
+  release(value->cart);
 }
 
-static void clear_stock(ioopm_list_t *stock)
+static void clear_stock(list_t *stock)
 {
   elem_t element;
   for (int i = 0; i < stock->list_size; ++i)
     {
-      element = ioopm_linked_list_get(stock, i);
-      //free(element.ioopm_shelf->shelf_name); This is not needed when not taking input from ask_question
-      release(element.ioopm_shelf);
+      element = inlupp_linked_list_get(stock, i);
+      //free(element.shelf->shelf_name); This is not needed when not taking input from ask_question
+      release(element.shelf);
     }
 }
 
 
-static void destroy_merch(ioopm_database_t *db, merch_t *merch) //Note: remember to remove from hash table as well!
+static void destroy_merch(database_t *db, merch_t *merch) //Note: remember to remove from hash table as well!
 {
-  ioopm_list_t *stock = merch->stock;
-  ioopm_link_t *current_location = stock->first;
+  list_t *stock = merch->stock;
+  link_t *current_location = stock->first;
   
   while (current_location != NULL)  //1. remove from shelves_ht hash table
     {
-      elem_t shelf = str_elem(current_location->value.ioopm_shelf->shelf_name);
+      elem_t shelf = str_elem(current_location->value.shelf->shelf_name);
       
-      ioopm_hash_table_remove(db->shelves_ht, shelf);
+      hash_table_remove(db->shelves_ht, shelf);
       current_location = current_location->next;
     }
   clear_stock(stock);
-  ioopm_linked_list_destroy(stock); //2. free list of shelves_ht
+  linked_list_destroy(stock); //2. free list of shelves_ht
   //free(merch->name); //These are not needed when not taking input from ask question!
   //free(merch->desc);
   release(merch);
@@ -100,16 +100,16 @@ static void destroy_merch(ioopm_database_t *db, merch_t *merch) //Note: remember
 
 static void free_merch_apply_func(elem_t key, elem_t *value, void *db)
 {  
-  destroy_merch(db, value->ioopm_merch);  
+  destroy_merch(db, value->merch);  
 }
 
-void tests_destroy_database(ioopm_database_t *db)
+void tests_destroy_database(database_t *db)
 {
-  ioopm_hash_table_apply_to_all(db->carts, free_carts_apply_func, NULL);
-  ioopm_hash_table_destroy(db->carts);
-  ioopm_hash_table_apply_to_all(db->merch_ht, free_merch_apply_func, db);
-  ioopm_hash_table_destroy(db->merch_ht);
-  ioopm_hash_table_destroy(db->shelves_ht);
+  hash_table_apply_to_all(db->carts, free_carts_apply_func, NULL);
+  hash_table_destroy(db->carts);
+  hash_table_apply_to_all(db->merch_ht, free_merch_apply_func, db);
+  hash_table_destroy(db->merch_ht);
+  hash_table_destroy(db->shelves_ht);
 
   release(db);
 }
@@ -118,20 +118,20 @@ void tests_destroy_database(ioopm_database_t *db)
 
 void test_add_merch(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   database_add_merch(db, "namn", "beskrivning", 10); //Add first merch
-  option_t result = ioopm_hash_table_lookup(db->merch_ht, str_elem("namn"));
+  option_t result = hash_table_lookup(db->merch_ht, str_elem("namn"));
   CU_ASSERT_TRUE(result.success);
 
-  char *desc = result.value.ioopm_merch->desc;
+  char *desc = result.value.merch->desc;
   char *desc2 = "beskrivning";
   bool comparison = strcmp(desc, desc2) == 0;
   CU_ASSERT_TRUE(comparison);
 
-  int price = result.value.ioopm_merch->price_per_unit;
+  int price = result.value.merch->price_per_unit;
   CU_ASSERT_EQUAL(price, 10);
   
-  int size = result.value.ioopm_merch->stock->list_size;
+  int size = result.value.merch->stock->list_size;
   CU_ASSERT_EQUAL(size, 0);
   
   tests_destroy_database(db);
@@ -139,11 +139,11 @@ void test_add_merch(void)
 
 void test_remove_merch(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
 
   merch_t *merch = database_add_merch(db, "namn", "beskrivning", 10); //Add a merch
   database_remove_merch(db, merch); //and remove it
-  option_t result = ioopm_hash_table_lookup(db->merch_ht, str_elem("namn"));
+  option_t result = hash_table_lookup(db->merch_ht, str_elem("namn"));
   CU_ASSERT_FALSE(result.success);
   
   tests_destroy_database(db);
@@ -151,7 +151,7 @@ void test_remove_merch(void)
 
 void test_edit(void) 
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   merch_t *merch  = database_add_merch(db, "namn", "beskrivning", 10); //Add a merch
 
   merch = database_edit_name(db, "nytt_namn", merch);
@@ -159,19 +159,19 @@ void test_edit(void)
   database_edit_price(merch, 20);   
 
   
-  option_t result = ioopm_hash_table_lookup(db->merch_ht, str_elem("namn"));
+  option_t result = hash_table_lookup(db->merch_ht, str_elem("namn"));
   CU_ASSERT_FALSE(result.success);
 
-  result = ioopm_hash_table_lookup(db->merch_ht, str_elem("nytt_namn"));
+  result = hash_table_lookup(db->merch_ht, str_elem("nytt_namn"));
   CU_ASSERT_TRUE(result.success);
 
-  char *desc = result.value.ioopm_merch->desc;
+  char *desc = result.value.merch->desc;
   CU_ASSERT_TRUE(strcmp(desc, "ny_beskrivning") == 0);
 
-  int price = result.value.ioopm_merch->price_per_unit; 
+  int price = result.value.merch->price_per_unit; 
   CU_ASSERT_EQUAL(price, 20);
   
-  int size = result.value.ioopm_merch->stock->list_size;
+  int size = result.value.merch->stock->list_size;
   CU_ASSERT_EQUAL(size, 0);
   
   tests_destroy_database(db);
@@ -179,21 +179,21 @@ void test_edit(void)
 
 void test_replenish(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
 
   merch_t *merch_namn = database_add_merch(db, "namn", "beskrivning", 10); //Add first merch
   shelf_t *shelf_h20 = database_create_shelf("H20", 5);
   database_replenish_stock(db, merch_namn, shelf_h20); //Replenish first merch
 
-  option_t result = ioopm_hash_table_lookup(db->merch_ht, str_elem("namn"));
+  option_t result = hash_table_lookup(db->merch_ht, str_elem("namn"));
   CU_ASSERT_TRUE(result.success);
 
   database_replenish_stock(db, merch_namn, shelf_h20); //Replenish first merch again
   
-  int size = result.value.ioopm_merch->stock->list_size;
+  int size = result.value.merch->stock->list_size;
   CU_ASSERT_EQUAL(size, 1);
 
-  shelf_t *shelf = result.value.ioopm_merch->stock->first->value.ioopm_shelf;
+  shelf_t *shelf = result.value.merch->stock->first->value.shelf;
   CU_ASSERT_TRUE(strcmp(shelf->shelf_name, "H20") == 0);
   CU_ASSERT_EQUAL(shelf->amount, 10);  
 
@@ -203,22 +203,22 @@ void test_replenish(void)
   shelf_t *shelf_a10 = database_create_shelf("A10", 10);
   database_replenish_stock(db, merch_namn, shelf_a10); //Replenish again
   
-  result = ioopm_hash_table_lookup(db->merch_ht, str_elem("namn"));
+  result = hash_table_lookup(db->merch_ht, str_elem("namn"));
   CU_ASSERT_TRUE(result.success);
 
   
-  size = result.value.ioopm_merch->stock->list_size;
+  size = result.value.merch->stock->list_size;
   CU_ASSERT_EQUAL(size, 3);
-  char *shelf1 = result.value.ioopm_merch->stock->first->value.ioopm_shelf->shelf_name;
-  char *shelf2 = result.value.ioopm_merch->stock->first->next->value.ioopm_shelf->shelf_name;
-  char *shelf3 = result.value.ioopm_merch->stock->last->value.ioopm_shelf->shelf_name;
+  char *shelf1 = result.value.merch->stock->first->value.shelf->shelf_name;
+  char *shelf2 = result.value.merch->stock->first->next->value.shelf->shelf_name;
+  char *shelf3 = result.value.merch->stock->last->value.shelf->shelf_name;
   
   CU_ASSERT_TRUE(strcmp(shelf1, "A10") == 0);
   CU_ASSERT_TRUE(strcmp(shelf2, "B30") == 0);
   CU_ASSERT_TRUE(strcmp(shelf3, "H20") == 0);
 
   //check that shelves_ht is updated properly
-  result = ioopm_hash_table_lookup(db->shelves_ht, str_elem("A10"));
+  result = hash_table_lookup(db->shelves_ht, str_elem("A10"));
   CU_ASSERT_TRUE(result.success);
   
   tests_destroy_database(db);
@@ -226,17 +226,17 @@ void test_replenish(void)
 
 void test_create_cart(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   database_create_cart(db);
 
-  option_t result = ioopm_hash_table_lookup(db->carts, unsigned_elem(0));
+  option_t result = hash_table_lookup(db->carts, unsigned_elem(0));
   CU_ASSERT_TRUE(result.success);
 
   database_create_cart(db);
-  result = ioopm_hash_table_lookup(db->carts, unsigned_elem(1));
+  result = hash_table_lookup(db->carts, unsigned_elem(1));
   CU_ASSERT_TRUE(result.success);
 
-  result = ioopm_hash_table_lookup(db->carts, unsigned_elem(0)); //Check that the original cart hasn't been overwritten
+  result = hash_table_lookup(db->carts, unsigned_elem(0)); //Check that the original cart hasn't been overwritten
   CU_ASSERT_TRUE(result.success);
   
   tests_destroy_database(db);
@@ -244,21 +244,21 @@ void test_create_cart(void)
 
 void test_remove_cart(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   database_create_cart(db); //Cart 0
   database_create_cart(db); //Cart 1
   database_create_cart(db); //Cart 2
   
-  cart_t *cart1 = ioopm_hash_table_lookup(db->carts, unsigned_elem(1)).value.ioopm_cart;
+  cart_t *cart1 = hash_table_lookup(db->carts, unsigned_elem(1)).value.cart;
   database_remove_cart(db, cart1); //Remove cart 1
 
-  option_t result = ioopm_hash_table_lookup(db->carts, unsigned_elem(1));
+  option_t result = hash_table_lookup(db->carts, unsigned_elem(1));
   CU_ASSERT_FALSE(result.success);
 
-  result = ioopm_hash_table_lookup(db->carts, unsigned_elem(0));
+  result = hash_table_lookup(db->carts, unsigned_elem(0));
   CU_ASSERT_TRUE(result.success);
 
-  result = ioopm_hash_table_lookup(db->carts, unsigned_elem(2));
+  result = hash_table_lookup(db->carts, unsigned_elem(2));
   CU_ASSERT_TRUE(result.success);
   
   tests_destroy_database(db);
@@ -266,7 +266,7 @@ void test_remove_cart(void)
 
 void test_add_to_cart(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   cart_t *cart = database_create_cart(db);
   merch_t *merch = database_add_merch(db, "namn", "beskrivning", 10); //Add merch
   shelf_t *shelf_h20 = database_create_shelf("H20", 10);
@@ -274,11 +274,11 @@ void test_add_to_cart(void)
 
   database_add_to_cart(db, cart, merch, 10); //Add it to cart
 
-  option_t result = ioopm_hash_table_lookup(db->carts, unsigned_elem(0));
+  option_t result = hash_table_lookup(db->carts, unsigned_elem(0));
 
-  item_t *item = result.value.ioopm_cart->basket->first->value.ioopm_item;
+  item_t *item = result.value.cart->basket->first->value.item;
   
-  CU_ASSERT_EQUAL(result.value.ioopm_cart->basket->list_size, 1);
+  CU_ASSERT_EQUAL(result.value.cart->basket->list_size, 1);
   CU_ASSERT_TRUE(strcmp(item->name, "namn") == 0);
   CU_ASSERT_EQUAL(item->amount, 10);
   CU_ASSERT_EQUAL(item->price_per_unit, 10);
@@ -288,7 +288,7 @@ void test_add_to_cart(void)
 
 void test_remove_from_cart(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   cart_t *cart = database_create_cart(db); 
 
   merch_t *merch = database_add_merch(db, "namn", "beskrivning", 10); //Add merch
@@ -298,25 +298,25 @@ void test_remove_from_cart(void)
   database_add_to_cart(db, cart, merch, 25); //Add merch to cart
 
   
-  item_t *item = cart->basket->first->value.ioopm_item;
+  item_t *item = cart->basket->first->value.item;
   database_remove_from_cart(cart, item, 5); //Tests only removing some
 
   
-  option_t result = ioopm_hash_table_lookup(db->carts, unsigned_elem(0));
+  option_t result = hash_table_lookup(db->carts, unsigned_elem(0));
   CU_ASSERT_TRUE(result.success);
-  CU_ASSERT_EQUAL(result.value.ioopm_cart->basket->first->value.ioopm_item->amount, 20);
+  CU_ASSERT_EQUAL(result.value.cart->basket->first->value.item->amount, 20);
   
-  char *name = result.value.ioopm_cart->basket->first->value.ioopm_item->name;
-  option_t lookup_merch = ioopm_hash_table_lookup(db->merch_ht, str_elem(name));
-  CU_ASSERT_EQUAL(lookup_merch.value.ioopm_merch->available_amount, 30);
+  char *name = result.value.cart->basket->first->value.item->name;
+  option_t lookup_merch = hash_table_lookup(db->merch_ht, str_elem(name));
+  CU_ASSERT_EQUAL(lookup_merch.value.merch->available_amount, 30);
     
   
   database_remove_from_cart(cart, item, 20); //Tests removing everything
-  result = ioopm_hash_table_lookup(db->carts, unsigned_elem(0));
+  result = hash_table_lookup(db->carts, unsigned_elem(0));
   CU_ASSERT_TRUE(result.success);
-  CU_ASSERT_EQUAL(result.value.ioopm_cart->basket->list_size, 0);
-  CU_ASSERT_EQUAL(result.value.ioopm_cart->basket->first, NULL);
-  CU_ASSERT_EQUAL(result.value.ioopm_cart->basket->last, NULL);
+  CU_ASSERT_EQUAL(result.value.cart->basket->list_size, 0);
+  CU_ASSERT_EQUAL(result.value.cart->basket->first, NULL);
+  CU_ASSERT_EQUAL(result.value.cart->basket->last, NULL);
 
   merch_t *merch_not_in_cart = database_add_merch(db, "hejsan", "not_in_cart", 10); //Add merch
   item_t *item_not_in_cart = item_create(merch_not_in_cart, 10);
@@ -328,7 +328,7 @@ void test_remove_from_cart(void)
 
 void test_checkout(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   cart_t *cart = database_create_cart(db);
   merch_t *merch = database_add_merch(db, "namn", "beskrivning", 10); //Add merch
   shelf_t *shelf_h20 = database_create_shelf("H20", 50);
@@ -337,7 +337,7 @@ void test_checkout(void)
 
   database_checkout(db, cart); //Confirm checkout
   
-  option_t result = ioopm_hash_table_lookup(db->carts, unsigned_elem(0));
+  option_t result = hash_table_lookup(db->carts, unsigned_elem(0));
   CU_ASSERT_FALSE(result.success);
   
   tests_destroy_database(db);
@@ -345,11 +345,11 @@ void test_checkout(void)
 
 void test_sort_list(void)
 {
-  ioopm_list_t *list = ioopm_linked_list_create(equality_function_str);
+  list_t *list = inlupp_linked_list_create(equality_function_str);
 
-  ioopm_linked_list_insert(list, 0, str_elem("c"));
-  ioopm_linked_list_insert(list, 0, str_elem("a"));
-  ioopm_linked_list_insert(list, 0, str_elem("b"));
+  linked_list_insert(list, 0, str_elem("c"));
+  linked_list_insert(list, 0, str_elem("a"));
+  linked_list_insert(list, 0, str_elem("b"));
 
   char **sorted_list = database_sort_list(list);
 
@@ -361,14 +361,14 @@ void test_sort_list(void)
   CU_ASSERT_TRUE(strcmp("b", b) == 0);
   CU_ASSERT_TRUE(strcmp("c", c) == 0);
 
-  free(sorted_list);
-  ioopm_linked_list_destroy(list);
+  release(sorted_list);
+  linked_list_destroy(list);
 }
 
 
 void test_choose_item_in_cart(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   cart_t *cart = database_create_cart(db);
   merch_t *merch = database_add_merch(db, "namn", "beskrivning", 10); //Add merch
   shelf_t *shelf_h20 = database_create_shelf("H20", 50);
@@ -381,7 +381,7 @@ void test_choose_item_in_cart(void)
   option_t in_cart = database_choose_item_in_cart(cart, "namn");
   CU_ASSERT_TRUE(Successful(in_cart));
 
-  char *result = in_cart.value.ioopm_item->name;
+  char *result = in_cart.value.item->name;
   CU_ASSERT_TRUE(strcmp("namn", result) == 0);
 
   tests_destroy_database(db);
@@ -389,7 +389,7 @@ void test_choose_item_in_cart(void)
 
 void test_items_in_cart_exist(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   cart_t *cart = database_create_cart(db);
   merch_t *merch = database_add_merch(db, "namn", "beskrivning", 10); //Add merch
   shelf_t *shelf_h20 = database_create_shelf("H20", 50);
@@ -404,13 +404,13 @@ void test_items_in_cart_exist(void)
 
 void test_choose_merch(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   database_add_merch(db, "namn", "beskrivning", 10); //Add merch
 
   option_t result = database_choose_merch(db, 1);
   CU_ASSERT_TRUE(result.success);
 
-  char *name = result.value.ioopm_merch->name;
+  char *name = result.value.merch->name;
   CU_ASSERT_TRUE(strcmp(name, "namn") == 0);
 
   tests_destroy_database(db);
@@ -418,7 +418,7 @@ void test_choose_merch(void)
 
 void test_resize(void)
 {
-  ioopm_database_t *db = database_create_database();
+  database_t *db = database_create_database();
   merch_t *merch1 = database_add_merch(db, "namn1", "beskrivning", 10); //Adds 23 merch
   database_add_merch(db, "namn2", "beskrivning", 10);
   database_add_merch(db, "namn3", "beskrivning", 10);
@@ -447,13 +447,13 @@ void test_resize(void)
   database_remove_merch(db, merch8); //test removing the 22rd merch before continue listing
   database_remove_merch(db, merch1); //test removing the first merch after continue listing
 
-  option_t namn9 = ioopm_hash_table_lookup(db->merch_ht, str_elem("namn9"));
+  option_t namn9 = hash_table_lookup(db->merch_ht, str_elem("namn9"));
   CU_ASSERT_FALSE(namn9.success);
 
-  option_t namn8 = ioopm_hash_table_lookup(db->merch_ht, str_elem("namn8"));
+  option_t namn8 = hash_table_lookup(db->merch_ht, str_elem("namn8"));
   CU_ASSERT_FALSE(namn8.success);
 
-  option_t namn1 = ioopm_hash_table_lookup(db->merch_ht, str_elem("namn1"));
+  option_t namn1 = hash_table_lookup(db->merch_ht, str_elem("namn1"));
   CU_ASSERT_FALSE(namn1.success);
   
   
