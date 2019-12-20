@@ -186,7 +186,17 @@ void test_cascade_limit()
 
 void test_shutdown()
 {
-  create_list();
+  ioopm_list_t *pointer_list = linked_list_get();
+  string_t *str = allocate(sizeof(string_t),NULL);
+  string_t *string = allocate(sizeof(string_t),NULL);
+  str->str = "Hello";
+  string->str = "World";
+  size_t actual_size = ioopm_linked_list_size(pointer_list);
+  CU_ASSERT_EQUAL(actual_size, 2);
+  shutdown();
+  pointer_list = linked_list_get();
+  actual_size = ioopm_linked_list_size(pointer_list);
+  CU_ASSERT_EQUAL(actual_size, 0);
   shutdown();
 }
 
@@ -412,6 +422,7 @@ int main()
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
       (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
+      (NULL == CU_add_test(test_suite1, "shutdown", test_shutdown))||
       (NULL == CU_add_test(test_suite1, "cleanup", test_cleanup))||
       (NULL == CU_add_test(test_suite1, "cleanup empty list", test_cleanup_empty))||
       (NULL == CU_add_test(test_suite1, "cleanup and deallocate", test_cleanup_and_deallocate))||

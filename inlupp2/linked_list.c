@@ -7,6 +7,8 @@
 #include "iterator.h"
 #include "common.h"
 
+#include "../src/refmem.h"
+
 
 ///////////////////////////// STRUCTS ///////////////////////////////
 
