@@ -8,7 +8,7 @@ C_VALGRIND  	  = valgrind --leak-check=full --show-leak-kinds=all
 
 ################ COMPILES ###################
 
-all: src webstore lib_for_tests.o
+compile: src webstore lib_for_tests.o
 
 ## SRC ##
 
