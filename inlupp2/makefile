@@ -1,5 +1,5 @@
 compile_webstore: frontend.c backend.c utils.c hash_table.c linked_list.c backend.h utils.h hash_table.h linked_list.h
-	gcc --coverage -Wall -pedantic -g frontend.c backend.c utils.c hash_table.c linked_list.c backend.h utils.h hash_table.h linked_list.h
+	gcc --coverage -Wall -pedantic -g $^
 
 run: compile_webstore
 	./a.out

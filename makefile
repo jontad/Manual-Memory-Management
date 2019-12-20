@@ -26,6 +26,8 @@ allocate.o: src/allocate.c src/refmem.h inlupp2/linked_list.h
 lib_for_tests.o: test/lib_for_tests.c test/lib_for_tests.h src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c test/lib_for_tests.c
 
+webstore:
+	(cd inlupp2 && make compile_webstore)
 
 
 ################### TEST RUNS ######################
