@@ -21,3 +21,26 @@ compile_lcov: test
 
 lcov: compile_lcov
 	genhtml tests.info -o tests-lcov
+
+
+
+
+ll_test: hash_table.h linked_list.h hash_table.c linked_list.c ll_test.c
+	gcc --coverage -Wall -pedantic -g hash_table.h linked_list.h hash_table.c linked_list.c ll_test.c -o tests -lcunit -pg
+
+
+the_ht_test: hash_table.h linked_list.h hash_table.c linked_list.c ht_test.c
+	gcc --coverage -Wall -pedantic -g hash_table.h linked_list.h hash_table.c linked_list.c ht_test.c -o tests -lcunit -pg
+
+
+u_tests: hash_table.h linked_list.h hash_table.c linked_list.c unit_tests.c
+	gcc --coverage -Wall -pedantic -g hash_table.h linked_list.h hash_table.c linked_list.c unit_tests.c -o tests -lcunit -pg
+
+linked_list_test: ll_test
+	valgrind -v --leak-check=full --track-origins=yes ./a.out 
+
+hash_table_test: the_ht_test
+	valgrind -v --leak-check=full --track-origins=yes ./a.out 
+
+ht_and_ll_test: u_tests
+	valgrind -v --leak-check=full --track-origins=yes ./a.out 
