@@ -70,9 +70,7 @@ void test_alloc_array_struct()
       alloc[i] = allocate(sizeof(string_t),NULL);
       alloc[i]->str = allocate(sizeof(char *),NULL);
     }
-  printf("SIZE: %ld\n",sizeof(*alloc));
   deallocate(alloc);
-  printf("SIZE: %ld\n",sizeof(*alloc));
   shutdown();
 }
 
