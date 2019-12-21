@@ -1,7 +1,7 @@
  #include <stdio.h>
 
 #include "hash_table.h"
-#include "linked_list.h"
+#include "inlupp_linked_list.h"
 
 #include "backend.h"
 #include "common.h"

@@ -3,18 +3,18 @@
 #include "lib_for_tests.h"
 #include <stdio.h>
 
-list_t *list = NULL;
+new_list_t *list = NULL;
 
 size_t list_size = 0;
 
-void destructor_string(obj *object)
+void lib_for_tests_destructor_string(obj *object)
 {
   char **ptr = object;
   char *str = *ptr;
   free(str);
 }
 
-void destructor_string_array(obj *object)
+void lib_for_tests_destructor_string_array(obj *object)
 {
   char **array_ptr = object;
   for(int i = 0; i < 10; i++)
@@ -23,41 +23,41 @@ void destructor_string_array(obj *object)
     }
 }
 
-void destructor_linked_list(obj *object)
+void lib_for_tests_destructor_linked_list(obj *object)
 {
-  list_t *list = object;
+  new_list_t *list = object;
   new_link_t *link = list->head;
   release(link);
 }
 
-void link_destructor(obj *link)
+void lib_for_tests_link_destructor(obj *link)
 {
   release(((new_link_t *) link)->next);
 }
 
-void list_negate()
+void lib_for_tests_list_negate()
 {
   list_size--;
 }
 
-void size_reset()
+void lib_for_tests_size_reset()
 {
   list_size = 0;
 }
 
-list_t *list_create()
+new_list_t *lib_for_tests_list_create()
 {
-  list = allocate(sizeof(list_t), destructor_linked_list);
+  list = allocate(sizeof(new_list_t), lib_for_tests_destructor_linked_list);
   list->head = list->tail = NULL;
   list->size = 0;
   return list;
 }
 
-void linked_list_append()
+void lib_for_tests_linked_list_append()
 {
   if(list->tail != NULL)
     {
-      new_link_t *link = allocate(sizeof(new_link_t), link_destructor);
+      new_link_t *link = allocate(sizeof(new_link_t), lib_for_tests_link_destructor);
       link->next = NULL;
       release(list->tail);
       list->tail->next = link;
@@ -67,7 +67,7 @@ void linked_list_append()
     }
   else
     {
-      new_link_t *link = allocate(sizeof(new_link_t), link_destructor);
+      new_link_t *link = allocate(sizeof(new_link_t), lib_for_tests_link_destructor);
       link->next = NULL;
       list->head = link;
       retain(link);
@@ -78,7 +78,7 @@ void linked_list_append()
   list->size += 1;
 }
 
-size_t linked_list_size()
+size_t lib_for_tests_linked_list_size()
 {
   return list_size;
 }
@@ -90,7 +90,7 @@ size_t linked_list_size()
 /// Define the size of the hash table
 #define Num_Buckets 17
 
-static bucket_t *entry_create(int k, char *v, bucket_t *n)
+static bucket_t *lib_for_tests_entry_create(int k, char *v, bucket_t *n)
 {
   bucket_t *entry = allocate(sizeof(bucket_t), NULL);
   entry->key = k;
@@ -99,7 +99,7 @@ static bucket_t *entry_create(int k, char *v, bucket_t *n)
   return entry;
 }
 
-static bucket_t*find_previous_entry_for_key(bucket_t*bucket, int key)
+static bucket_t *lib_for_tests_find_previous_entry_for_key(bucket_t*bucket, int key)
 {
   bucket_t*next_from_dummy = bucket;
   bucket_t*prev_next = bucket;
@@ -122,12 +122,12 @@ static bucket_t*find_previous_entry_for_key(bucket_t*bucket, int key)
 }
 
 /// Deallocates the given entry. 
-static void entry_destroy(bucket_t*entry)
+static void lib_for_tests_entry_destroy(bucket_t*entry)
 {
   release(entry);     
 }
 
-hash_t *demo_hash_table_create()
+hash_t *lib_for_tests_demo_hash_table_create()
 {
 hash_t *result = (hash_t *) allocate(sizeof(hash_t) + Num_Buckets*sizeof(bucket_t *), NULL);
 
@@ -137,7 +137,7 @@ hash_t *result = (hash_t *) allocate(sizeof(hash_t) + Num_Buckets*sizeof(bucket_
   char *value = NULL;
   while(i < Num_Buckets)
     {
-      result->buckets[i] = entry_create(key, value, NULL);
+      result->buckets[i] = lib_for_tests_entry_create(key, value, NULL);
       retain(result->buckets[i]);
       ++i;
     }
@@ -147,10 +147,10 @@ hash_t *result = (hash_t *) allocate(sizeof(hash_t) + Num_Buckets*sizeof(bucket_
 }
 
 
-void demo_hash_table_insert(hash_t *ht, int key, char *value)
+void lib_for_tests_demo_hash_table_insert(hash_t *ht, int key, char *value)
 {
   int bucket = key % ht->num_buckets;
-  bucket_t*entry = find_previous_entry_for_key(ht->buckets[bucket], key);
+  bucket_t*entry = lib_for_tests_find_previous_entry_for_key(ht->buckets[bucket], key);
   bucket_t*next = entry->next;
 
   if (next != NULL && next->key == key)
@@ -159,16 +159,16 @@ void demo_hash_table_insert(hash_t *ht, int key, char *value)
     }
   else
     {
-      entry->next = entry_create(key, value, next);
+      entry->next = lib_for_tests_entry_create(key, value, next);
       retain(entry->next);
       ht->size++;
     }
 }
 
-void demo_hash_table_remove(hash_t *ht, int key)
+void lib_for_tests_demo_hash_table_remove(hash_t *ht, int key)
 {
   int bucket = key % ht->num_buckets;
-  bucket_t*entry = find_previous_entry_for_key(ht->buckets[bucket], key);
+  bucket_t*entry = lib_for_tests_find_previous_entry_for_key(ht->buckets[bucket], key);
 
   bucket_t*rm_entry = entry->next;
   if (rm_entry != NULL)
@@ -182,13 +182,13 @@ void demo_hash_table_remove(hash_t *ht, int key)
 	entry->next = NULL;
         
 
-      entry_destroy(rm_entry);
+      lib_for_tests_entry_destroy(rm_entry);
       ht->size--;
       return;
     }
 }
 
-size_t demo_hash_table_size(hash_t *ht)
+size_t lib_for_tests_demo_hash_table_size(hash_t *ht)
 {
   size_t size = ht->size;
   return size;

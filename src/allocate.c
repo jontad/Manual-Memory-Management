@@ -7,13 +7,14 @@
 #include <assert.h>
 #include "linked_list.h"
 #include "../test/lib_for_tests.h"
-#include "common_for_linked_list.h"
+//#include "common_for_linked_list.h"
+#include "../inlupp2/common.h"
 
-ioopm_list_t *cascade_list = NULL;
+list_t *cascade_list = NULL;
 
 size_t counter = 0;
 
-ioopm_list_t *get_cascade_list()
+list_t *get_cascade_list()
 {
   return cascade_list;
 }
@@ -65,7 +66,7 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   memset(alloc,0,elements*bytes); //Set all bytes to 0, like calloc would do
 
   //Add pointer to the global pointer list
-  ioopm_list_t *pointer_list = linked_list_get();
+  list_t *pointer_list = linked_list_get_list();
   if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
   
   return alloc;
@@ -73,7 +74,7 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 
 void remove_from_list(obj *object)
 {
-  ioopm_list_t *pointer_list = linked_list_get(); 
+  list_t *pointer_list = linked_list_get_list(); 
   if(pointer_list)
     {
       int index = ioopm_linked_list_position(pointer_list, (elem_t){.obj_val = object});
@@ -85,7 +86,7 @@ void default_destruct(obj *object)
 {
   obj *start = (obj *)((char *)object-sizeof(function1_t)-2*sizeof(uint8_t));
   uint8_t hops = *(uint8_t *)start; //We get how many pointers this object can hold
-  ioopm_list_t *pointer_list = linked_list_get();
+  list_t *pointer_list = linked_list_get_list();
 
   ///Checks all possible pointer locations in object
   for(uint8_t i = 0; i < hops; i++)
@@ -123,7 +124,7 @@ void deallocate(obj *object)
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
 
   counter++;
-  list_negate(); // THIS IS FOR TESTING!
+  lib_for_tests_list_negate(); // THIS IS FOR TESTING!
   if(counter == get_cascade_limit() && get_cascade_limit() != 0)
     {
       //If cascade limit is reached, add object to the global cascade list

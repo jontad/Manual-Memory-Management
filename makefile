@@ -21,24 +21,27 @@ cascade.o: src/cascade.c src/refmem.h
 cleanup.o: src/cleanup.c src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/cleanup.c
 
-allocate.o: src/allocate.c src/refmem.h inlupp2/linked_list.h
+allocate.o: src/allocate.c src/refmem.h src/linked_list.h test/lib_for_tests.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/allocate.c
+
+linked_list.o: src/linked_list.c src/linked_list.h inlupp2/common.h
+	$(C_COMPILER) $(C_OPTIONS) -c src/linked_list.c
 
 
 ## WEBSTORE ##
 
-webstore: frontend.o backend.o utils.o hash_table.o linked_list.o
+webstore: frontend.o backend.o utils.o hash_table.o inlupp_linked_list.o
 
-frontend.o: inlupp2/frontend.c inlupp2/frontend.h inlupp2/backend.h inlupp2/hash_table.h inlupp2/linked_list.h inlupp2/utils.h inlupp2/common.h src/refmem.h
+frontend.o: inlupp2/frontend.c inlupp2/frontend.h inlupp2/backend.h inlupp2/hash_table.h inlupp2/inlupp_linked_list.h inlupp2/utils.h inlupp2/common.h src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/frontend.c
 
-backend.o: inlupp2/backend.c inlupp2/frontend.h inlupp2/backend.h inlupp2/hash_table.h inlupp2/linked_list.h inlupp2/utils.h inlupp2/common.h src/refmem.h
+backend.o: inlupp2/backend.c inlupp2/frontend.h inlupp2/backend.h inlupp2/hash_table.h inlupp2/inlupp_linked_list.h inlupp2/utils.h inlupp2/common.h src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/backend.c
 
-linked_list.o: inlupp2/linked_list.c inlupp2/linked_list.h inlupp2/common.h
+inlupp_linked_list.o: inlupp2/linked_list.c inlupp2/inlupp_linked_list.h inlupp2/common.h
 	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/linked_list.c
 
-hash_table.o: inlupp2/hash_table.c inlupp2/hash_table.h inlupp2/linked_list.h inlupp2/common.h src/refmem.h
+hash_table.o: inlupp2/hash_table.c inlupp2/hash_table.h inlupp2/inlupp_linked_list.h inlupp2/common.h src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/hash_table.c
 
 utils.o: inlupp2/utils.c inlupp2/utils.h
@@ -91,4 +94,4 @@ lcov_open: lcov_generate
 
 
 clean:	
-	rm *.o ./test/tests *.gcno *.gcda
+	rm *.o ./test/tests *.gcno *.gcda ./inlupp2/*.gcno ./inlupp2/*.gcda
