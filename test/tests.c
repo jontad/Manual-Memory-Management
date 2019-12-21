@@ -2,7 +2,7 @@
 #include "../src/refmem.h"
 #include "lib_for_tests.h"
 #include <CUnit/Basic.h>
-#include "../inlupp2/linked_list.h"
+#include "../src/linked_list.h"
 
 
 void test_alloc()
@@ -70,9 +70,7 @@ void test_alloc_array_struct()
       alloc[i] = allocate(sizeof(string_t),NULL);
       alloc[i]->str = allocate(sizeof(char *),NULL);
     }
-  printf("SIZE: %ld\n",sizeof(*alloc));
   deallocate(alloc);
-  printf("SIZE: %ld\n",sizeof(*alloc));
   shutdown();
 }
 
