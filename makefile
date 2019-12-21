@@ -25,7 +25,7 @@ allocate.o: src/allocate.c src/refmem.h inlupp2/linked_list.h
 
 compile: allocate.o cleanup.o cascade.o linked_list.o
 
-test_compile: test/tests.c src/allocate.c src/cleanup.c src/cascade.c inlupp2/linked_list.c test/lib_for_tests.c
+test_compile: test/tests.c src/allocate.c src/cleanup.c src/cascade.c src/linked_list.c test/lib_for_tests.c
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/tests $(CUNIT_LINK)
 
 

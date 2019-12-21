@@ -2,8 +2,8 @@
 #define __REFMEM_H__
 
 #include <stdlib.h>
-#include "../inlupp2/common.h"
-
+//#include "common_for_linked_list.h"
+//#include "linked_list.h"
 #define Free(ptr) {free(ptr); ptr = NULL;}
 /**
  * @file refmem.h
@@ -19,10 +19,6 @@ typedef void obj;
 /// @brief Destructor function that recieves an object to deallocate
 /// @param object Object that will be destroyed
 typedef void(*function1_t)(obj *object);
-
-/// @brief Create an empty linked list that will store pointers to all allocated objects
-/// @return a empty list
-ioopm_list_t *create_list();
 
 /// @brief Increments reference count of object by 1
 /// @param object Object where reference count will be increased
@@ -77,7 +73,4 @@ void cleanup();
 /// @brief Completely tears down library and associated data
 void shutdown();
 
-/// @brief Gets the list with all object pointers.
-/// @return pointer to list with all pointers
-ioopm_list_t *linked_list_get();
 #endif
