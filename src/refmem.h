@@ -23,13 +23,13 @@ typedef void(*function1_t)(obj *object);
 /// @brief Increments reference count of object by 1
 /// @param object Object where reference count will be increased
 /// NOTE: Calling retain() with NULL is supported, however it is ignored
-/// NOTE: Using retain when refrence count is 255 is supported but nothing happens.
+/// \pre Using retain when refrence count is 255 is supported but nothing happens.
 void retain(obj *object);
 
 /// @brief Decrements reference count of object by 1. If reference counter is 1 object is free'd
 /// @param object Object where reference count will be decreased
 /// NOTE: Calling release() with NULL is supported, however it is ignored
-/// NOTE: Using release when refrence count is 0 is supported but object is just deallocated
+/// \pre Using release when refrence count is 0 is supported but object is just deallocated
 void release(obj *object);
 
 /// @brief Get reference count of object
