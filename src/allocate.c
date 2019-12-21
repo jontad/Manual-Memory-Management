@@ -24,11 +24,60 @@ void set_cascade_list_to_null()
   cascade_list = NULL;
 }
 
+obj *allocate_with_bitarray(size_t bytes, function1_t destructor)
+{
+  return allocate_array_with_bitarray(1, bytes, destructor);
+}
+
+obj *allocate_array_with_bitarray(size_t elements, size_t bytes, function1_t destructor)
+{
+  //Every time we allocate memory we try to clear up our cascade list
+  if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
+  if(ioopm_linked_list_size(cascade_list))
+    {
+      release(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
+    }
+
+  //2*sizeof(uint8_t), 1 byte for rc, 1 byte for hops
+  obj *alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
+  //If malloc fails to reserve memory we try to empty our cascade list
+
+  while(alloc == NULL && ioopm_linked_list_size(cascade_list))
+    {
+      deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
+      alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
+    }
+  if(!alloc) return alloc; //Return NULL if we fail to allocate memory
+  
+
+  
+  uint8_t hops = (elements*bytes) / sizeof(void *); //How many pointers our object can hold
+  memset(alloc, hops, sizeof(uint8_t));
+  
+  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The location of the byte where refcount is stored
+  memset(alloc,0,sizeof(uint8_t)); //Refcount is initially set to 0
+
+  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The location where the pointer to the destructor is stored
+  memcpy(alloc, &destructor, sizeof(destructor));
+  
+  alloc = (obj *)((char *)alloc + sizeof(destructor));
+  memset(alloc,0,elements*bytes); //Set all bytes to 0, like calloc would do
+  
+  int* bit_array = get_bit_array();
+  set_bit(bit_array, elements*bytes);
+  
+  //Add pointer to the global pointer list
+  list_t *pointer_list = linked_list_get_list();
+  if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
+  
+  return alloc;
+}
+
+
+
 obj *allocate(size_t bytes, function1_t destructor)
 {
-
   return allocate_array(1, bytes, destructor);
-
 }
 
 obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)

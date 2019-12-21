@@ -2,6 +2,12 @@
 #include "linked_list.h"
 
 list_t *pointer_list = NULL;
+int bit_array[32];
+
+int* get_bit_array()
+{
+  return bit_array;
+}
 
 bool eq_func(elem_t a, elem_t b)
 {

@@ -5,6 +5,12 @@
 //#include "common_for_linked_list.h"
 //#include "linked_list.h"
 #define Free(ptr) {free(ptr); ptr = NULL;}
+
+//global functions to set, clear and test a bit in a bit array
+#define set_bit(A,k)     ( A[(k/32)] |= (1 << (k%32)) )
+#define clear_bit(A,k)   ( A[(k/32)] &= ~(1 << (k%32)) )
+#define test_bit(A,k)    ( A[(k/32)] & (1 << (k%32)) )
+
 /**
  * @file refmem.h
  * @author Elias Insulander, Jonathan Tadese, Robert Paananen, Daniel Westberg, Alex Kangas, Georgios Davakos, Joel Waldenbäck
@@ -19,6 +25,12 @@ typedef void obj;
 /// @brief Destructor function that recieves an object to deallocate
 /// @param object Object that will be destroyed
 typedef void(*function1_t)(obj *object);
+
+int* get_bit_array();
+
+obj *allocate_with_bitarray(size_t bytes, function1_t destructor);
+
+obj *allocate_array_with_bitarray(size_t elements, size_t bytes, function1_t destructor);
 
 /// @brief Increments reference count of object by 1
 /// @param object Object where reference count will be increased

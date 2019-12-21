@@ -3,7 +3,7 @@
 #include "lib_for_tests.h"
 #include <CUnit/Basic.h>
 #include "../src/linked_list.h"
-
+#include <stdint.h>
 
 void test_alloc()
 {
@@ -386,6 +386,23 @@ void test_cascade_no_limit() //Test with using alloc after cascade limit is reac
   shutdown();
 }
 
+void test_bit_array()
+{
+  list_t *pointer_list = linked_list_get_list();
+  //char *str1 = allocate_with_bitarray(sizeof(char),NULL);
+  //string_t *str2 = allocate_with_bitarray(sizeof(string_t),NULL);
+  //uint8_t n1 = allocate_with_bitarray(sizeof(uint8_t),NULL);
+  //uint32_t n2 = allocate_with_bitarray(sizeof(uint32_t),NULL);
+  uint64_t n3 = allocate_with_bitarray(sizeof(uint64_t),NULL);
+  int *bit_array = get_bit_array();
+  puts("");
+  for (int i = 0; i < 32; i++)
+     printf("%d\n", bit_array[i]);
+  CU_ASSERT_TRUE(test_bit(bit_array, sizeof(n3)));
+  
+  shutdown();
+}
+
 
 int init_suite(void)
 {
@@ -439,7 +456,8 @@ int main()
       (NULL == CU_add_test(test_suite1, "cascade no limit", test_cascade_no_limit))||
       (NULL == CU_add_test(test_suite1, "cleanup different destructors", test_cleanup_dif_destructors))||
       (NULL == CU_add_test(test_suite1, "Default destructor for array", test_destruct_default_array))||
-      (NULL == CU_add_test(test_suite1, "Alloc array struct", test_alloc_array_struct))
+      (NULL == CU_add_test(test_suite1, "Alloc array struct", test_alloc_array_struct))||
+      (NULL == CU_add_test(test_suite1, "bit array", test_bit_array))
       )
     {
       CU_cleanup_registry();
