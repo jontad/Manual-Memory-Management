@@ -13,7 +13,7 @@ compile: src webstore lib_for_tests.o
 ## SRC ##
 
 src: test/tests.c allocate.o cleanup.o cascade.o linked_list.o lib_for_tests.o
-	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/tests $(CUNIT_LINK)
+	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) -o test/tests $^ $(CUNIT_LINK)
 
 cascade.o: src/cascade.c src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/cascade.c

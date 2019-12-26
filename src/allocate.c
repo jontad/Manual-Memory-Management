@@ -10,6 +10,12 @@
 //#include "common_for_linked_list.h"
 #include "../inlupp2/common.h"
 
+#define bit_array_size 32
+#define set_bit(A,k)     ( A[(k/bit_array_size)] |= (1 << (k%32)) )
+#define clear_bit(A,k)   ( A[(k/bit_array_size)] &= ~(1 << (k%32)) )
+#define test_bit(A,k)    ( A[(k/bit_array_size)] & (1 << (k%32)) )
+size_t bit_count = 0;
+
 list_t *cascade_list = NULL;
 
 size_t counter = 0;
@@ -23,57 +29,6 @@ void set_cascade_list_to_null()
 {
   cascade_list = NULL;
 }
-
-obj *allocate_with_bitarray(size_t bytes, function1_t destructor)
-{
-  return allocate_array_with_bitarray(1, bytes, destructor);
-}
-
-obj *allocate_array_with_bitarray(size_t elements, size_t bytes, function1_t destructor)
-{
-  //Every time we allocate memory we try to clear up our cascade list
-  if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
-  if(ioopm_linked_list_size(cascade_list))
-    {
-      release(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
-    }
-
-  //2*sizeof(uint8_t), 1 byte for rc, 1 byte for hops
-  obj *alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
-  //If malloc fails to reserve memory we try to empty our cascade list
-
-  while(alloc == NULL && ioopm_linked_list_size(cascade_list))
-    {
-      deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
-      alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
-    }
-  if(!alloc) return alloc; //Return NULL if we fail to allocate memory
-  
-
-  
-  uint8_t hops = (elements*bytes) / sizeof(void *); //How many pointers our object can hold
-  memset(alloc, hops, sizeof(uint8_t));
-  
-  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The location of the byte where refcount is stored
-  memset(alloc,0,sizeof(uint8_t)); //Refcount is initially set to 0
-
-  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The location where the pointer to the destructor is stored
-  memcpy(alloc, &destructor, sizeof(destructor));
-  
-  alloc = (obj *)((char *)alloc + sizeof(destructor));
-  memset(alloc,0,elements*bytes); //Set all bytes to 0, like calloc would do
-  
-  int* bit_array = get_bit_array();
-  set_bit(bit_array, elements*bytes);
-  
-  //Add pointer to the global pointer list
-  list_t *pointer_list = linked_list_get_list();
-  if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
-  
-  return alloc;
-}
-
-
 
 obj *allocate(size_t bytes, function1_t destructor)
 {
@@ -136,7 +91,7 @@ void default_destruct(obj *object)
   obj *start = (obj *)((char *)object-sizeof(function1_t)-2*sizeof(uint8_t));
   uint8_t hops = *(uint8_t *)start; //We get how many pointers this object can hold
   list_t *pointer_list = linked_list_get_list();
-
+ 
   ///Checks all possible pointer locations in object
   for(uint8_t i = 0; i < hops; i++)
     {
@@ -181,7 +136,10 @@ void deallocate(obj *object)
       counter = 0;
       return;
     }
-  else if(rc(object) == 0) deallocate_aux(object);
+  else if(rc(object) == 0)
+    {
+      deallocate_aux(object);
+    }
   counter = 0;
   //  object = NULL;
 }
@@ -212,6 +170,162 @@ void release(obj *object)
 size_t rc(obj *object)
 {
   obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));
+  uint8_t ref_count = *(uint8_t *)tmp;
+  return ref_count;
+}
+
+
+
+
+/************** BITARRAY STUFF *****************/
+
+
+
+obj *allocate_with_bitarray(size_t bytes, function1_t destructor)
+{
+  return allocate_array_with_bitarray(1, bytes, destructor);
+}
+
+obj *allocate_array_with_bitarray(size_t elements, size_t bytes, function1_t destructor)
+{
+  //Every time we allocate memory we try to clear up our cascade list
+  if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
+  if(ioopm_linked_list_size(cascade_list))
+    {
+      release(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
+    }
+
+  //3*sizeof(uint8_t), 1 byte for rc, 1 byte for hops, 1 for bit position value
+  obj *alloc = malloc(3*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
+  //If malloc fails to reserve memory we try to empty our cascade list
+
+  while(alloc == NULL && ioopm_linked_list_size(cascade_list))
+    {
+      deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
+      alloc = malloc(3*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
+    }
+  if(!alloc) return alloc; //Return NULL if we fail to allocate memory
+  
+
+  
+  uint8_t hops = (elements*bytes) / sizeof(void *); //How many pointers our object can hold
+  memset(alloc, hops, sizeof(uint8_t));
+  
+  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The location of the byte where refcount is stored
+  memset(alloc, 0, sizeof(uint8_t)); //Refcount is initially set to 0
+
+  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The object's value in the bit_array
+  memset(alloc, bit_count, sizeof(uint8_t)); //Set it's bit value to the current bit count
+  
+  alloc = (obj *)((char *)alloc + sizeof(uint8_t)); //The location where the pointer to the destructor is stored
+  memcpy(alloc, &destructor, sizeof(destructor));
+  
+  alloc = (obj *)((char *)alloc + sizeof(destructor));
+  memset(alloc,0,elements*bytes); //Set all bytes to 0, like calloc would do
+
+  //Add pointer to the global pointer list
+  list_t *pointer_list = linked_list_get_list();
+  if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
+  
+  int* bit_array = get_bit_array(); //get the bit array
+  set_bit(bit_array, bit_count); // set the object's corresponding bit to 1, aka it's been allocated
+
+  bit_count++; //increase the bit_count by one. NOT OPTIMAL SOLUTION; DOES NOT SUPPORT REUSE AFTER CLEARING A BIT
+  return alloc;
+}
+
+void default_destruct_with_bitarray(obj *object)
+{
+  obj *start = (obj *)((char *)object-sizeof(function1_t)-3*sizeof(uint8_t));
+  uint8_t hops = *(uint8_t *)start; //We get how many pointers this object can hold
+  list_t *pointer_list = linked_list_get_list();
+  
+  ///Checks all possible pointer locations in object
+  for(uint8_t i = 0; i < hops; i++)
+    {
+      obj **pointer = (obj **)((char *)object + i*sizeof(obj *));      
+      obj *ptr = *(obj **)pointer;
+
+      /// if pointer exists in our list we release it
+      if(pointer_list && ioopm_linked_list_contains(pointer_list, (elem_t){.obj_val = ptr}))
+	{
+	  release_with_bitarray(ptr);
+	}
+    }  
+}
+
+void deallocate_aux_with_bitarray(obj *object)
+{  
+  obj *start = (obj *)((char *)object-sizeof(function1_t)-3*sizeof(uint8_t));
+  function1_t destructor = *(function1_t *)((obj *)((char *)start+3*sizeof(uint8_t)));
+  uint8_t bit_position = *(uint8_t *)((obj *)((char *)start+2*sizeof(uint8_t)));
+  int *bit_array = get_bit_array();
+
+  if(destructor)
+    {
+      destructor(object);
+    }
+  else
+    {
+      default_destruct_with_bitarray(object);
+    }
+  remove_from_list(object);
+  clear_bit(bit_array, bit_position);
+  Free(start);
+}
+
+void deallocate_with_bitarray(obj *object)
+{
+  obj *start = (obj *)((char *)object-sizeof(function1_t)-3*sizeof(uint8_t));
+  uint8_t bit_position  = *(uint8_t *)((obj *)((char *)start+2*sizeof(uint8_t)));
+  int *bit_array = get_bit_array();
+  if(test_bit(bit_array, bit_position)) //Checks if the object is allocated
+    {
+      if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
+
+      counter++;
+      if(counter == get_cascade_limit() && get_cascade_limit() != 0)
+	{
+	  //If cascade limit is reached, add object to the global cascade list
+	  ioopm_linked_list_append(cascade_list, (elem_t){.obj_val = object});
+	  counter = 0;
+	  return;
+	}
+      else if(rc_with_bitarray(object) == 0)
+	{
+	  deallocate_aux_with_bitarray(object);
+	}
+      counter = 0;
+    }
+}
+
+void retain_with_bitarray(obj *object)
+{
+  if(object)
+    {
+      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-2*sizeof(uint8_t));
+      uint8_t ref_count = *(uint8_t *)tmp;
+      if(ref_count != 255) ref_count++;
+      memset(tmp,ref_count,1);
+    }
+}
+
+
+void release_with_bitarray(obj *object)
+{
+  if(object)
+    {
+      obj *tmp = (obj *)((char *)object-sizeof(function1_t)-2*sizeof(uint8_t));
+      uint8_t ref_count = *(uint8_t *)tmp;
+      if(ref_count != 0) ref_count--;
+      memset(tmp,ref_count,1);
+      if(ref_count == 0) deallocate_with_bitarray(object);
+    }
+}
+
+size_t rc_with_bitarray(obj *object)
+{
+  obj *tmp = (obj *)((char *)object-sizeof(function1_t)-2*sizeof(uint8_t)); //CHANGED FROM 1 TO 2
   uint8_t ref_count = *(uint8_t *)tmp;
   return ref_count;
 }

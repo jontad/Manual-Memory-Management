@@ -76,7 +76,7 @@ void list_merch(database_t *db)
  {
    list_t *names = hash_table_keys(db->merch_ht); // generate list
    retain(names);
-   size_t size = linked_list_size(names);
+   size_t size = inlupp_linked_list_size(names);
    char **merch_list = database_sort_list(names);             // sort list
 
    if(size == 0)
@@ -279,7 +279,7 @@ void create_cart(database_t *db)
   link_t *current_link = list->first;
   retain(current_link);
   
-  size_t size = linked_list_size(list);
+  size_t size = inlupp_linked_list_size(list);
   
   unsigned int *id_list = allocate_array(size, sizeof(unsigned int), NULL);
   
@@ -299,7 +299,7 @@ static void list_id(database_t *db)
    list_t *id = hash_table_keys(db->carts); // generate list
    retain(id);
 
-   size_t size = linked_list_size(id);
+   size_t size = inlupp_linked_list_size(id);
    unsigned int *id_list = array_from_list_id(id);
    retain(id_list);
 

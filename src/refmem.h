@@ -7,9 +7,10 @@
 #define Free(ptr) {free(ptr); ptr = NULL;}
 
 //global functions to set, clear and test a bit in a bit array
-#define set_bit(A,k)     ( A[(k/32)] |= (1 << (k%32)) )
-#define clear_bit(A,k)   ( A[(k/32)] &= ~(1 << (k%32)) )
-#define test_bit(A,k)    ( A[(k/32)] & (1 << (k%32)) )
+#define bit_array_size 32
+#define set_bit(A,k)     ( A[(k/bit_array_size)] |= (1 << (k%32)) )
+#define clear_bit(A,k)   ( A[(k/bit_array_size)] &= ~(1 << (k%32)) )
+#define test_bit(A,k)    ( A[(k/bit_array_size)] & (1 << (k%32)) )
 
 /**
  * @file refmem.h
@@ -25,12 +26,6 @@ typedef void obj;
 /// @brief Destructor function that recieves an object to deallocate
 /// @param object Object that will be destroyed
 typedef void(*function1_t)(obj *object);
-
-int* get_bit_array();
-
-obj *allocate_with_bitarray(size_t bytes, function1_t destructor);
-
-obj *allocate_array_with_bitarray(size_t elements, size_t bytes, function1_t destructor);
 
 /// @brief Increments reference count of object by 1
 /// @param object Object where reference count will be increased
@@ -84,5 +79,29 @@ void cleanup();
 
 /// @brief Completely tears down library and associated data
 void shutdown();
+
+
+
+
+int* get_bit_array();
+
+obj *allocate_with_bitarray(size_t bytes, function1_t destructor);
+
+obj *allocate_array_with_bitarray(size_t elements, size_t bytes, function1_t destructor);
+
+void default_destruct_with_bitarray(obj *object);
+
+void deallocate_aux_with_bitarray(obj *object);
+
+void deallocate_with_bitarray(obj *object);
+
+void release_with_bitarray(obj *object);
+
+void cleanup_with_bitarray();
+
+void shutdown_with_bitarray();
+
+size_t rc_with_bitarray(obj *object);
+
 
 #endif
