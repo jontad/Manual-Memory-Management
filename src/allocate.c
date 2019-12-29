@@ -30,6 +30,17 @@ void set_cascade_list_to_null()
   cascade_list = NULL;
 }
 
+void remove_from_list(obj *object)
+{
+  list_t *pointer_list = linked_list_get_list(); 
+  if(pointer_list)
+    {
+      int index = ioopm_linked_list_position(pointer_list, (elem_t){.obj_val = object});
+      if (index >= 0) ioopm_linked_list_remove(pointer_list, index);
+    }
+}
+
+/*
 obj *allocate(size_t bytes, function1_t destructor)
 {
   return allocate_array(1, bytes, destructor);
@@ -74,16 +85,6 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
   
   return alloc;
-}
-
-void remove_from_list(obj *object)
-{
-  list_t *pointer_list = linked_list_get_list(); 
-  if(pointer_list)
-    {
-      int index = ioopm_linked_list_position(pointer_list, (elem_t){.obj_val = object});
-      if (index >= 0) ioopm_linked_list_remove(pointer_list, index);
-    }
 }
 
 void default_destruct(obj *object)
@@ -173,7 +174,7 @@ size_t rc(obj *object)
   uint8_t ref_count = *(uint8_t *)tmp;
   return ref_count;
 }
-
+*/
 
 
 
@@ -181,12 +182,12 @@ size_t rc(obj *object)
 
 
 
-obj *allocate_with_bitarray(size_t bytes, function1_t destructor)
+obj *allocate(size_t bytes, function1_t destructor)
 {
-  return allocate_array_with_bitarray(1, bytes, destructor);
+  return allocate_array(1, bytes, destructor);
 }
 
-obj *allocate_array_with_bitarray(size_t elements, size_t bytes, function1_t destructor)
+obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 {
   //Every time we allocate memory we try to clear up our cascade list
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
@@ -234,7 +235,7 @@ obj *allocate_array_with_bitarray(size_t elements, size_t bytes, function1_t des
   return alloc;
 }
 
-void default_destruct_with_bitarray(obj *object)
+void default_destruct(obj *object)
 {
   obj *start = (obj *)((char *)object-sizeof(function1_t)-3*sizeof(uint8_t));
   uint8_t hops = *(uint8_t *)start; //We get how many pointers this object can hold
@@ -249,12 +250,12 @@ void default_destruct_with_bitarray(obj *object)
       /// if pointer exists in our list we release it
       if(pointer_list && ioopm_linked_list_contains(pointer_list, (elem_t){.obj_val = ptr}))
 	{
-	  release_with_bitarray(ptr);
+	  release(ptr);
 	}
     }  
 }
 
-void deallocate_aux_with_bitarray(obj *object)
+void deallocate_aux(obj *object)
 {  
   obj *start = (obj *)((char *)object-sizeof(function1_t)-3*sizeof(uint8_t));
   function1_t destructor = *(function1_t *)((obj *)((char *)start+3*sizeof(uint8_t)));
@@ -267,14 +268,14 @@ void deallocate_aux_with_bitarray(obj *object)
     }
   else
     {
-      default_destruct_with_bitarray(object);
+      default_destruct(object);
     }
   remove_from_list(object);
   clear_bit(bit_array, bit_position);
   Free(start);
 }
 
-void deallocate_with_bitarray(obj *object)
+void deallocate(obj *object)
 {
   obj *start = (obj *)((char *)object-sizeof(function1_t)-3*sizeof(uint8_t));
   uint8_t bit_position  = *(uint8_t *)((obj *)((char *)start+2*sizeof(uint8_t)));
@@ -291,15 +292,15 @@ void deallocate_with_bitarray(obj *object)
 	  counter = 0;
 	  return;
 	}
-      else if(rc_with_bitarray(object) == 0)
+      else if(rc(object) == 0)
 	{
-	  deallocate_aux_with_bitarray(object);
+	  deallocate_aux(object);
 	}
       counter = 0;
     }
 }
 
-void retain_with_bitarray(obj *object)
+void retain(obj *object)
 {
   if(object)
     {
@@ -311,7 +312,7 @@ void retain_with_bitarray(obj *object)
 }
 
 
-void release_with_bitarray(obj *object)
+void release(obj *object)
 {
   if(object)
     {
@@ -319,11 +320,11 @@ void release_with_bitarray(obj *object)
       uint8_t ref_count = *(uint8_t *)tmp;
       if(ref_count != 0) ref_count--;
       memset(tmp,ref_count,1);
-      if(ref_count == 0) deallocate_with_bitarray(object);
+      if(ref_count == 0) deallocate(object);
     }
 }
 
-size_t rc_with_bitarray(obj *object)
+size_t rc(obj *object)
 {
   obj *tmp = (obj *)((char *)object-sizeof(function1_t)-2*sizeof(uint8_t)); //CHANGED FROM 1 TO 2
   uint8_t ref_count = *(uint8_t *)tmp;

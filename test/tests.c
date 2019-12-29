@@ -328,6 +328,7 @@ void test_cascade_free()
       lib_for_tests_linked_list_append(); //Skapar bara en ny link och placerar den sist i listan (vars element är null)
     }
   release(list);
+  printf("\nlist size: %d\n", lib_for_tests_linked_list_size());
   CU_ASSERT_EQUAL(100,lib_for_tests_linked_list_size());
   shutdown();
 }
@@ -394,7 +395,7 @@ void test_bit_array()
   clear_bit(bit_array, 100);
   CU_ASSERT_FALSE(test_bit(bit_array, 100));
 }
-
+/*
 void test_allocate_with_bitarray()
 {
   char *str1 = allocate_with_bitarray(sizeof(char),NULL);
@@ -413,7 +414,7 @@ void test_destruct_default_with_bitarray()
   release_with_bitarray(alloc);
   shutdown_with_bitarray();
 }
-
+*/
 
 int init_suite(void)
 {
@@ -468,9 +469,9 @@ int main()
       (NULL == CU_add_test(test_suite1, "cleanup different destructors", test_cleanup_dif_destructors))||
       (NULL == CU_add_test(test_suite1, "Default destructor for array", test_destruct_default_array))||
       (NULL == CU_add_test(test_suite1, "Alloc array struct", test_alloc_array_struct))||
-      (NULL == CU_add_test(test_suite1, "bit array", test_bit_array))||
+      (NULL == CU_add_test(test_suite1, "bit array", test_bit_array))/*||
       (NULL == CU_add_test(test_suite1, "allocate with bit array", test_allocate_with_bitarray))||
-      (NULL == CU_add_test(test_suite1, "default destructor with bit array", test_destruct_default_with_bitarray))
+      (NULL == CU_add_test(test_suite1, "default destructor with bit array", test_destruct_default_with_bitarray))*/
       )
     {
       CU_cleanup_registry();

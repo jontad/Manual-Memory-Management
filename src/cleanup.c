@@ -34,7 +34,7 @@ list_t *linked_list_get_list()
   if(pointer_list) return pointer_list;
   else return create_pointer_list();
 }
-
+/*
 void cleanup()
 {
   if(pointer_list)
@@ -72,8 +72,7 @@ void shutdown()
   ioopm_linked_list_destroy(pointer_list);
   pointer_list = NULL;
 }
-
-
+*/
 
 
 /****************** BITARRAY STUFF *******************/
@@ -89,7 +88,7 @@ obj *get_object_from_bit(uint8_t position)
 	  obj *object = (obj *)cursor->value.obj_val;
 	  obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));
 	  uint8_t bit_pos = *(uint8_t *)tmp;
-	  if (test_bit(bit_array, bit_pos))
+	  if (bit_pos == position && test_bit(bit_array, bit_pos))
 	    {
 	      return object;
 	    }
@@ -100,7 +99,7 @@ obj *get_object_from_bit(uint8_t position)
 }
 
 
-void cleanup_with_bitarray()
+void cleanup()
 {
   for (int i = 0; i<bit_array_size; i++)
     {
@@ -112,15 +111,15 @@ void cleanup_with_bitarray()
 
 	  uint8_t bit_position = bit_array_size * i + j;
 	  obj *object = get_object_from_bit(bit_position);
-	  if (rc_with_bitarray(object) == 0)
+	  if (rc(object) == 0)
 	    {
-	      deallocate_aux_with_bitarray(object);
+	      deallocate(object);
 	    }
 	}
     }
 }
 
-void shutdown_with_bitarray()
+void shutdown()
 {
   for (int i = 0; i<bit_array_size; i++)
     {
@@ -132,7 +131,7 @@ void shutdown_with_bitarray()
 
 	  uint8_t bit_position = bit_array_size * i + j;
 	  obj *object = get_object_from_bit(bit_position);
-	  deallocate_aux_with_bitarray(object);
+	  deallocate_aux(object);
 	}
     }
   
