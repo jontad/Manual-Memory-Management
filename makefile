@@ -74,7 +74,7 @@ example: test/example.c allocate.o cascade.o lib_for_tests.o cleanup.o linked_li
 
 ll_test: inlupp2/ll_test.c hash_table.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/ll_test $(CUNIT_LINK)
-	./test/ll_test
+	$(C_VALGRIND) ./test/ll_test
 
 webstore_test: inlupp2/tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/webstore_test $(CUNIT_LINK)

@@ -86,8 +86,8 @@ typedef union elem elem_t;
 /// @brief union of different types to be stored in hash tables or linked lists
 union elem
 {
-  int int1;  
-  unsigned int u_int; 
+  int int1;
+  unsigned int u_int;
   bool boolean;
   char *str;
   float float1;
