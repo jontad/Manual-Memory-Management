@@ -8,11 +8,11 @@ C_VALGRIND  	  = valgrind --leak-check=full --show-leak-kinds=all
 
 ################ COMPILES ###################
 
-compile: src webstore lib_for_tests.o
+compile: src webstore
 
 ## SRC ##
 
-src: test/tests.c allocate.o cleanup.o cascade.o linked_list.o lib_for_tests.o
+src: test/tests.c allocate.o cleanup.o cascade.o lib_for_tests.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/tests $(CUNIT_LINK)
 
 cascade.o: src/cascade.c src/refmem.h
@@ -22,7 +22,7 @@ cleanup.o: src/cleanup.c src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/cleanup.c
 
 allocate.o: src/allocate.c src/refmem.h src/linked_list.h test/lib_for_tests.h
-	$(C_COMPILER) $(C_OPTIONS) -c src/allocate.c
+	$(C_COMPILER) $(C_OPTIONS) -c  src/allocate.c
 
 linked_list.o: src/linked_list.c src/linked_list.h inlupp2/common.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/linked_list.c
@@ -38,8 +38,8 @@ frontend.o: inlupp2/frontend.c inlupp2/frontend.h inlupp2/backend.h inlupp2/hash
 backend.o: inlupp2/backend.c inlupp2/frontend.h inlupp2/backend.h inlupp2/hash_table.h inlupp2/inlupp_linked_list.h inlupp2/utils.h inlupp2/common.h src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/backend.c
 
-inlupp_linked_list.o: inlupp2/linked_list.c inlupp2/inlupp_linked_list.h inlupp2/common.h
-	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/linked_list.c
+inlupp_linked_list.o: inlupp2/inlupp_linked_list.c inlupp2/inlupp_linked_list.h inlupp2/common.h
+	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/inlupp_linked_list.c
 
 hash_table.o: inlupp2/hash_table.c inlupp2/hash_table.h inlupp2/inlupp_linked_list.h inlupp2/common.h src/refmem.h
 	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/hash_table.c
@@ -68,15 +68,15 @@ crayparty_val_test: linked_list.o cleanup.o allocate.o src/crayparty.c cascade.o
 	$(C_COMPILER) $(C_OPTIONS) $^ -o test/crayparty
 	$(C_VALGRIND) test/crayparty
 
-example: test/example.c allocate.o cascade.o linked_list.o lib_for_tests.o cleanup.o
+example: test/example.c allocate.o cascade.o lib_for_tests.o cleanup.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/example $(CUNIT_LINK)
 	$(C_VALGRIND) test/example
 
-ll_test: inlupp2/ll_test.c hash_table.o linked_list.o allocate.o cleanup.o cascade.o lib_for_tests.o
+ll_test: inlupp2/ll_test.c hash_table.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/ll_test $(CUNIT_LINK)
 	./test/ll_test
 
-webstore_test: inlupp2/tests.c hash_table.o linked_list.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o
+webstore_test: inlupp2/tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/webstore_test $(CUNIT_LINK)
 	./test/webstore_test
 
@@ -93,5 +93,14 @@ lcov_open: lcov_generate
 	google-chrome-stable test/tests-lcov/index.html
 
 
+
+################# GPROF #################
+
+gprof: test/example.c allocate.o cascade.o lib_for_tests.o cleanup.o linked_list.o
+	gcc -pg $^ -o test/gprof
+	test/gprof
+	gprof test/gprof | less
+
+
 clean:	
-	rm *.o ./test/tests *.gcno *.gcda ./inlupp2/*.gcno ./inlupp2/*.gcda
+	rm *.o ./test/tests ./test/crayparty ./test/example ./test/ll_test ./test/webstore_test ./test/gprof  *.gcno *.gcda ./src/*.gch ./inlupp2/*.gcno ./inlupp2/*.gcda ./inlupp2/*.gch gmon.out
