@@ -310,15 +310,22 @@ void test_allocate_dif_structs()
 void test_cascade_free()
 {
   size_reset();
+  ioopm_list_t *pointer_list = linked_list_get();
+  CU_ASSERT_EQUAL(ioopm_linked_list_size(pointer_list), 0);
+  
   list_t *list = list_create(); //Skapar en vanlig lista 
   retain(list);
+  CU_ASSERT_EQUAL(ioopm_linked_list_size(pointer_list), 1);
   set_cascade_limit(100);
   for(int i = 0; i < 200; ++i)
     {
       linked_list_append(); //Skapar bara en ny link och placerar den sist i listan (vars element är null)
     }
+  CU_ASSERT_EQUAL(200, linked_list_size());
+  CU_ASSERT_EQUAL(201, ioopm_linked_list_size(pointer_list)); // The list + all 200 links
   release(list);
-  CU_ASSERT_EQUAL(100,linked_list_size());
+  CU_ASSERT_EQUAL(101, ioopm_linked_list_size(pointer_list)); // Should have deallocated 100 objects (OBS: INCLUDING THE LIST)
+  CU_ASSERT_EQUAL(101, linked_list_size()); // Has 101 links left, since only 99 LINKS were released
   shutdown();
 }
 
@@ -328,14 +335,19 @@ void test_cascade_free_alloc() //Test with using alloc after cascade limit is re
   list_t *list = list_create();
   retain(list);
   set_cascade_limit(100);
+  CU_ASSERT_EQUAL(1, ioopm_linked_list_size(linked_list_get()));
   for(int i = 0; i < 200; ++i)
     {
       linked_list_append();
     }
+  CU_ASSERT_EQUAL(200, linked_list_size());
+  CU_ASSERT_EQUAL(201, ioopm_linked_list_size(linked_list_get())); // The list + all 200 links
   release(list);
-  CU_ASSERT_EQUAL(100,linked_list_size());
-  char *str = allocate(sizeof(char *),NULL);
-  CU_ASSERT_EQUAL(0,linked_list_size());
+  CU_ASSERT_EQUAL(101, linked_list_size()); // The list + 99 links were deallocated
+  CU_ASSERT_EQUAL(101, ioopm_linked_list_size(linked_list_get()));
+  char *str = allocate(sizeof(char *), NULL);
+  CU_ASSERT_EQUAL(1, linked_list_size()); // Calling allocate should remove 100 links using the the cascade list, which leaves 1 left in the list
+  CU_ASSERT_EQUAL(2, ioopm_linked_list_size(linked_list_get())); // All objects except str, which we just allocated, and the last link in the list should have been deallocated
 
   deallocate(str);
   shutdown();

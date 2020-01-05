@@ -25,9 +25,7 @@ void set_cascade_list_to_null()
 
 obj *allocate(size_t bytes, function1_t destructor)
 {
-
   return allocate_array(1, bytes, destructor);
-
 }
 
 obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
@@ -66,18 +64,24 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 
   //Add pointer to the global pointer list
   ioopm_list_t *pointer_list = linked_list_get();
-  if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
+  if (pointer_list)
+    {
+      ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
+    }
   
   return alloc;
 }
 
 void remove_from_list(obj *object)
 {
-  ioopm_list_t *pointer_list = linked_list_get(); 
+  ioopm_list_t *pointer_list = linked_list_get();
   if(pointer_list)
     {
       int index = ioopm_linked_list_position(pointer_list, (elem_t){.obj_val = object});
-      if (index >= 0) ioopm_linked_list_remove(pointer_list, index);
+      if (index >= 0)
+	{
+	  ioopm_linked_list_remove(pointer_list, index);
+	}
     }
 }
 
@@ -123,8 +127,8 @@ void deallocate(obj *object)
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
 
   counter++;
-  list_negate(); // THIS IS FOR TESTING!
-  if(counter == get_cascade_limit() && get_cascade_limit() != 0)
+  //list_negate(); // THIS IS FOR TESTING!
+  if(counter > get_cascade_limit() && get_cascade_limit() != 0)
     {
       //If cascade limit is reached, add object to the global cascade list
       ioopm_linked_list_append(cascade_list, (elem_t){.obj_val = object});
