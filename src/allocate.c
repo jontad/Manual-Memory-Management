@@ -127,8 +127,8 @@ void deallocate(obj *object)
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
 
   counter++;
-  //list_negate(); // THIS IS FOR TESTING!
-  if(counter > get_cascade_limit() && get_cascade_limit() != 0)
+  if(counter > get_cascade_limit() && get_cascade_limit() != 0) // Having '>' instead of '==' makes the limit more logical and easier to understand.
+    // If the limit is 100 we now deallocate 100 objects before reaching the limit, before we only allocated 99 objects.
     {
       //If cascade limit is reached, add object to the global cascade list
       ioopm_linked_list_append(cascade_list, (elem_t){.obj_val = object});

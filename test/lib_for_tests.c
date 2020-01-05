@@ -32,7 +32,7 @@ void destructor_linked_list(obj *object)
 
 void link_destructor(obj *link)
 {
-  if (link)
+  if (link) // Prevents us from decreasing list_size if the link is NULL
     {
       list_size--; // Decreases the list size by 1 when a link is destroyed
       //list->size--;
