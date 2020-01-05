@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Update packages
-    - run: sudo apt-get update
+      run: sudo apt-get update
     - name: Install cunit & valgrind
       run: sudo apt-get install libcunit1-dev libcunit1-doc libcunit1 valgrind
     - name: make compile
