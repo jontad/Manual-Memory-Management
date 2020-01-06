@@ -26,12 +26,17 @@ void lib_for_tests_destructor_string_array(obj *object)
 void lib_for_tests_destructor_linked_list(obj *object)
 {
   new_list_t *list = object;
-  new_link_t *link = list->head;
-  release(link);
+  release(list->tail); // Releases the tail 
+  release(list->head); // Releases the head, which also releases the rest of the list
 }
 
 void lib_for_tests_link_destructor(obj *link)
 {
+  if (link) // Prevents us from decreasing list_size if the link is NULL
+    {
+      list_size--; // Decreases the list size by 1 when a link is destroyed
+      //list->size--;
+    }
   release(((new_link_t *) link)->next);
 }
 
@@ -55,6 +60,8 @@ new_list_t *lib_for_tests_list_create()
 
 void lib_for_tests_linked_list_append()
 {
+  list_size++; // Easier to debug if it's incremented at the start
+  list->size += 1;
   if(list->tail != NULL)
     {
       new_link_t *link = allocate(sizeof(new_link_t), lib_for_tests_link_destructor);
@@ -74,8 +81,6 @@ void lib_for_tests_linked_list_append()
       list->tail = link;
       retain(link);
     }
-  list_size++;
-  list->size += 1;
 }
 
 size_t lib_for_tests_linked_list_size()

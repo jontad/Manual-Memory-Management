@@ -106,4 +106,4 @@ gprof: test/example.c allocate.o cascade.o lib_for_tests.o cleanup.o linked_list
 
 
 clean:	
-	rm *.o ./test/tests ./test/crayparty ./test/example ./test/ll_test ./test/webstore_test ./test/gprof  *.gcno *.gcda ./src/*.gch ./inlupp2/*.gcno ./inlupp2/*.gcda ./inlupp2/*.gch gmon.out
+	rm *.o *.gcno *.gcda gmon.out ./test/tests ./test/crayparty ./test/example ./test/ll_test ./test/webstore_test ./test/unit_test ./test/gprof ./test/*.gcno ./src/*.gch ./inlupp2/*.gcno ./inlupp2/*.gcda ./inlupp2/*.gch

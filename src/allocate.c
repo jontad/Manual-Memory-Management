@@ -26,9 +26,7 @@ void set_cascade_list_to_null()
 
 obj *allocate(size_t bytes, function1_t destructor)
 {
-
   return allocate_array(1, bytes, destructor);
-
 }
 
 obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
@@ -78,7 +76,10 @@ void remove_from_list(obj *object)
   if(pointer_list)
     {
       int index = ioopm_linked_list_position(pointer_list, (elem_t){.obj_val = object});
-      if (index >= 0) ioopm_linked_list_remove(pointer_list, index);
+      if (index >= 0)
+	{
+	  ioopm_linked_list_remove(pointer_list, index);
+	}
     }
 }
 
@@ -124,8 +125,8 @@ void deallocate(obj *object)
   if(!cascade_list) cascade_list = ioopm_linked_list_create(eq_func);
 
   counter++;
-  lib_for_tests_list_negate(); // THIS IS FOR TESTING!
-  if(counter == get_cascade_limit() && get_cascade_limit() != 0)
+  if(counter > get_cascade_limit() && get_cascade_limit() != 0) // Having '>' instead of '==' makes the limit more logical and easier to understand.
+    // If the limit is 100 we now deallocate 100 objects before reaching the limit, before we only allocated 99 objects.
     {
       //If cascade limit is reached, add object to the global cascade list
       ioopm_linked_list_append(cascade_list, (elem_t){.obj_val = object});
