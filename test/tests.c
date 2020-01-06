@@ -85,6 +85,24 @@ void test_destruct_default_array()
   shutdown();
 }
 
+void test_destruct_default_linked_list()
+{
+  new_list_t *list = allocate(sizeof(new_list_t), NULL);
+  new_link_t *link1 = allocate(sizeof(new_link_t), NULL);
+  new_link_t *link2 = allocate(sizeof(new_link_t), NULL);
+  new_link_t *link3 = allocate(sizeof(new_link_t), NULL);
+
+  list->head = link1;
+  list->tail = link3;
+  link1->next = link2;
+  link2->next = link3;
+
+  release(link2);
+
+  CU_ASSERT_EQUAL(3, ioopm_linked_list_size(linked_list_get_list()));
+}
+
+
 void test_destruct_default_several_ptrs()
 {
   ptr_t *alloc = allocate(sizeof(ptr_t), NULL);
@@ -449,6 +467,7 @@ int main()
       (NULL == CU_add_test(test_suite1, "cascade no limit", test_cascade_no_limit))||
       (NULL == CU_add_test(test_suite1, "cleanup different destructors", test_cleanup_dif_destructors))||
       (NULL == CU_add_test(test_suite1, "Default destructor for array", test_destruct_default_array))||
+      (NULL == CU_add_test(test_suite1, "Default destructor for linked list", test_destruct_default_linked_list))||
       (NULL == CU_add_test(test_suite1, "Alloc array struct", test_alloc_array_struct))
       )
     {

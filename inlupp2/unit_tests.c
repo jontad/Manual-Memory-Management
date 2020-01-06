@@ -104,30 +104,6 @@ static elem_t test_iterator_func(list_t *list, int index)
 }
 
 // TESTS //////////////////////////////////////////////////////////////////////////////
-void test_inlupp_linked_list_get(void)
-{
-  list_t *ll = inlupp_linked_list_create(equality_function_int);
-
-  inlupp_linked_list_append(ll, int_elem(13));
-  int i = inlupp_linked_list_get(ll, 0).int1;
-  CU_ASSERT_EQUAL(i, 13);
-
-  
-  inlupp_linked_list_insert(ll, 7, int_elem(14));
-  i = inlupp_linked_list_get(ll, 1).int1;
-  CU_ASSERT_EQUAL(i,14);
-
-  inlupp_linked_list_insert(ll, 8, int_elem(15));
-  i = inlupp_linked_list_get(ll, 2).int1;
-  CU_ASSERT_EQUAL(i,15);
-  
-    
-  inlupp_linked_list_destroy(ll);
-}
-
-
-
-
 void test_inlupp_linked_list_insert(void)
 {
   list_t *ll = inlupp_linked_list_create(equality_function_int);
@@ -150,6 +126,30 @@ void test_inlupp_linked_list_insert(void)
   
   inlupp_linked_list_destroy(ll);
 }
+
+
+
+void test_inlupp_linked_list_get(void)
+{
+  list_t *ll = inlupp_linked_list_create(equality_function_int);
+
+  inlupp_linked_list_append(ll, int_elem(13));
+  int i = inlupp_linked_list_get(ll, 0).int1;
+  CU_ASSERT_EQUAL(i, 13);
+
+  
+  inlupp_linked_list_insert(ll, 7, int_elem(14));
+  i = inlupp_linked_list_get(ll, 1).int1;
+  CU_ASSERT_EQUAL(i,14);
+
+  inlupp_linked_list_insert(ll, 8, int_elem(15));
+  i = inlupp_linked_list_get(ll, 2).int1;
+  CU_ASSERT_EQUAL(i,15);
+  
+    
+  inlupp_linked_list_destroy(ll);
+}
+
 
 
 void test_inlupp_linked_list_prepend(void)
@@ -676,9 +676,9 @@ int main()
 
 
   CU_add_test(test_suite, "Adaptive buckets", test_hash_table_adaptive_buckets);
-  CU_basic_run_tests();
 
+  CU_basic_set_mode(CU_BRM_VERBOSE);
+  CU_basic_run_tests();
   CU_cleanup_registry(); 
-  
-  return 0;
+  return CU_get_error();;
 }
