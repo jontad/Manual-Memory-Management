@@ -335,7 +335,6 @@ void test_cascade_free_alloc() //Test with using alloc after cascade limit is re
   list_t *list = list_create();
   retain(list);
   set_cascade_limit(100);
-  CU_ASSERT_EQUAL(1, ioopm_linked_list_size(linked_list_get()));
   for(int i = 0; i < 200; ++i)
     {
       linked_list_append();
