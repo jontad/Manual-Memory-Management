@@ -62,8 +62,8 @@ static void free_items_in_cart(link_t **element, void *extra)
 
 static void free_carts_apply_func(elem_t key, elem_t *value, void *extra)
 {
-  linked_apply_to_all(value->cart->basket, free_items_in_cart, NULL);
-  linked_list_destroy(value->cart->basket);
+  inlupp_linked_apply_to_all(value->cart->basket, free_items_in_cart, NULL);
+  inlupp_linked_list_destroy(value->cart->basket);
   release(value->cart);
 }
 
@@ -92,7 +92,7 @@ static void destroy_merch(database_t *db, merch_t *merch) //Note: remember to re
       current_location = current_location->next;
     }
   clear_stock(stock);
-  linked_list_destroy(stock); //2. free list of shelves_ht
+  inlupp_linked_list_destroy(stock); //2. free list of shelves_ht
   //free(merch->name); //These are not needed when not taking input from ask question!
   //free(merch->desc);
   release(merch);
@@ -347,9 +347,9 @@ void test_sort_list(void)
 {
   list_t *list = inlupp_linked_list_create(equality_function_str);
 
-  linked_list_insert(list, 0, str_elem("c"));
-  linked_list_insert(list, 0, str_elem("a"));
-  linked_list_insert(list, 0, str_elem("b"));
+  inlupp_linked_list_insert(list, 0, str_elem("c"));
+  inlupp_linked_list_insert(list, 0, str_elem("a"));
+  inlupp_linked_list_insert(list, 0, str_elem("b"));
 
   char **sorted_list = database_sort_list(list);
 
@@ -362,7 +362,7 @@ void test_sort_list(void)
   CU_ASSERT_TRUE(strcmp("c", c) == 0);
 
   release(sorted_list);
-  linked_list_destroy(list);
+  inlupp_linked_list_destroy(list);
 }
 
 

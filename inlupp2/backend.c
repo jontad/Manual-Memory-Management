@@ -43,8 +43,8 @@ static void free_shelves_in_stock(link_t **element, void *extra)
 
 static void free_carts_apply_func(elem_t key, elem_t *value, void *extra)
 {
-  linked_apply_to_all(value->cart->basket, free_items_in_cart, NULL);
-  linked_list_destroy(value->cart->basket);
+  inlupp_linked_apply_to_all(value->cart->basket, free_items_in_cart, NULL);
+  inlupp_linked_list_destroy(value->cart->basket);
   //free(value->cart);
   release(value->cart);
 }
@@ -77,7 +77,7 @@ static void destroy_merch(database_t *db, merch_t *merch) //Note: remember to re
       current_location = current_location->next;
     }
   clear_stock(stock);
-  linked_list_destroy(stock); //2. free list of shelves_ht
+  inlupp_linked_list_destroy(stock); //2. free list of shelves_ht
   //free(merch);
   release(merch);
 }
@@ -166,7 +166,7 @@ option_t database_choose_merch(database_t *db, int result)
   
   //free(merch_list);
   release(merch_list);
-  linked_list_destroy(names);
+  inlupp_linked_list_destroy(names);
   return merch;
 }
 
@@ -204,7 +204,7 @@ static merch_t *insert_merch(database_t *db, char *new_name, merch_t *merch)
   
   hash_table_remove(db->merch_ht, str_elem(merch->name));
   
-  linked_apply_to_all(merch->stock, free_shelves_in_stock, NULL);
+  inlupp_linked_apply_to_all(merch->stock, free_shelves_in_stock, NULL);
   //free(merch);
   release(merch);
   hash_table_insert(db->merch_ht, str_elem(new_name), merch_elem(new_merch));    
@@ -326,7 +326,7 @@ void database_replenish_stock(database_t *db, merch_t *merch, shelf_t *new_shelf
   else
     {
       int index = shelf_compare(merch->stock, new_shelf->shelf_name);  //Index shelves in alphanumerical order
-      linked_list_insert(merch->stock, index, shelf_elem(new_shelf));
+      inlupp_linked_list_insert(merch->stock, index, shelf_elem(new_shelf));
       hash_table_insert(db->shelves_ht, str_elem(new_shelf->shelf_name), merch_elem(merch));
     }
 }
@@ -349,9 +349,9 @@ cart_t *database_create_cart(database_t *db)
 
 void database_delete_cart(database_t *db, cart_t *cart)
 {
-  linked_apply_to_all(cart->basket, free_items_in_cart, NULL);
+  inlupp_linked_apply_to_all(cart->basket, free_items_in_cart, NULL);
   hash_table_remove(db->carts, unsigned_elem(cart->id));
-  linked_list_destroy(cart->basket);
+  inlupp_linked_list_destroy(cart->basket);
   //free(cart);
   release(cart);
 }
@@ -380,7 +380,7 @@ void database_add_to_cart(database_t *db, cart_t *cart, merch_t *merch, int amou
 
   merch->available_amount = merch->available_amount - amount;
 
-  linked_list_insert(cart->basket, 0, item_elem(item));
+  inlupp_linked_list_insert(cart->basket, 0, item_elem(item));
 }
 
     
@@ -442,7 +442,7 @@ void database_remove_from_cart(cart_t *cart, item_t *item, int amount)
       
       if(item->amount == 0)
 	{
-	  linked_list_remove(cart->basket, index); 
+	  inlupp_linked_list_remove(cart->basket, index); 
 	  //free(item);
 	  release(item);
 	}

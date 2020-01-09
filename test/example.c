@@ -1,5 +1,5 @@
 #include "../src/refmem.h"
-#include "../src/common.h"
+#include "../inlupp2/common.h"
 #include <stdio.h>
 #include <assert.h>
 

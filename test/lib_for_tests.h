@@ -18,8 +18,8 @@ typedef struct string_struct string_t;
 /// @brief Renaming int_struct to ourInt_t
 typedef struct int_struct ourInt_t;
 
-/// @brief Renaming linked_list to list_t
-typedef struct linked_list list_t;
+/// @brief Renaming linked_list to new_list_t
+typedef struct linked_list new_list_t;
 
 /// @brief Renaming new_link to new_link_t
 typedef struct new_link new_link_t;
@@ -102,55 +102,55 @@ struct hash
 
 /// @brief the following function is ment to deallocate a string
 /// @var object a string 
-void destructor_string(obj *object);
+void lib_for_tests_destructor_string(obj *object);
 
 /// @brief this function is ment for deallocating an array of strings
 /// @var object an array of strings
-void destructor_string_array(obj *object);
+void lib_for_tests_destructor_string_array(obj *object);
 
 /// @brief the following function is ment to deallocate a linked list
 /// @var object a linked list 
-void destructor_linked_list(obj *object);
+void lib_for_tests_destructor_linked_list(obj *object);
 
 /// @brief appends a dummy element into a linked list
-void linked_list_append();
+void lib_for_tests_linked_list_append();
 
 /// @brief finds out the size of a list
 /// @return the size of a linked list
-size_t linked_list_size();
+size_t lib_for_tests_linked_list_size();
 
 /// @brief deallocates a link in a linked list
 /// @var c a link
-void link_destructor(obj *c);
+void lib_for_tests_link_destructor(obj *c);
 
 /// @brief creates a linked list
 /// @return a linked list
-list_t *list_create();
+new_list_t *lib_for_tests_list_create();
 
 /// @brief decrements the size of a linked list
-void list_negate();
+void lib_for_tests_list_negate();
 
 /// @brief increments the size of a linked list
-void size_reset();
+void lib_for_tests_size_reset();
 
 /// @brief creates a generic hash table
 /// @return the hash table
-hash_t *demo_hash_table_create();
+hash_t *lib_for_tests_demo_hash_table_create();
 
 /// @brief inserts a value into the hash table
 /// @var ht a hash table
 /// @var key the key we want to insert
 /// @var value the value we want to insert
-void demo_hash_table_insert(hash_t *ht, int key, char *value);
+void lib_for_tests_demo_hash_table_insert(hash_t *ht, int key, char *value);
 
 /// @brief removes an element from the hash table for a given key
 /// @var ht a hash table
 /// @var key the key for the entry we want to remove
-void demo_hash_table_remove(hash_t *ht, int key);
+void lib_for_tests_demo_hash_table_remove(hash_t *ht, int key);
 
 /// @brief finds out the size of the given hash table
 /// @var ht the hash table of interest
 /// return the size of the hash table
-size_t demo_hash_table_size(hash_t *ht);
+size_t lib_for_tests_demo_hash_table_size(hash_t *ht);
 
 #endif

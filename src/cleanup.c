@@ -1,7 +1,7 @@
 #include "refmem.h"
 #include "linked_list.h"
 
-ioopm_list_t *pointer_list = NULL;
+list_t *pointer_list = NULL;
 
 bool eq_func(elem_t a, elem_t b)
 {
@@ -10,16 +10,16 @@ bool eq_func(elem_t a, elem_t b)
   return a_ptr == b_ptr;
 }
 
-ioopm_list_t *create_list()
+list_t *create_pointer_list()
 {
   pointer_list = ioopm_linked_list_create(eq_func);
   return pointer_list;
 }
 
-ioopm_list_t *linked_list_get()
+list_t *linked_list_get_list()
 {
   if(pointer_list) return pointer_list;
-  else return create_list();
+  else return create_pointer_list();
 }
 
 void cleanup()
@@ -30,7 +30,7 @@ void cleanup()
       while(cursor)
 	{
 	  link_t *tmp = cursor->next;
-	  obj *object = (obj *)cursor->element.obj_val;
+	  obj *object = (obj *)cursor->value.obj_val;
 	  if (rc(object) == 0)
 	    {
 	      deallocate_aux(object);
@@ -49,7 +49,7 @@ void shutdown()
       if(Successful(object)) deallocate_aux(object.value.obj_val);
     }
   
-  ioopm_list_t *cascade_list = get_cascade_list();
+  list_t *cascade_list = get_cascade_list();
   if(cascade_list)
     {
       ioopm_linked_list_destroy(cascade_list);

@@ -132,8 +132,8 @@ static void resize_hash_table(hash_table_t *ht)
       retain(current_value_link);
     }
   
-  linked_list_destroy(keys);
-  linked_list_destroy(values);
+  inlupp_linked_list_destroy(keys);
+  inlupp_linked_list_destroy(values);
 }
 
 //Took find_previous_entry_for_key from the other hash_table.c, as our segfaulted for the last entry

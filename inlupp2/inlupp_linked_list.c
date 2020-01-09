@@ -112,7 +112,7 @@ list_t *inlupp_linked_list_create(eq_function equal)
   return linked_list;
 }
 
-void linked_list_prepend(list_t *list, elem_t value)
+void inlupp_linked_list_prepend(list_t *list, elem_t value)
 {
   link_t *new_entry = entry_create(list, list->first, value);
 
@@ -131,7 +131,7 @@ void inlupp_linked_list_append(list_t *list, elem_t value)
 {
   if(list->last == NULL)
     {
-      linked_list_prepend(list, value);
+      inlupp_linked_list_prepend(list, value);
     }
   else
     {
@@ -146,12 +146,12 @@ void inlupp_linked_list_append(list_t *list, elem_t value)
 
 
 
-void linked_list_insert(list_t *list, int index, elem_t value)
+void inlupp_linked_list_insert(list_t *list, int index, elem_t value)
 {
   
   if(list->list_size == 0 || index < 1)
     {
-      linked_list_prepend(list, value);
+      inlupp_linked_list_prepend(list, value);
     }
   else if(index > 0 && index < list->list_size) 
     {
@@ -167,7 +167,7 @@ void linked_list_insert(list_t *list, int index, elem_t value)
 
 
 
-link_t *linked_list_remove_link(obj *object, int index)
+link_t *inlupp_linked_list_remove_link(obj *object, int index)
 {
   list_t *list = object;
   retain(list);
@@ -195,7 +195,7 @@ link_t *linked_list_remove_link(obj *object, int index)
 }
 
 
-elem_t linked_list_remove(list_t *list, int index)
+elem_t inlupp_linked_list_remove(list_t *list, int index)
 {
   link_t *prev_element = find_previous_entry_for_index(list, index);
   link_t *element = prev_element->next;
@@ -237,7 +237,7 @@ elem_t inlupp_linked_list_get(list_t *list, int index)
 }
 
 
-bool linked_list_contains(list_t *list, elem_t value)
+bool inlupp_linked_list_contains(list_t *list, elem_t value)
 {
   link_t *link = list->first;
   for(int i = 0; i < list->list_size; ++i)
@@ -252,7 +252,7 @@ bool linked_list_contains(list_t *list, elem_t value)
   return false;
 }
 
-int linked_list_position(list_t *list, elem_t element)
+int inlupp_linked_list_position(list_t *list, elem_t element)
 {
   link_t *link = list->first;
   retain(link);
@@ -280,7 +280,7 @@ size_t inlupp_linked_list_size(list_t *list)
 
 
 
-bool linked_list_is_empty(list_t *list)
+bool inlupp_linked_list_is_empty(list_t *list)
 {
   if(list->list_size == 0)
     {
@@ -296,7 +296,7 @@ bool linked_list_is_empty(list_t *list)
 
 
 
-void linked_list_clear(list_t *list)
+void inlupp_linked_list_clear(list_t *list)
 {
   link_t *link = list->first;
   retain(link);
@@ -315,15 +315,15 @@ void linked_list_clear(list_t *list)
 }
 
 
-void linked_list_destroy(list_t *list)
+void inlupp_linked_list_destroy(list_t *list)
 {
-  linked_list_clear(list);
+  inlupp_linked_list_clear(list);
   list_destroy(list);
 }
 
 
 
-bool linked_list_all(list_t *list, char_predicate prop,  void *extra)
+bool inlupp_linked_list_all(list_t *list, char_predicate prop,  void *extra)
 {
   link_t *link = list->first;
   for (int i = 0; i < inlupp_linked_list_size(list); ++i)
@@ -336,7 +336,7 @@ bool linked_list_all(list_t *list, char_predicate prop,  void *extra)
 }
 
 
-bool linked_list_any(list_t *list, char_predicate prop, void *extra)
+bool inlupp_linked_list_any(list_t *list, char_predicate prop, void *extra)
 {
   link_t *link = list->first;
   for (int i = 0; i < inlupp_linked_list_size(list); ++i)
@@ -348,7 +348,7 @@ bool linked_list_any(list_t *list, char_predicate prop, void *extra)
 }
 
   
-void linked_apply_to_all(list_t *list, apply_char_function fun, void *extra)
+void inlupp_linked_apply_to_all(list_t *list, apply_char_function fun, void *extra)
 {
   link_t *link = list->first;
 
