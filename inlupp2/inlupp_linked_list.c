@@ -359,6 +359,7 @@ void inlupp_linked_apply_to_all(list_t *list, apply_char_function fun, void *ext
 list_iterator_t *list_iterator(list_t *list)
 {
   list_iterator_t *iter = allocate(sizeof(list_iterator_t), NULL);
+  retain(iter);
   iter->current = list->first;
   retain(iter->current);
   iter->list = list;
@@ -405,57 +406,6 @@ elem_t iterator_current(list_iterator_t *iter)
 void iterator_destroy(list_iterator_t *iter)
 {
   release(iter);
-}
-
-
-
-elem_t test_iterator_func(list_t *list, int index)
-{
-  list_iterator_t *iter = list_iterator(list);
-  retain(iter);
-  for(int i = 0; i<index; ++i)
-    {
-      if(!iterator_has_next(iter))
-	{
-	  break;
-	}
-      iterator_next(iter);
-    }
-
-  link_t *elem = iter->current;
-  retain(elem);
-  
-  iterator_reset(iter);
-  for(int i = 0; i<index-1; ++i)
-    {
-      if(!iterator_has_next(iter))
-	{
-	  break;
-	}
-      iterator_next(iter);
-    }
-  
-  
-  
-  link_t *prev = iter->current;
-  retain(prev);
-  elem_t value;
-  
-  if (index == 0)
-    {
-      value = prev->value;
-      list->first = prev->next;
-      link_destroy(prev);
-      --list->list_size;
-    }
-  else if(elem != NULL)
-    {
-      value = remove_aux(list, index, prev, elem);
-    }
-  iterator_destroy(iter);
-  release(elem);
-  release(prev);
-  return value;
 }
 
 

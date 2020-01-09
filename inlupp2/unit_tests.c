@@ -6,7 +6,8 @@
 #include "hash_table.h"
 #include "iterator.h"
 #include "common.h"
-
+#include "../src/refmem.h"
+#include "../src/linked_list.h"
 
 #define No_Buckets 17
 #define Load 1
@@ -62,6 +63,7 @@ static bool check_length(elem_t key, elem_t value, void *extra)
 static elem_t test_iterator_func(list_t *list, int index)
 {
   list_iterator_t *iter = list_iterator(list);
+
   for(int i = 0; i<index; ++i)
     {
       if(!iterator_has_next(iter))
@@ -70,8 +72,8 @@ static elem_t test_iterator_func(list_t *list, int index)
 	}
       iterator_next(iter);
     }
-
   link_t *elem = iter->current;
+  retain(elem);
   
   iterator_reset(iter);
   for(int i = 0; i<index-1; ++i)
@@ -82,17 +84,16 @@ static elem_t test_iterator_func(list_t *list, int index)
 	}
       iterator_next(iter);
     }
-  
-  
-  
   link_t *prev = iter->current;
+  retain(prev);
+
   elem_t value;
-  
   if (index == 0)
     {
-      value = prev->value;
-      list->first = prev->next;
-      link_destroy(prev);
+      value = elem->value;
+      list->first = elem->next;
+      retain(list->first);
+      link_destroy(elem);
       --list->list_size;
     }
   else if(elem != NULL)
@@ -100,6 +101,8 @@ static elem_t test_iterator_func(list_t *list, int index)
       value = remove_aux(list, index, prev, elem);
     }
   iterator_destroy(iter);
+  release(elem);
+  release(prev);
   return value;
 }
 
@@ -121,7 +124,6 @@ void test_inlupp_linked_list_get(void)
   i = inlupp_linked_list_get(ll, 2).int1;
   CU_ASSERT_EQUAL(i,15);
   
-    
   inlupp_linked_list_destroy(ll);
 }
 
@@ -677,6 +679,10 @@ int main()
 
   CU_add_test(test_suite, "Adaptive buckets", test_hash_table_adaptive_buckets);
   CU_basic_run_tests();
+
+  //Need to free the cascade_list and pointer_list which are ioopm_linked_lists, not inlupp_linked_lists
+  ioopm_linked_list_destroy(get_cascade_list());
+  ioopm_linked_list_destroy(linked_list_get_list());
 
   CU_cleanup_registry(); 
   

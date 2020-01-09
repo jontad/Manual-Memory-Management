@@ -25,11 +25,11 @@ struct entry
 static entry_t *entry_create(elem_t key, elem_t value, entry_t *next)
 {
   entry_t *new_entry = allocate(sizeof(entry_t), NULL);
+  retain(new_entry);
   new_entry->key = key;
   new_entry->value = value;
   new_entry->next = next;
   retain(next);
-  
   return new_entry;
 }
 
@@ -38,8 +38,8 @@ static void create_dummys(hash_table_t *ht)
   for (int i = 0 ; i < ht->capacity ; i++)
     {
       elem_t empty = { .void_ptr = NULL };
-      ht->buckets[i] = entry_create(empty, empty, NULL); // Dummy
-      retain(ht->buckets[i]);
+      ht->buckets[i] = entry_create(empty, empty, NULL);
+      //ht->buckets[i] is retained in entry_create()
     }
 }
 
@@ -49,6 +49,7 @@ hash_table_t *hash_table_create(hash_function hash_func, eq_function key_eq, eq_
   /// Allocate space for a hash_table_t = ht->capacity pointers to
   /// entry_t's, which will be set to NULL
   hash_table_t *result = allocate(sizeof(hash_table_t), NULL);
+  retain(result);
   entry_t **buckets = allocate_array(capacity, sizeof(entry_t *), NULL);
   result->buckets = buckets;
   retain(buckets);
@@ -193,7 +194,6 @@ void hash_table_insert(hash_table_t *ht, elem_t key, elem_t value)
   else
     {
       entry->next = entry_create(key, value, next);
-      retain(entry->next);
       ++ht->size;
       if (ht->size / (float)ht->capacity >= ht->load_factor)
 	{
@@ -217,10 +217,14 @@ option_t hash_table_lookup(hash_table_t *ht, elem_t key)
   
   if (next && ht->hash_func(next->key) == ht->hash_func(key))
     {
+      release(tmp);
+      release(next);
       return Success(next->value);
     }
   else
     {
+      release(tmp);
+      release(next);
       return Failure();
     }
 }
@@ -265,6 +269,9 @@ elem_t hash_table_remove(hash_table_t *ht, elem_t key)
       
       entry_destroy(temp_entry);
       --ht->size;
+
+      release(previous_entry);
+      release(temp_entry);
     }
   return removed_value;
 }
@@ -323,11 +330,11 @@ void hash_table_clear(hash_table_t *ht)
 	  entry_t *current_entry = ht->buckets[i]->next;
 	  retain(current_entry);
 	  ht->buckets[i]->next = NULL;
+	  release(current_entry);
 	  entry_t *previous_entry;
 	  while (current_entry->next != NULL)
 	    {
 	      previous_entry = current_entry;
-	      
 	      current_entry = current_entry->next;
 	      retain(current_entry);
 	      
@@ -388,6 +395,7 @@ list_t *hash_table_values(hash_table_t *ht)
 	      current_entry = current_entry->next;
 	      retain(current_entry);
 	    }
+	  release(current_entry);
 	}
     }
   return values;
@@ -412,6 +420,7 @@ bool hash_table_has_key(hash_table_t *ht, elem_t key)
 	      current_entry = current_entry->next;
 	      retain(current_entry);
 	    }
+	  release(current_entry);
 	}
     }
   return result;
@@ -436,6 +445,7 @@ bool hash_table_has_value(hash_table_t *ht, elem_t value)
 	      current_entry = current_entry->next;
 	      retain(current_entry);
 	    }
+	  release(current_entry);
 	}
     }
   return result;
@@ -455,12 +465,14 @@ bool hash_table_all(hash_table_t *ht, predicate pred, void *arg)
 	{
 	  if(!pred(entry->next->key, entry->next->value, arg))
 	    {
+	      release(entry);
 	      return false;
 	    }
 	  release(entry);
 	  entry = entry->next;
 	  retain(entry);
-	} 
+	}
+      release(entry);
     }
   return result;  
 }
@@ -484,7 +496,8 @@ bool hash_table_any(hash_table_t *ht, predicate pred, void *arg)
 	  release(entry);
 	  entry = entry->next;
 	  retain(entry);
-	} 
+	}
+      release(entry);
     }
   return result;
 }
@@ -504,6 +517,7 @@ void hash_table_apply_to_all(hash_table_t *ht, apply_function apply_fun, void *a
 	  
 	  apply_fun(current_entry->key, &current_entry->value, arg);
 	}
+      release(current_entry);
     }
 }
 

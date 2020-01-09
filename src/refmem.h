@@ -4,6 +4,7 @@
 #include <stdlib.h>
 //#include "common_for_linked_list.h"
 //#include "linked_list.h"
+#include "../inlupp2/common.h"
 #define Free(ptr) {free(ptr); ptr = NULL;}
 /**
  * @file refmem.h
@@ -72,5 +73,9 @@ void cleanup();
 
 /// @brief Completely tears down library and associated data
 void shutdown();
+
+list_t *get_cascade_list();
+
+list_t *linked_list_get_list();
 
 #endif
