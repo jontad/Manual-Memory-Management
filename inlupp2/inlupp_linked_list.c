@@ -295,15 +295,19 @@ void inlupp_linked_list_clear(list_t *list)
 {
   link_t *link = list->first;
   retain(link);
+
+  release(list->first);
+  list->first = NULL;
+  release(list->last);
+  list->last = NULL;
+
   link_t *tmp = NULL;
-  
   while(link != NULL)
     {
       tmp = link;
       link = link->next;
-      if (link != NULL) retain(link);
-      release(tmp);
-      link_destroy(tmp);  
+      retain(link);
+      link_destroy(tmp);
     }
 }
 
