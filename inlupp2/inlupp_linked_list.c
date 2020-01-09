@@ -87,15 +87,15 @@ list_t *inlupp_linked_list_create(eq_function equal)
 void inlupp_linked_list_prepend(list_t *list, elem_t value)
 {
   link_t *new_entry = entry_create(list, list->first, value);
+  //new_entry has been retained by entry_create()
 
   if(list->first == NULL)
     {
       list->last = new_entry;
       retain(new_entry);
     }
-  //release(list->first);
   list->first = new_entry;
-  retain(new_entry);
+  release(new_entry->next);
 }
 
 
@@ -108,8 +108,8 @@ void inlupp_linked_list_append(list_t *list, elem_t value)
   else
     {
       link_t *new_entry = entry_create(list, NULL, value);
+      //new_entry has been retained by entry_create()
       list->last->next = new_entry;
-      retain(new_entry);
       release(list->last);
       list->last = new_entry;
       retain(new_entry);
@@ -201,7 +201,7 @@ elem_t inlupp_linked_list_remove(list_t *list, int index)
       value = prev_element->value;
       list->first = prev_element->next;
       link_destroy(prev_element);
-      --(list->list_size);
+      --list->list_size;
       if (list->list_size == 0)
 	{
 	  release(list->last);
@@ -300,12 +300,10 @@ void inlupp_linked_list_clear(list_t *list)
   while(link != NULL)
     {
       tmp = link;
-      retain(tmp);
-      release(link);
       link = link->next;
       if (link != NULL) retain(link);
-      link_destroy(tmp);
-     
+      release(tmp);
+      link_destroy(tmp);  
     }
 }
 

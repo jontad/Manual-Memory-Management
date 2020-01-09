@@ -84,6 +84,10 @@ inlupp_unit_tests: inlupp2/unit_tests.c hash_table.o backend.o utils.o allocate.
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/unit_test $(CUNIT_LINK)
 	./test/unit_test
 
+val_inlupp_unit_tests: inlupp2/unit_tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
+	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/unit_test $(CUNIT_LINK)
+	$(C_VALGRIND) ./test/unit_test
+
 ############# LCOV ##################
 
 lcov_generate: val_tests
