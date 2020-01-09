@@ -24,11 +24,6 @@ void set_cascade_list_to_null()
   cascade_list = NULL;
 }
 
-obj *allocate(size_t bytes, function1_t destructor)
-{
-  return allocate_array(1, bytes, destructor);
-}
-
 obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 {
   //Every time we allocate memory we try to clear up our cascade list
@@ -49,8 +44,6 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
     }
   if(!alloc) return alloc; //Return NULL if we fail to allocate memory
   
-
-  
   uint8_t hops = (elements*bytes) / sizeof(void *); //How many pointers our object can hold
   memset(alloc, hops, sizeof(uint8_t));
   
@@ -68,6 +61,11 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
   
   return alloc;
+}
+
+obj *allocate(size_t bytes, function1_t destructor)
+{
+  return allocate_array(1, bytes, destructor);
 }
 
 void remove_from_list(obj *object)

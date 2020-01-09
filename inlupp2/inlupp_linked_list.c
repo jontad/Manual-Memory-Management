@@ -73,34 +73,6 @@ static void insert_aux(list_t *list, int index, elem_t value)
   release(entry);
 }
 
-
-
-static elem_t remove_aux(list_t *list, int index, link_t *prev, link_t *elem)
-{
-  elem_t value = elem->value;
-
-  prev->next = elem->next;
-  link_destroy(elem);
-
-  --list->list_size;
-  
-  return value;
-}
-
-static link_t *remove_link(list_t *list, int index, link_t *prev, link_t *elem)
-{
-  link_t *link = elem;
-  retain(link);
-
-  prev->next = elem->next;
-  link_destroy(elem);
-
-  --list->list_size;
-  
-  return link;
-}
-
-
 list_t *inlupp_linked_list_create(eq_function equal) 
 {
   list_t *linked_list = allocate(sizeof(list_t), NULL);
@@ -164,8 +136,18 @@ void inlupp_linked_list_insert(list_t *list, int index, elem_t value)
     }
 }
 
+static link_t *remove_link(list_t *list, int index, link_t *prev, link_t *elem)
+{
+  link_t *link = elem;
+  retain(link);
 
+  prev->next = elem->next;
+  link_destroy(elem);
 
+  --list->list_size;
+  
+  return link;
+}
 
 link_t *inlupp_linked_list_remove_link(obj *object, int index)
 {
@@ -195,10 +177,23 @@ link_t *inlupp_linked_list_remove_link(obj *object, int index)
 }
 
 
+static elem_t remove_aux(list_t *list, int index, link_t *prev, link_t *elem)
+{
+  elem_t value = elem->value;
+
+  prev->next = elem->next;
+  link_destroy(elem);
+
+  --list->list_size;
+  
+  return value;
+}
+
 elem_t inlupp_linked_list_remove(list_t *list, int index)
 {
   link_t *prev_element = find_previous_entry_for_index(list, index);
   link_t *element = prev_element->next;
+  retain(element);
   elem_t value;
   
   if (index == 0)
@@ -206,7 +201,7 @@ elem_t inlupp_linked_list_remove(list_t *list, int index)
       value = prev_element->value;
       list->first = prev_element->next;
       link_destroy(prev_element);
-      --list->list_size;
+      --(list->list_size);
       if (list->list_size == 0)
 	{
 	  release(list->last);
@@ -419,6 +414,7 @@ void iterator_destroy(list_iterator_t *iter)
 elem_t test_iterator_func(list_t *list, int index)
 {
   list_iterator_t *iter = list_iterator(list);
+  retain(iter);
   for(int i = 0; i<index; ++i)
     {
       if(!iterator_has_next(iter))

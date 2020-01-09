@@ -32,7 +32,7 @@ static void apply_func(link_t **element, void *extra)
 
 static void link_destroy(link_t *link)
 {
-  Free(link);
+  release(link);
 }
 
 static bool int_equiv(elem_t key_ignored, elem_t value, void *x)
@@ -223,8 +223,8 @@ void test_inlupp_linked_list_contains(void)
   CU_ASSERT_TRUE(inlupp_linked_list_contains(ll, int_elem(10)));
   		 
   inlupp_linked_list_append(ll, int_elem(100));
-  //inlupp_linked_list_append(ll, int_elem(1000));
-  //CU_ASSERT_TRUE(inlupp_linked_list_contains(ll, int_elem(1000)));
+  inlupp_linked_list_append(ll, int_elem(1000));
+  CU_ASSERT_TRUE(inlupp_linked_list_contains(ll, int_elem(1000)));
   
   inlupp_linked_list_destroy(ll);
 }
