@@ -78,6 +78,7 @@ list_t *inlupp_linked_list_create(eq_function equal)
   list_t *linked_list = allocate(sizeof(list_t), NULL);
   retain(linked_list);
   linked_list->first = NULL;
+  //retain(linked_list->first);
   linked_list->last = NULL;
   linked_list->equal = equal;
   linked_list->list_size = 0;
@@ -88,13 +89,15 @@ void inlupp_linked_list_prepend(list_t *list, elem_t value)
 {
   link_t *new_entry = entry_create(list, list->first, value);
   //new_entry has been retained by entry_create()
-
-  if(list->first == NULL)
+  //release(list->first);
+  
+  if(list->last == NULL)
     {
       list->last = new_entry;
-      retain(new_entry);
-    }
+      retain(list->last);
+   }
   list->first = new_entry;
+  //retain(new_entry);
   release(new_entry->next);
 }
 
@@ -109,10 +112,12 @@ void inlupp_linked_list_append(list_t *list, elem_t value)
     {
       link_t *new_entry = entry_create(list, NULL, value);
       //new_entry has been retained by entry_create()
-      list->last->next = new_entry;
       release(list->last);
+      list->last->next = new_entry;
+      
       list->last = new_entry;
       retain(new_entry);
+      //printf("RC: %ld\n", rc(new_entry));
     }
 }
 
@@ -129,7 +134,6 @@ void inlupp_linked_list_insert(list_t *list, int index, elem_t value)
     {
       insert_aux(list, index, value);
     }
- 
   else
     {
       inlupp_linked_list_append(list, value);
@@ -213,7 +217,7 @@ elem_t inlupp_linked_list_remove(list_t *list, int index)
     {
       value = remove_aux(list, index, prev_element, element);
     }
-  release(prev_element);
+  //release(prev_element); //Inte helt säker på om vi behöver frigöra prev
   release(element);
   
   return value;
@@ -293,22 +297,26 @@ bool inlupp_linked_list_is_empty(list_t *list)
 
 void inlupp_linked_list_clear(list_t *list)
 {
-  link_t *link = list->first;
-  retain(link);
-
+  //link_t *link = list->first;
+  //retain(link);
   release(list->first);
-  list->first = NULL;
+  release(list->last);
+  /*list->first = NULL;
   release(list->last);
   list->last = NULL;
-
+  
   link_t *tmp = NULL;
   while(link != NULL)
     {
+     
       tmp = link;
       link = link->next;
       retain(link);
       link_destroy(tmp);
+      
     }
+  */
+
 }
 
 

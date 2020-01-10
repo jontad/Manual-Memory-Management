@@ -135,12 +135,13 @@ void test_inlupp_linked_list_insert(void)
   list_t *ll = inlupp_linked_list_create(equality_function_int);
 
   inlupp_linked_list_insert(ll, 5, int_elem(10));
-  CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 10);
-
+  //CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 10);
+  
+  printf("RC: %ld\n",rc(ll->first));
   
   inlupp_linked_list_insert(ll, 1, int_elem(1));
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 1).int1, 1);
-  
+
   inlupp_linked_list_insert(ll, 0, int_elem(5));
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 5);
 

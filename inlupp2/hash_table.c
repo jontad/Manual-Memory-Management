@@ -290,7 +290,7 @@ void hash_table_destroy(hash_table_t *ht)
 	  retain(current_entry);
 
 	  release(previous_entry);
-	  entry_destroy(previous_entry);
+	  //entry_destroy(previous_entry);
 	}
       release(current_entry);
       entry_destroy(current_entry);
@@ -390,7 +390,6 @@ list_t *hash_table_values(hash_table_t *ht)
 	  while(current_entry != NULL)
 	    {
 	      inlupp_linked_list_append(values, current_entry->value);
-
 	      release(current_entry);
 	      current_entry = current_entry->next;
 	      retain(current_entry);
