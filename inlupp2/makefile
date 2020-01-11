@@ -1,5 +1,5 @@
-compile_webstore: frontend.c backend.c utils.c hash_table.c inlupp_linked_list.c ../src/cleanup.c ../src/allocate.c ../src/cascade.c ../test/lib_for_tests.c
-	gcc --coverage -Wall -pedantic -g frontend.c backend.c utils.c hash_table.c inlupp_linked_list.c ../src/cleanup.c ../src/allocate.c ../src/cascade.c ../test/lib_for_tests.c
+compile_webstore: frontend.c backend.c utils.c hash_table.c inlupp_linked_list.c ../src/cleanup.c ../src/allocate.c ../src/cascade.c ../test/lib_for_tests.c ../src/linked_list.c
+	gcc --coverage -Wall -pedantic -g frontend.c backend.c utils.c hash_table.c inlupp_linked_list.c ../src/cleanup.c ../src/allocate.c ../src/cascade.c ../test/lib_for_tests.c ../src/linked_list.c
 
 run: compile_webstore
 	./a.out

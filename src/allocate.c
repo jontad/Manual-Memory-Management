@@ -155,7 +155,11 @@ void release(obj *object)
       uint8_t ref_count = *(uint8_t *)tmp;
       if(ref_count != 0) ref_count--;
       memset(tmp,ref_count,1);
-      if(ref_count == 0) deallocate(object);
+      if(ref_count == 0)
+	{
+	  deallocate(object);
+	  object = NULL;
+	}
     }
 }
 

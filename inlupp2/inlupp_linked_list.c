@@ -23,13 +23,19 @@ struct iter
 ////////////////////////////////////////////////////////////
 
 
+void destructor(obj *object)
+{
+  link_t *link = object;
+  release(link->next);
+}
+
 static link_t *entry_create(list_t* list, link_t *next, elem_t value) //int
 {
-  link_t *link = allocate(sizeof(link_t), NULL);
+  link_t *link = allocate(sizeof(link_t), destructor);
   retain(link);
   link->value = value;
   link->next = next;
-  retain(link->next);
+  //retain(link->next);
   ++list->list_size;
   return link;
 }
@@ -45,6 +51,7 @@ static link_t *find_previous_entry_for_index(list_t *list, int index) //int
       entry = entry->next;
       retain(entry);
     }
+  release(entry);
   return entry;
 }
 
@@ -67,10 +74,10 @@ static void insert_aux(list_t *list, int index, elem_t value)
   link_t *entry = entry_create(list, previous_entry->next, value);
   
   previous_entry->next = entry;
-  retain(previous_entry->next);
+  //retain(previous_entry->next);
 
-  release(previous_entry);
-  release(entry);
+  //release(previous_entry);
+  //release(entry);
 }
 
 list_t *inlupp_linked_list_create(eq_function equal) 
@@ -78,7 +85,6 @@ list_t *inlupp_linked_list_create(eq_function equal)
   list_t *linked_list = allocate(sizeof(list_t), NULL);
   retain(linked_list);
   linked_list->first = NULL;
-  //retain(linked_list->first);
   linked_list->last = NULL;
   linked_list->equal = equal;
   linked_list->list_size = 0;
@@ -94,11 +100,11 @@ void inlupp_linked_list_prepend(list_t *list, elem_t value)
   if(list->last == NULL)
     {
       list->last = new_entry;
-      retain(list->last);
+      retain(new_entry);
    }
   list->first = new_entry;
   //retain(new_entry);
-  release(new_entry->next);
+  //release(new_entry->next);
 }
 
 
@@ -112,9 +118,8 @@ void inlupp_linked_list_append(list_t *list, elem_t value)
     {
       link_t *new_entry = entry_create(list, NULL, value);
       //new_entry has been retained by entry_create()
-      release(list->last);
       list->last->next = new_entry;
-      
+      release(list->last);
       list->last = new_entry;
       retain(new_entry);
       //printf("RC: %ld\n", rc(new_entry));
@@ -165,6 +170,7 @@ link_t *inlupp_linked_list_remove_link(obj *object, int index)
     {
       link = prev_element;
       list->first = prev_element->next;
+      prev_element->next = NULL;
       link_destroy(prev_element);
       --list->list_size;
       if (list->list_size == 0)
@@ -204,11 +210,12 @@ elem_t inlupp_linked_list_remove(list_t *list, int index)
     {
       value = prev_element->value;
       list->first = prev_element->next;
+      prev_element->next = NULL;
       link_destroy(prev_element);
       --list->list_size;
       if (list->list_size == 0)
 	{
-	  release(list->last);
+	  //release(list->last);
 	  list->last = NULL;
 	}
 
@@ -297,25 +304,19 @@ bool inlupp_linked_list_is_empty(list_t *list)
 
 void inlupp_linked_list_clear(list_t *list)
 {
-  //link_t *link = list->first;
-  //retain(link);
-  release(list->first);
-  release(list->last);
-  /*list->first = NULL;
-  release(list->last);
-  list->last = NULL;
+  link_t *link = list->first;
   
-  link_t *tmp = NULL;
+  release(list->first);  
+  release(list->last);
+
+  /*  link_t *tmp = NULL;
   while(link != NULL)
     {
-     
       tmp = link;
       link = link->next;
-      retain(link);
-      link_destroy(tmp);
-      
-    }
-  */
+      //retain(link);
+      link_destroy(tmp);  
+      }*/
 
 }
 
