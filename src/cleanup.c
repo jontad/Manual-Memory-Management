@@ -1,7 +1,7 @@
 #include "refmem.h"
-#include "../inlupp2/linked_list.h"
+#include "linked_list.h"
 
-ioopm_list_t *pointer_list = NULL;
+list_t *pointer_list = NULL;
 
 bool eq_func(elem_t a, elem_t b)
 {
@@ -10,26 +10,26 @@ bool eq_func(elem_t a, elem_t b)
   return a_ptr == b_ptr;
 }
 
-ioopm_list_t *create_list()
+list_t *create_pointer_list()
 {
   pointer_list = ioopm_linked_list_create(eq_func);
   return pointer_list;
 }
 
-ioopm_list_t *linked_list_get()
+list_t *linked_list_get_list()
 {
   if(pointer_list) return pointer_list;
-  else return create_list();
+  else return create_pointer_list();
 }
 
 void cleanup()
 {
   if(pointer_list)
     {
-      ioopm_link_t *cursor = pointer_list->first;
+      link_t *cursor = pointer_list->first;
       while(cursor)
 	{
-	  ioopm_link_t *tmp = cursor->next;
+	  link_t *tmp = cursor->next;
 	  obj *object = (obj *)cursor->value.obj_val;
 	  if (rc(object) == 0)
 	    {
@@ -45,11 +45,11 @@ void shutdown()
 {
   while(ioopm_linked_list_size(pointer_list))
     {
-      obj *object = ioopm_linked_list_get(pointer_list,0).obj_val;
-      deallocate_aux(object);
+      option_t object = ioopm_linked_list_get(pointer_list,0);
+      if(Successful(object)) deallocate_aux(object.value.obj_val);
     }
   
-  ioopm_list_t *cascade_list = get_cascade_list();
+  list_t *cascade_list = get_cascade_list();
   if(cascade_list)
     {
       ioopm_linked_list_destroy(cascade_list);

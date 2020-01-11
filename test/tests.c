@@ -2,7 +2,7 @@
 #include "../src/refmem.h"
 #include "lib_for_tests.h"
 #include <CUnit/Basic.h>
-#include "../inlupp2/linked_list.h"
+#include "../src/linked_list.h"
 
 
 void test_alloc()
@@ -36,7 +36,7 @@ void test_alloc_array_zero_bytes()
 
 void test_alloc_array_loop()
 {
-  char **alloc = allocate_array(10, sizeof(char *), destructor_string_array);
+  char **alloc = allocate_array(10, sizeof(char *), lib_for_tests_destructor_string_array);
   for(int i = 0; i < 10; i++)
     {
       alloc[i] = strdup("test");
@@ -70,9 +70,7 @@ void test_alloc_array_struct()
       alloc[i] = allocate(sizeof(string_t),NULL);
       alloc[i]->str = allocate(sizeof(char *),NULL);
     }
-  printf("SIZE: %ld\n",sizeof(*alloc));
   deallocate(alloc);
-  printf("SIZE: %ld\n",sizeof(*alloc));
   shutdown();
 }
 
@@ -105,7 +103,7 @@ void test_destruct_default_several_ptrs()
 
 void test_destruct_string()
 {
-  string_t *alloc = allocate(sizeof(string_t), destructor_string);
+  string_t *alloc = allocate(sizeof(string_t), lib_for_tests_destructor_string);
   alloc->str = strdup("test");
   release(alloc);
 }
@@ -186,13 +184,23 @@ void test_cascade_limit()
 
 void test_shutdown()
 {
-  create_list();
+  list_t *pointer_list = linked_list_get_list();
+  string_t *str = allocate(sizeof(string_t),NULL);
+  string_t *string = allocate(sizeof(string_t),NULL);
+  str->str = "Hello";
+  string->str = "World";
+  size_t actual_size = ioopm_linked_list_size(pointer_list);
+  CU_ASSERT_EQUAL(actual_size, 2);
+  shutdown();
+  pointer_list = linked_list_get_list();
+  actual_size = ioopm_linked_list_size(pointer_list);
+  CU_ASSERT_EQUAL(actual_size, 0);
   shutdown();
 }
 
 void test_cleanup()
 {
-  ioopm_list_t *pointer_list = linked_list_get();
+  list_t *pointer_list = linked_list_get_list();
   string_t *str = allocate(sizeof(string_t),NULL);
   string_t *string = allocate(sizeof(string_t),NULL);
   str->str = "Hello";
@@ -208,12 +216,12 @@ void test_cleanup()
 
 void test_cleanup_dif_destructors()
 {
-  char **alloc = allocate_array(10, sizeof(char *), destructor_string_array);
+  char **alloc = allocate_array(10, sizeof(char *), lib_for_tests_destructor_string_array);
   for(int i = 0; i < 10; i++)
     {
       alloc[i] = strdup("test");
     }
-  string_t *alloc_str = allocate(sizeof(string_t),destructor_string);
+  string_t *alloc_str = allocate(sizeof(string_t),lib_for_tests_destructor_string);
   alloc_str->str = strdup("Test");
   cleanup();
   shutdown();
@@ -223,7 +231,7 @@ void test_cleanup_dif_destructors()
 
 void test_cleanup_empty()
 {
-  ioopm_list_t *pointer_list = linked_list_get();
+  list_t *pointer_list = linked_list_get_list();
   cleanup();
   CU_ASSERT_EQUAL(ioopm_linked_list_size(pointer_list),0);
   shutdown();
@@ -237,7 +245,7 @@ void test_cleanup_and_deallocate()
   str1->str = "Hello";
   str2->str = "World";
 
-  ioopm_list_t *pointer_list = linked_list_get();
+  list_t *pointer_list = linked_list_get_list();
   
   size_t actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 2);
@@ -262,7 +270,7 @@ void test_cleanup_retain()
   str1->str = "Hello";
   str2->str = "World";
 
-  ioopm_list_t *pointer_list = linked_list_get();
+  list_t *pointer_list = linked_list_get_list();
   
   size_t actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 2);
@@ -287,7 +295,7 @@ void test_shutdown_with_allocs()
   str2->str = NULL;
   str3->str = NULL;
   str4->str = NULL;
-  ioopm_list_t *pointer_list = linked_list_get();
+  list_t *pointer_list = linked_list_get_list();
   size_t actual_size = ioopm_linked_list_size(pointer_list);
   CU_ASSERT_EQUAL(actual_size, 4);
   
@@ -311,33 +319,43 @@ void test_allocate_dif_structs()
 
 void test_cascade_free()
 {
-  size_reset();
-  list_t *list = list_create(); //Skapar en vanlig lista 
+  lib_for_tests_size_reset();
+  list_t *pointer_list = linked_list_get_list();
+  CU_ASSERT_EQUAL(ioopm_linked_list_size(pointer_list), 0);
+  new_list_t *list = lib_for_tests_list_create(); //Skapar en vanlig lista 
   retain(list);
+  CU_ASSERT_EQUAL(ioopm_linked_list_size(pointer_list), 1);
   set_cascade_limit(100);
   for(int i = 0; i < 200; ++i)
     {
-      linked_list_append(); //Skapar bara en ny link och placerar den sist i listan (vars element är null)
+      lib_for_tests_linked_list_append(); //Skapar bara en ny link och placerar den sist i listan (vars element är null)
     }
+  CU_ASSERT_EQUAL(200, lib_for_tests_linked_list_size());
+  CU_ASSERT_EQUAL(201, ioopm_linked_list_size(pointer_list)); // The list + all 200 links
   release(list);
-  CU_ASSERT_EQUAL(100,linked_list_size());
+  CU_ASSERT_EQUAL(101, ioopm_linked_list_size(pointer_list)); // Should have deallocated 100 objects (OBS: INCLUDING THE LIST)
+  CU_ASSERT_EQUAL(101, lib_for_tests_linked_list_size()); // Has 101 links left, since only 99 LINKS were released
   shutdown();
 }
 
 void test_cascade_free_alloc() //Test with using alloc after cascade limit is reached
 {
-  size_reset();
-  list_t *list = list_create();
+  lib_for_tests_size_reset();
+  new_list_t *list = lib_for_tests_list_create();
   retain(list);
   set_cascade_limit(100);
   for(int i = 0; i < 200; ++i)
     {
-      linked_list_append();
+      lib_for_tests_linked_list_append();
     }
+  CU_ASSERT_EQUAL(200, lib_for_tests_linked_list_size());
+  CU_ASSERT_EQUAL(201, ioopm_linked_list_size(linked_list_get_list())); // The list + all 200 links
   release(list);
-  CU_ASSERT_EQUAL(100,linked_list_size());
-  char *str = allocate(sizeof(char *),NULL);
-  CU_ASSERT_EQUAL(0,linked_list_size());
+  CU_ASSERT_EQUAL(101, lib_for_tests_linked_list_size()); // The list + 99 links were deallocated
+  CU_ASSERT_EQUAL(101, ioopm_linked_list_size(linked_list_get_list()));
+  char *str = allocate(sizeof(char *), NULL);
+  CU_ASSERT_EQUAL(1, lib_for_tests_linked_list_size()); // Calling allocate should remove 100 links using the the cascade list, which leaves 1 left in the list
+  CU_ASSERT_EQUAL(2, ioopm_linked_list_size(linked_list_get_list())); // All objects except str, which we just allocated, and the last link in the list should have been deallocated
 
   deallocate(str);
   shutdown();
@@ -345,19 +363,19 @@ void test_cascade_free_alloc() //Test with using alloc after cascade limit is re
 
 void test_scuffed_table()
 {
-  hash_t *ht = demo_hash_table_create();
+  hash_t *ht = lib_for_tests_demo_hash_table_create();
   retain(ht);
-  size_t size = demo_hash_table_size(ht);
+  size_t size = lib_for_tests_demo_hash_table_size(ht);
   CU_ASSERT_EQUAL(size, 0);
   for(int i= 0; i < 100; ++i)
     {
-      demo_hash_table_insert(ht, i, "Xmas");
+      lib_for_tests_demo_hash_table_insert(ht, i, "Xmas");
     }
-  size = demo_hash_table_size(ht);
+  size = lib_for_tests_demo_hash_table_size(ht);
   CU_ASSERT_EQUAL(size, 100);
-  demo_hash_table_remove(ht, 10);
-  demo_hash_table_remove(ht, 11);
-  size = demo_hash_table_size(ht);
+  lib_for_tests_demo_hash_table_remove(ht, 10);
+  lib_for_tests_demo_hash_table_remove(ht, 11);
+  size = lib_for_tests_demo_hash_table_size(ht);
   CU_ASSERT_EQUAL(size,98);
   release(ht);
   shutdown();
@@ -365,16 +383,16 @@ void test_scuffed_table()
 
 void test_cascade_no_limit() //Test with using alloc after cascade limit is reached
 {
-  size_reset(); /// Resets the size of test size counter
-  list_t *list = list_create();
+  lib_for_tests_size_reset(); /// Resets the size of test size counter
+  new_list_t *list = lib_for_tests_list_create();
   retain(list);
   set_cascade_limit(0);
   for(int i = 0; i < 543; ++i)
     {
-      linked_list_append();
+      lib_for_tests_linked_list_append();
     }
   release(list);
-  CU_ASSERT_EQUAL(0,linked_list_size());
+  CU_ASSERT_EQUAL(0,lib_for_tests_linked_list_size());
   shutdown();
 }
 
@@ -412,6 +430,7 @@ int main()
       (NULL == CU_add_test(test_suite1, "release null", test_release_null))||
       (NULL == CU_add_test(test_suite1, "rc", test_rc))||
       (NULL == CU_add_test(test_suite1, "cascade_limit", test_cascade_limit)) ||
+      (NULL == CU_add_test(test_suite1, "shutdown", test_shutdown))||
       (NULL == CU_add_test(test_suite1, "cleanup", test_cleanup))||
       (NULL == CU_add_test(test_suite1, "cleanup empty list", test_cleanup_empty))||
       (NULL == CU_add_test(test_suite1, "cleanup and deallocate", test_cleanup_and_deallocate))||

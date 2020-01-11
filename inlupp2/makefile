@@ -1,11 +1,11 @@
-compile_webstore: frontend.c backend.c utils.c hash_table.c linked_list.c backend.h utils.h hash_table.h linked_list.h
-	gcc --coverage -Wall -pedantic -g frontend.c backend.c utils.c hash_table.c linked_list.c backend.h utils.h hash_table.h linked_list.h
+compile_webstore: frontend.c backend.c utils.c hash_table.c linked_list.c ../src/cleanup.c ../src/allocate.c ../src/cascade.c ../test/lib_for_tests.c
+	gcc --coverage -Wall -pedantic -g frontend.c backend.c utils.c hash_table.c linked_list.c ../src/cleanup.c ../src/allocate.c ../src/cascade.c ../test/lib_for_tests.c
 
 run: compile_webstore
 	./a.out
 
-compile_tests: tests.c backend.c utils.c hash_table.c linked_list.c backend.h utils.h hash_table.h linked_list.h
-	gcc --coverage -Wall -pedantic -g tests.c backend.c utils.c hash_table.c linked_list.c backend.h utils.h hash_table.h linked_list.h -lcunit
+compile_tests: tests.c backend.c utils.c hash_table.c linked_list.c ../src/cleanup.c ../src/allocate.c ../src/cascade.c ../test/lib_for_tests.c ../src/linked_list.c 
+	gcc --coverage -Wall -pedantic -g tests.c backend.c utils.c hash_table.c linked_list.c ../src/cleanup.c ../src/allocate.c ../src/cascade.c ../test/lib_for_tests.c ../src/linked_list.c -lcunit
 
 only_test: compile_tests
 	./a.out

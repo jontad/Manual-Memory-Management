@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "hash_table.h"
-#include "linked_list.h"
+#include "inlupp_linked_list.h"
 #include "iterator.h"
 #include "common.h"
 #include "../src/refmem.h"
@@ -33,22 +33,22 @@ static entry_t *entry_create(elem_t key, elem_t value, entry_t *next)
   return new_entry;
 }
 
-static void create_dummys(ioopm_hash_table_t *ht)
+static void create_dummys(hash_table_t *ht)
 {
   for (int i = 0 ; i < ht->capacity ; i++)
     {
-      elem_t empty = { .ioopm_void_ptr = NULL };
+      elem_t empty = { .void_ptr = NULL };
       ht->buckets[i] = entry_create(empty, empty, NULL); // Dummy
       retain(ht->buckets[i]);
     }
 }
 
-ioopm_hash_table_t *ioopm_hash_table_create(hash_function hash_func, ioopm_eq_function key_eq, ioopm_eq_function value_eq, float load_factor, size_t capacity)
+hash_table_t *hash_table_create(hash_function hash_func, eq_function key_eq, eq_function value_eq, float load_factor, size_t capacity)
 {
 
-  /// Allocate space for a ioopm_hash_table_t = ht->capacity pointers to
+  /// Allocate space for a hash_table_t = ht->capacity pointers to
   /// entry_t's, which will be set to NULL
-  ioopm_hash_table_t *result = allocate(sizeof(ioopm_hash_table_t), NULL);
+  hash_table_t *result = allocate(sizeof(hash_table_t), NULL);
   entry_t **buckets = allocate_array(capacity, sizeof(entry_t *), NULL);
   result->buckets = buckets;
   retain(buckets);
@@ -60,7 +60,7 @@ ioopm_hash_table_t *ioopm_hash_table_create(hash_function hash_func, ioopm_eq_fu
   result->value_eq_func = value_eq;
   result->load_factor = load_factor;
   result->size = 0;
-  return result;  /// Allocate space for a ioopm_hash_table_t = ht->capacity pointers to entry_t's
+  return result;  /// Allocate space for a hash_table_t = ht->capacity pointers to entry_t's
 }
 
 static void entry_destroy(entry_t *entry)
@@ -69,19 +69,18 @@ static void entry_destroy(entry_t *entry)
 }
 
 
-static void buckets_destroy(ioopm_hash_table_t *ht)
+static void buckets_destroy(hash_table_t *ht)
 {
   for (int i = 0 ; i < ht->capacity ; i++)
     {
       entry_t *current_entry = ht->buckets[i];
-      //retain(current_entry);
+      retain(current_entry);
       entry_t *previous_entry;
       while (current_entry->next != NULL)
 	{
 	  previous_entry = current_entry;
-	  
 	  current_entry = current_entry->next;
-	  //retain(current_entry);
+	  retain(current_entry);
 	  entry_destroy(previous_entry);
 	}
       entry_destroy(current_entry);
@@ -90,7 +89,7 @@ static void buckets_destroy(ioopm_hash_table_t *ht)
 }
 
 
-static void resize_hash_table(ioopm_hash_table_t *ht)
+static void resize_hash_table(hash_table_t *ht)
 {
   size_t new_capacity = 0;
   size_t primes[] = {17, 31, 67, 127, 257, 509, 1021, 2053, 4099, 8191, 16381};
@@ -100,9 +99,9 @@ static void resize_hash_table(ioopm_hash_table_t *ht)
       new_capacity = primes[i];
     }
   
-  ioopm_list_t *keys = ioopm_hash_table_keys(ht);
+  list_t *keys = hash_table_keys(ht);
   retain(keys);
-  ioopm_list_t *values = ioopm_hash_table_values(ht);
+  list_t *values = hash_table_values(ht);
   retain(values);
   
   buckets_destroy(ht);
@@ -115,14 +114,14 @@ static void resize_hash_table(ioopm_hash_table_t *ht)
   create_dummys(ht);
   ht->size = 0;
   
-  ioopm_link_t *current_key_link = keys->first;
+  link_t *current_key_link = keys->first;
   retain(current_key_link);
-  ioopm_link_t *current_value_link = values->first;
+  link_t *current_value_link = values->first;
   retain(current_value_link);
   
   while (current_key_link != NULL)
     {
-      ioopm_hash_table_insert(ht, current_key_link->value, current_value_link->value);
+      hash_table_insert(ht, current_key_link->value, current_value_link->value);
       
       release(current_key_link);
       current_key_link = current_key_link->next;
@@ -133,8 +132,8 @@ static void resize_hash_table(ioopm_hash_table_t *ht)
       retain(current_value_link);
     }
   
-  ioopm_linked_list_destroy(keys);
-  ioopm_linked_list_destroy(values);
+  inlupp_linked_list_destroy(keys);
+  inlupp_linked_list_destroy(values);
 }
 
 //Took find_previous_entry_for_key from the other hash_table.c, as our segfaulted for the last entry
@@ -175,7 +174,7 @@ static entry_t *find_previous_entry_for_key(entry_t *first_entry, elem_t key, ha
 
 
 
-void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value)
+void hash_table_insert(hash_table_t *ht, elem_t key, elem_t value)
 {
   /// Calculate the bucket for this entry
   int bucket = ht->hash_func(key) % ht->capacity;
@@ -205,7 +204,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value)
 
 
 //Took lookup from the other hash_table.c as our had issues (lookup on "namn9" somehow found "namn19")
-option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
+option_t hash_table_lookup(hash_table_t *ht, elem_t key)
 {
   entry_t *tmp = find_previous_entry_for_key(ht->buckets[ht->hash_func(key) % ht->capacity], key, ht->hash_func);
   retain(tmp);
@@ -224,13 +223,13 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
 
 
 /*
-option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
+option_t hash_table_lookup(hash_table_t *ht, elem_t key)
 {
   /// Find the previous entry for key
   entry_t *previous_entry = find_previous_entry_for_key(ht->buckets[ht->hash_func(key) % ht->capacity], key, ht->hash_func);
   entry_t *next = previous_entry->next;
 
-  if (next && (next->value.ioopm_int || next->value.ioopm_u_int || next->value.ioopm_bool || next->value.ioopm_float || next->value.ioopm_void_ptr)) // will not work if value is false (boolean)
+  if (next && (next->value.int || next->value.u_int || next->value.bool || next->value.float || next->value.void_ptr)) // will not work if value is false (boolean)
     {
       return Success(next->value);
     }
@@ -242,9 +241,9 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
 
 
 
-elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key)
+elem_t hash_table_remove(hash_table_t *ht, elem_t key)
 {
-  option_t exist = ioopm_hash_table_lookup(ht, key);
+  option_t exist = hash_table_lookup(ht, key);
   elem_t removed_value = str_elem("Non existent key");
   if (exist.success)
     {
@@ -265,7 +264,7 @@ elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key)
   return removed_value;
 }
 
-void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
+void hash_table_destroy(hash_table_t *ht)
 {
   for (int i = 0 ; i < ht->capacity ; i++)
     {
@@ -289,13 +288,13 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 }
 
 
-size_t ioopm_hash_table_size(ioopm_hash_table_t *ht)
+size_t hash_table_size(hash_table_t *ht)
 {
   return ht->size;
 }
 
 
-bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
+bool hash_table_is_empty(hash_table_t *ht)
 {
   for (int i = 0 ; i < ht->capacity ; i++)
     {
@@ -308,7 +307,7 @@ bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
 }
 
 
-void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
+void hash_table_clear(hash_table_t *ht)
 {
   for (int i = 0 ; i < ht->capacity ; i++)
     {
@@ -336,9 +335,9 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
 
 
 //REMEMBER:   free(keys) after function.
-ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
+list_t *hash_table_keys(hash_table_t *ht)
 {
-  ioopm_list_t *keys = ioopm_linked_list_create(ht->key_eq_func);
+  list_t *keys = inlupp_linked_list_create(ht->key_eq_func);
   retain(keys);
   for (int i = 0; i < ht->capacity; ++i)
     {
@@ -348,7 +347,7 @@ ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 	  retain(current_entry);
 	  while(current_entry != NULL)
 	    {
-	      ioopm_linked_list_append(keys, current_entry->key);
+	      inlupp_linked_list_append(keys, current_entry->key);
 
 	      release(current_entry);
 	      current_entry = current_entry->next;
@@ -362,9 +361,9 @@ ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 
 
 //REMEMBER:   free(values) after function.
-ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht)
+list_t *hash_table_values(hash_table_t *ht)
 {
-  ioopm_list_t *values = ioopm_linked_list_create(ht->value_eq_func);
+  list_t *values = inlupp_linked_list_create(ht->value_eq_func);
   retain(values);
   for (int i = 0; i < ht->capacity; ++i)
     {
@@ -374,7 +373,7 @@ ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht)
 	  retain(current_entry);
 	  while(current_entry != NULL)
 	    {
-	      ioopm_linked_list_append(values, current_entry->value);
+	      inlupp_linked_list_append(values, current_entry->value);
 
 	      release(current_entry);
 	      current_entry = current_entry->next;
@@ -387,7 +386,7 @@ ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht)
 
 
 
-bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
+bool hash_table_has_key(hash_table_t *ht, elem_t key)
 {
   bool result = false;
   for (int i = 0; i < ht->capacity && !result; ++i)
@@ -411,7 +410,7 @@ bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
 
 
 
-bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, elem_t value)
+bool hash_table_has_value(hash_table_t *ht, elem_t value)
 {
   bool result = false;
   for (int i = 0; i < ht->capacity && !result; ++i)
@@ -434,10 +433,10 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, elem_t value)
 }
 
 
-bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg)
+bool hash_table_all(hash_table_t *ht, predicate pred, void *arg)
 {
   bool result = true;
-  size_t size = ioopm_hash_table_size(ht);
+  size_t size = hash_table_size(ht);
 
   for(int i = 0; i < size; ++i)
     {
@@ -458,10 +457,10 @@ bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
 }
 
 
-bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg)
+bool hash_table_any(hash_table_t *ht, predicate pred, void *arg)
 {
   bool result = false;
-  size_t size = ioopm_hash_table_size(ht);
+  size_t size = hash_table_size(ht);
 
   for(int i = 0; i < size; ++i)
     {
@@ -482,7 +481,7 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
 }
 
 
-void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg)
+void hash_table_apply_to_all(hash_table_t *ht, apply_function apply_fun, void *arg)
 {
   for (int i = 0 ; i < ht->capacity ; i++)
     {
@@ -504,19 +503,19 @@ void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function 
 
 unsigned long int_hash_func(elem_t key)
 {
-  return key.ioopm_int;
+  return key.int1;
 }
   
 unsigned long uns_int_hash_func(elem_t uns_int)
 {
-  int result = uns_int.ioopm_u_int;
+  int result = uns_int.u_int;
   return result;
 }
 
   
 unsigned long bool_hash_func(elem_t boolean)
 {
-  if(boolean.ioopm_bool)
+  if(boolean.boolean)
     {
       return 1;
     }
@@ -525,14 +524,14 @@ unsigned long bool_hash_func(elem_t boolean)
 
 unsigned long float_hash_func(elem_t float_num)
 {
-  unsigned long result = float_num.ioopm_float / 2;
+  unsigned long result = float_num.float1 / 2;
   return result;
 }
 
 unsigned long str_hash_func(elem_t string)
 {
   unsigned long result = 0;
-  char *str = string.ioopm_void_ptr;
+  char *str = string.void_ptr;
   int i = 0;
   if (str == NULL)
     {
@@ -553,33 +552,33 @@ unsigned long pointer_hash_func(elem_t pointer)
 
 unsigned long merch_hash_func(elem_t merchandise)
 {
-  return str_hash_func(str_elem(merchandise.ioopm_merch->name));
+  return str_hash_func(str_elem(merchandise.merch->name));
 }
  
 
 bool equality_function_int(elem_t a, elem_t b)
 {
-  return a.ioopm_int == b.ioopm_int;
+  return a.int1 == b.int1;
 }
   
 bool equality_function_uns_int(elem_t a, elem_t b)
 {
-  return a.ioopm_u_int == b.ioopm_u_int;
+  return a.u_int == b.u_int;
 }
   
 bool equality_function_bool(elem_t a, elem_t b)
 {
-  return (a.ioopm_bool && b.ioopm_bool) || (!a.ioopm_bool && !b.ioopm_bool);
+  return (a.boolean && b.boolean) || (!a.boolean && !b.boolean);
 }
 
 bool equality_function_float(elem_t a, elem_t b)
 {
-  return a.ioopm_float == b.ioopm_float;
+  return a.float1 == b.float1;
 }
   
 bool equality_function_str(elem_t a, elem_t b)
 {
-  if (strcmp(a.ioopm_void_ptr, b.ioopm_void_ptr) == 0)
+  if (strcmp(a.void_ptr, b.void_ptr) == 0)
     {
       return true;
     }
@@ -588,7 +587,7 @@ bool equality_function_str(elem_t a, elem_t b)
   
 bool equality_function_pointer(elem_t a, elem_t b)
 {
-  if (a.ioopm_void_ptr == b.ioopm_void_ptr)
+  if (a.void_ptr == b.void_ptr)
     {
       return true;
     }
@@ -597,8 +596,8 @@ bool equality_function_pointer(elem_t a, elem_t b)
 
 bool equality_function_merch(elem_t a, elem_t b)
 {
-  elem_t merch1 = str_elem(a.ioopm_merch->name);
-  elem_t merch2 = str_elem(b.ioopm_merch->name);    
+  elem_t merch1 = str_elem(a.merch->name);
+  elem_t merch2 = str_elem(b.merch->name);    
   return equality_function_str(merch1, merch2);
 }
 
