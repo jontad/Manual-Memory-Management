@@ -66,11 +66,10 @@ static void insert_aux(list_t *list, int index, elem_t value)
   link_t *previous_entry = find_previous_entry_for_index(list, index);
   link_t *entry = entry_create(list, previous_entry->next, value);
   
+  release(previous_entry->next);
   previous_entry->next = entry;
-  retain(previous_entry->next);
-
+  
   release(previous_entry);
-  release(entry);
 }
 
 list_t *inlupp_linked_list_create(eq_function equal) 
@@ -88,6 +87,7 @@ list_t *inlupp_linked_list_create(eq_function equal)
 void inlupp_linked_list_prepend(list_t *list, elem_t value)
 {
   link_t *new_entry = entry_create(list, list->first, value);
+  
   //new_entry has been retained by entry_create()
   //release(list->first);
   
@@ -96,11 +96,9 @@ void inlupp_linked_list_prepend(list_t *list, elem_t value)
       list->last = new_entry;
       retain(list->last);
    }
+  release(list->first); // old first
   list->first = new_entry;
-  //retain(new_entry);
-  release(new_entry->next);
 }
-
 
 void inlupp_linked_list_append(list_t *list, elem_t value)
 {
@@ -112,11 +110,11 @@ void inlupp_linked_list_append(list_t *list, elem_t value)
     {
       link_t *new_entry = entry_create(list, NULL, value);
       //new_entry has been retained by entry_create()
-      release(list->last);
+      release(list->last); // old last
       list->last->next = new_entry;
       
       list->last = new_entry;
-      retain(new_entry);
+      retain(list->last); // new last
       //printf("RC: %ld\n", rc(new_entry));
     }
 }
@@ -184,7 +182,7 @@ link_t *inlupp_linked_list_remove_link(obj *object, int index)
 static elem_t remove_aux(list_t *list, int index, link_t *prev, link_t *elem)
 {
   elem_t value = elem->value;
-
+  retain(elem->next);
   prev->next = elem->next;
   link_destroy(elem);
 
@@ -197,13 +195,14 @@ elem_t inlupp_linked_list_remove(list_t *list, int index)
 {
   link_t *prev_element = find_previous_entry_for_index(list, index);
   link_t *element = prev_element->next;
-  retain(element);
+  //retain(element);
   elem_t value;
   
   if (index == 0)
     {
       value = prev_element->value;
       list->first = prev_element->next;
+      
       link_destroy(prev_element);
       --list->list_size;
       if (list->list_size == 0)
@@ -217,8 +216,11 @@ elem_t inlupp_linked_list_remove(list_t *list, int index)
     {
       value = remove_aux(list, index, prev_element, element);
     }
+
+  if (list->list_size == 1 && rc(list->last)) retain(list->first);
   //release(prev_element); //Inte helt säker på om vi behöver frigöra prev
-  release(element);
+  //release(element);
+  release(prev_element);
   
   return value;
 }
@@ -232,6 +234,7 @@ elem_t inlupp_linked_list_get(list_t *list, int index)
   
   link_t *previous_element = find_previous_entry_for_index(list,index);
   elem_t value = previous_element->next->value;
+  release(previous_element);
   return value;
 }
 
