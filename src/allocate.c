@@ -24,6 +24,42 @@ void set_cascade_list_to_null()
   cascade_list = NULL;
 }
 
+int allocs_in_bit_array()
+{
+  int *bit_array = get_bit_array();
+  int counter = 0;
+  
+  for (int i = 0; i<bit_array_size; i++)
+    {
+      counter += bit_array[i];
+      /*
+      if (bit_array[i] != 0)
+	{ 
+	  for (long j = 0; j<64; j++)
+	    {
+	      if (le_bit(bit_array[i], j) == 1)
+		{
+		  counter += 1;
+		}
+	    }
+	}
+      */
+    }
+  return counter;
+}
+
+set_bit(int *A, obj *k)
+{
+  int i = (long)k%bit_array_size;            // i = array index (use: A[i])
+  int pos = (long)k%64;          // pos = bit position in A[i]
+
+  unsigned int flag = 1;   // flag = 0000.....00001
+
+  flag = flag << pos;      // flag = 0000...010...000   (shifted k positions)
+
+  A[i] = A[i] | flag;      // Set the bit at the k-th position in A[i]
+}
+
 obj *allocate(size_t bytes, function1_t destructor)
 {
   return allocate_array(1, bytes, destructor);
@@ -71,6 +107,7 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
       pointer_array[1] = alloc;
     }
   set_bit(get_bit_array(), alloc);
+  printf("%d\n", allocs_in_bit_array());
   
   return alloc;
 }

@@ -4,9 +4,9 @@
 
 list_t *pointer_list;
 obj *pointer_array[] = {NULL, NULL};
-int bit_array[bit_array_size];
+long bit_array[bit_array_size];
 
-int* get_bit_array()
+long *get_bit_array()
 {
   return bit_array;
 }

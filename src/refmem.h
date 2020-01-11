@@ -7,10 +7,11 @@
 #define Free(ptr) {free(ptr); ptr = NULL;}
 
 //global functions to set, clear and test a bit in a bit array
-#define bit_array_size 10000
-#define set_bit(A,k)     ( A[((long)k%bit_array_size)] |= (1 << ((long)k%32)) )
-#define clear_bit(A,k)   ( A[((long)k%bit_array_size)] &= ~(1 << ((long)k%32)) )
-#define test_bit(A,k)    ( A[((long)k%bit_array_size)] & (1 << ((long)k%32)) )
+#define bit_array_size 10  
+//#define set_bit(A,k)     ( A[((long)k%bit_array_size)] |= (1 << ((long)k%32)) )
+#define clear_bit(A,k)   ( A[((long)k%bit_array_size)] &= ~(1 << ((long)k%64)) )
+#define test_bit(A,k)    ( A[((long)k%bit_array_size)] & (1 << ((long)k%64)) )
+#define le_bit(num,k) ( num & (1 << k) )
 /*
 #define set_bit(A,k)     ( A[((long)k/32)] |= (1 << ((long)k%32)) )
 #define clear_bit(A,k)   ( A[((long)k/32)] &= ~(1 << ((long)k%32)) )
@@ -87,8 +88,9 @@ void shutdown();
 
 obj **get_pointer_array();
 
-int* get_bit_array();
+long *get_bit_array();
 
+int allocs_in_bit_array();
 
 
 

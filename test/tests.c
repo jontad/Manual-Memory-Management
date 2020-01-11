@@ -5,27 +5,6 @@
 #include "../src/linked_list.h"
 #include <stdint.h>
 
-static int allocs_in_bit_array()
-{
-  int *bit_array = get_bit_array();
-  int counter = 0;
-  
-  for (int i = 0; i<bit_array_size; i++)
-    {
-      if (bit_array[i] != 0)
-	{
-	  for (int j = 0; j<32; j++)
-	    {
-	      if (test_bit(bit_array, j) == 1)
-		{
-		  counter += 1;
-		}
-	    }
-	}
-    }
-  return counter;
-}
-
 void test_alloc()
 {
   string_t *alloc = allocate(sizeof(string_t), NULL);
@@ -229,15 +208,16 @@ void test_shutdown()
 
 void test_cleanup()
 {
-  list_t *pointer_list = linked_list_get_list();
   string_t *str = allocate(sizeof(string_t),NULL);
   string_t *string = allocate(sizeof(string_t),NULL);
   str->str = "Hello";
   string->str = "World";
-  size_t actual_size = ioopm_linked_list_size(pointer_list);
+  size_t actual_size = allocs_in_bit_array();
+  printf("%d\n", actual_size);
   CU_ASSERT_EQUAL(actual_size, 2);
   cleanup();
-  actual_size = ioopm_linked_list_size(pointer_list);
+  actual_size = allocs_in_bit_array();
+  printf("%d\n", actual_size);
   CU_ASSERT_EQUAL(actual_size, 0);
   shutdown();
 }
