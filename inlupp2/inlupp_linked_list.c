@@ -23,15 +23,9 @@ struct iter
 ////////////////////////////////////////////////////////////
 
 
-void destructor(obj *object)
-{
-  link_t *link = object;
-  release(link->next);
-}
-
 static link_t *entry_create(list_t* list, link_t *next, elem_t value) //int
 {
-  link_t *link = allocate(sizeof(link_t), destructor);
+  link_t *link = allocate(sizeof(link_t), NULL);
   retain(link);
   link->value = value;
   link->next = next;

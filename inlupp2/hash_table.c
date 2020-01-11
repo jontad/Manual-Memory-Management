@@ -29,7 +29,7 @@ static entry_t *entry_create(elem_t key, elem_t value, entry_t *next)
   new_entry->key = key;
   new_entry->value = value;
   new_entry->next = next;
-  retain(next);
+  //retain(next);
   return new_entry;
 }
 
@@ -130,6 +130,7 @@ static void resize_hash_table(hash_table_t *ht)
       current_value_link = current_value_link->next;
       retain(current_value_link);
     }
+
   
   inlupp_linked_list_destroy(keys);
   inlupp_linked_list_destroy(values);
@@ -180,10 +181,10 @@ void hash_table_insert(hash_table_t *ht, elem_t key, elem_t value)
   /// Calculate the bucket for this entry
   int bucket = ht->hash_func(key) % ht->capacity;
   /// Search for an existing entry for a key
-  retain(ht->buckets[bucket]);
-  entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], key, ht->hash_func);
-  //entry is retained in find_previous_entry_for_key()
-  entry_t *next = entry->next;
+  retain(ht->buckets[bucket]); //gets released in find_previous_entry_for_key
+  entry_t *prev = find_previous_entry_for_key(ht->buckets[bucket], key, ht->hash_func);
+  //prev is retained in find_previous_entry_for_key()
+  entry_t *next = prev->next;
   retain(next);
   
   /// Check if the next entry should be updated or not
@@ -193,14 +194,14 @@ void hash_table_insert(hash_table_t *ht, elem_t key, elem_t value)
     }
   else
     {
-      entry->next = entry_create(key, value, next);
+      prev->next = entry_create(key, value, next);
       ++ht->size;
       if (ht->size / (float)ht->capacity >= ht->load_factor)
 	{
 	  resize_hash_table(ht);
 	}
     }
-  release(entry);
+  release(prev);
   release(next);
 }
 
@@ -208,7 +209,7 @@ void hash_table_insert(hash_table_t *ht, elem_t key, elem_t value)
 //Took lookup from the other hash_table.c as our had issues (lookup on "namn9" somehow found "namn19")
 option_t hash_table_lookup(hash_table_t *ht, elem_t key)
 {
-  retain(ht->buckets[ht->hash_func(key) % ht->capacity]);
+  retain(ht->buckets[ht->hash_func(key) % ht->capacity]); // gets released in find_previous_entry_for_key 
   entry_t *tmp = find_previous_entry_for_key(ht->buckets[ht->hash_func(key) % ht->capacity], key, ht->hash_func);
   //tmp is retained in find_previous_entry_for_key()
   
@@ -265,8 +266,8 @@ elem_t hash_table_remove(hash_table_t *ht, elem_t key)
       removed_value = temp_entry->value;
       
       previous_entry->next = temp_entry->next;
-      retain(temp_entry->next);
-      
+
+      temp_entry->next = NULL;
       entry_destroy(temp_entry);
       --ht->size;
 
@@ -290,15 +291,13 @@ void hash_table_destroy(hash_table_t *ht)
 	  retain(current_entry);
 
 	  release(previous_entry);
-	  //entry_destroy(previous_entry);
-	}
-      release(current_entry);
+	  entry_destroy(previous_entry);
+	  }
+      //release(current_entry);
       entry_destroy(current_entry);
     }
   release(ht->buckets);
-  // free(ht->buckets);
   release(ht);
-  // free(ht);
 }
 
 

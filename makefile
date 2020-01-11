@@ -78,7 +78,7 @@ ll_test: inlupp2/ll_test.c hash_table.o allocate.o cleanup.o cascade.o lib_for_t
 
 webstore_test: inlupp2/tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/webstore_test $(CUNIT_LINK)
-	./test/webstore_test
+	$(C_VALGRIND) ./test/webstore_test
 
 inlupp_unit_tests: inlupp2/unit_tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/unit_test $(CUNIT_LINK)

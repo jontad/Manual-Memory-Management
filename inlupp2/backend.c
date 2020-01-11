@@ -21,9 +21,9 @@ database_t *database_create_database()
   db->carts = hash_table_create(uns_int_hash_func, equality_function_uns_int, equality_function_pointer, 0.75, 17);
   db->id_counter = 0;
   retain(db);
-  retain(db->merch_ht);
-  retain(db->shelves_ht);
-  retain(db->carts);
+  //retain(db->merch_ht);
+  //retain(db->shelves_ht);
+  //retain(db->carts);
   return db;
 }
 
@@ -78,8 +78,8 @@ static void destroy_merch(database_t *db, merch_t *merch) //Note: remember to re
     }
   clear_stock(stock);
   inlupp_linked_list_destroy(stock); //2. free list of shelves_ht
-  //free(merch);
-  release(merch);
+  free(merch);
+  //release(merch);
 }
 
 static void free_merch_apply_func(elem_t key, elem_t *value, void *db)
@@ -105,15 +105,14 @@ void database_destroy_database(database_t *db)
 merch_t *database_add_merch(database_t *db, char *new_name, char *new_desc, unsigned int new_price) 
 {  
   merch_t *merch = allocate(sizeof(merch_t), NULL);
+  retain(merch);
   merch->name = new_name;
   merch->desc = new_desc;
   merch->price_per_unit = new_price;
   merch->available_amount = 0;
   merch->stock = inlupp_linked_list_create(equality_function_str);
-
+  
   hash_table_insert(db->merch_ht, str_elem(merch->name), merch_elem(merch));
-  retain(merch->stock);
-  retain(merch);
   return merch;
 }
 
@@ -175,8 +174,8 @@ option_t database_choose_merch(database_t *db, int result)
 
 void database_remove_merch(database_t *db, merch_t *merch)
 { 
-  hash_table_remove(db->merch_ht, str_elem(merch->name));      
-  destroy_merch(db, merch);
+  hash_table_remove(db->merch_ht, str_elem(merch->name));
+  //destroy_merch(db, merch);
 }
 
 
@@ -191,7 +190,7 @@ static merch_t *rename_merch(char *name, merch_t *merch)
   new_merch->price_per_unit = merch->price_per_unit;
   new_merch->available_amount = merch->available_amount;
   new_merch->stock = merch->stock;
-  retain(merch->stock);
+
   retain(new_merch);
   return new_merch; 
 }
@@ -200,13 +199,13 @@ static merch_t *rename_merch(char *name, merch_t *merch)
 static merch_t *insert_merch(database_t *db, char *new_name, merch_t *merch)
 {
   merch_t *new_merch = rename_merch(new_name, merch);
-  retain(new_merch);
   
+  retain(new_merch->stock);
   hash_table_remove(db->merch_ht, str_elem(merch->name));
   
-  inlupp_linked_apply_to_all(merch->stock, free_shelves_in_stock, NULL);
+  //inlupp_linked_apply_to_all(merch->stock, free_shelves_in_stock, NULL);
   //free(merch);
-  release(merch);
+  //release(merch);
   hash_table_insert(db->merch_ht, str_elem(new_name), merch_elem(new_merch));    
   return new_merch;
 }
@@ -253,6 +252,7 @@ void database_show_stock(merch_t *merch)
 shelf_t *database_create_shelf(char *shelf_name, int amount)
 {
   shelf_t *new_shelf = allocate(sizeof(shelf_t), NULL);
+  retain(new_shelf);
   new_shelf->shelf_name = shelf_name;
   new_shelf->amount = amount;
 
@@ -272,7 +272,7 @@ static int shelf_compare(list_t *stock, char *shelf_name)
 {
   int counter = 0;
   link_t *current_loc = stock->first;
-  //retain(current_loc);
+  retain(current_loc);
   
   if (current_loc != NULL)
     {
@@ -284,10 +284,9 @@ static int shelf_compare(list_t *stock, char *shelf_name)
 	  current_shelf_value = shelf_value(current_loc->value.merch->name);
 	  ++counter;
 	  
-	  //release(current_loc);
+	  release(current_loc);
 	  current_loc = current_loc->next;
-	  //retain(current_loc);
-
+	  retain(current_loc);
 	}
     }
   return counter;
@@ -311,6 +310,7 @@ void database_replenish_stock(database_t *db, merch_t *merch, shelf_t *new_shelf
       if (strcmp(current_shelf->shelf_name, new_shelf->shelf_name) == 0)
 	{
 	  replenish_existing_shelf = true;
+	  release(current_link);
 	  break;
 	}
 
@@ -328,6 +328,7 @@ void database_replenish_stock(database_t *db, merch_t *merch, shelf_t *new_shelf
       int index = shelf_compare(merch->stock, new_shelf->shelf_name);  //Index shelves in alphanumerical order
       inlupp_linked_list_insert(merch->stock, index, shelf_elem(new_shelf));
       hash_table_insert(db->shelves_ht, str_elem(new_shelf->shelf_name), merch_elem(merch));
+      printf("new shelf: %d\n", rc(new_shelf));
     }
 }
 
