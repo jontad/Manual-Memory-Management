@@ -5,12 +5,34 @@
 #include "../src/linked_list.h"
 #include <stdint.h>
 
+static int allocs_in_bit_array()
+{
+  int *bit_array = get_bit_array();
+  int counter = 0;
+  
+  for (int i = 0; i<bit_array_size; i++)
+    {
+      if (bit_array[i] != 0)
+	{
+	  for (int j = 0; j<32; j++)
+	    {
+	      if (test_bit(bit_array, j) == 1)
+		{
+		  counter += 1;
+		}
+	    }
+	}
+    }
+  return counter;
+}
+
 void test_alloc()
 {
   string_t *alloc = allocate(sizeof(string_t), NULL);
   alloc->str = NULL;
   CU_ASSERT_PTR_NOT_NULL(alloc);
   release(alloc);
+  shutdown();
 }
 
 void test_alloc_zero_bytes()
@@ -26,6 +48,7 @@ void test_alloc_array()
   alloc->str = "test";
   CU_ASSERT_PTR_NOT_NULL(alloc);
   release(alloc);
+  shutdown();
 }
 void test_alloc_array_zero_bytes()
 {
@@ -43,6 +66,7 @@ void test_alloc_array_loop()
     }
   CU_ASSERT_PTR_NOT_NULL(alloc);
   release(alloc);
+  shutdown();
 }
 
 void test_destructor_null()
@@ -50,7 +74,7 @@ void test_destructor_null()
   string_t *alloc = allocate_array(10, sizeof(string_t), NULL);
   alloc->str = NULL;
   release(alloc);
- 
+  shutdown();
 }
 
 void test_destruct_default()
@@ -106,6 +130,7 @@ void test_destruct_string()
   string_t *alloc = allocate(sizeof(string_t), lib_for_tests_destructor_string);
   alloc->str = strdup("test");
   release(alloc);
+  shutdown();
 }
 
 void test_retain()
@@ -115,6 +140,7 @@ void test_retain()
   retain(alloc);
   CU_ASSERT_EQUAL(1,rc(alloc));
   release(alloc);
+  shutdown();
 }
 
 
@@ -142,6 +168,7 @@ void test_retain_null()
   string_t *alloc = NULL;
   retain(alloc);
   CU_ASSERT_PTR_NULL(alloc);
+  shutdown();
 }
 
 
@@ -150,6 +177,7 @@ void test_release_null()
   string_t *alloc = NULL;
   release(alloc);
   CU_ASSERT_PTR_NULL(alloc);
+  shutdown();
 }
 
 
@@ -163,6 +191,7 @@ void test_rc()
   release(alloc);
   CU_ASSERT_EQUAL(1,rc(alloc));
   release(alloc);
+  shutdown();
 }
 
 
@@ -184,17 +213,17 @@ void test_cascade_limit()
 
 void test_shutdown()
 {
-  list_t *pointer_list = linked_list_get_list();
   string_t *str = allocate(sizeof(string_t),NULL);
   string_t *string = allocate(sizeof(string_t),NULL);
   str->str = "Hello";
   string->str = "World";
-  size_t actual_size = ioopm_linked_list_size(pointer_list);
+  size_t actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 2);
+  printf("%d\n", actual_size);
   shutdown();
-  pointer_list = linked_list_get_list();
-  actual_size = ioopm_linked_list_size(pointer_list);
+  actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 0);
+  printf("%d\n", actual_size);
   shutdown();
 }
 
@@ -394,6 +423,7 @@ void test_bit_array()
   CU_ASSERT_TRUE(test_bit(bit_array, 100));
   clear_bit(bit_array, 100);
   CU_ASSERT_FALSE(test_bit(bit_array, 100));
+  shutdown();
 }
 /*
 void test_allocate_with_bitarray()

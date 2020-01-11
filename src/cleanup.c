@@ -2,18 +2,18 @@
 #include "linked_list.h"
 #include <stdint.h>
 
-
-#define bit_array_size 32
-#define set_bit(A,k)     ( A[(k/bit_array_size)] |= (1 << (k%32)) )
-#define clear_bit(A,k)   ( A[(k/bit_array_size)] &= ~(1 << (k%32)) )
-#define test_bit(A,k)    ( A[(k/bit_array_size)] & (1 << (k%32)) )
-int bit_array[bit_array_size];
-
 list_t *pointer_list;
+obj *pointer_array[] = {NULL, NULL};
+int bit_array[bit_array_size];
 
 int* get_bit_array()
 {
   return bit_array;
+}
+
+obj **get_pointer_array()
+{
+  return pointer_array;
 }
 
 bool eq_func(elem_t a, elem_t b)
@@ -77,62 +77,45 @@ void shutdown()
 
 /****************** BITARRAY STUFF *******************/
 
-
-obj *get_object_from_bit(uint8_t position)
-{
-  if (pointer_list)
-    {
-      link_t *cursor = pointer_list->first;
-      while(cursor)
-	{
-	  obj *object = (obj *)cursor->value.obj_val;
-	  obj *tmp = (obj *)((char *)object-sizeof(function1_t)-sizeof(uint8_t));
-	  uint8_t bit_pos = *(uint8_t *)tmp;
-	  if (bit_pos == position && test_bit(bit_array, bit_pos))
-	    {
-	      return object;
-	    }
-	  cursor = cursor->next;
-	}
-    }
-  return NULL;
-}
-
-
 void cleanup()
 {
-  for (int i = 0; i<bit_array_size; i++)
+  obj **pointer_array = get_pointer_array();
+  obj *low = pointer_array[0];
+  obj *high = pointer_array[1];
+  //printf("%d\n", (long)low);
+  //printf("%d\n", (long)high);
+
+  obj *i = low;
+  while ((long)i <= (long)high)
     {
-      if (!bit_array[i]) continue;
-
-      for (int j = 0; j<32; j++)
+      if (test_bit(get_bit_array(), i) == 1)
 	{
-	  if (!test_bit(bit_array, j)) continue;
-
-	  uint8_t bit_position = bit_array_size * i + j;
-	  obj *object = get_object_from_bit(bit_position);
-	  if (rc(object) == 0)
+	  if (rc(i) == 0)
 	    {
-	      deallocate(object);
+	      deallocate(i);
 	    }
 	}
+      i = (long)i + sizeof(void *);
     }
 }
 
 void shutdown()
 {
-  for (int i = 0; i<bit_array_size; i++)
+  obj **pointer_array = get_pointer_array();
+  obj *low = pointer_array[0];
+  obj *high = pointer_array[1];
+  //printf("%d\n", (long)low);
+  //printf("%d\n", (long)high);
+
+  obj *i = low;
+  while ((long)i <= (long)high)
     {
-      if (!bit_array[i]) continue;
-
-      for (int j = 0; j<32; j++)
+      if (test_bit(get_bit_array(), i) == 1)
 	{
-	  if (!test_bit(bit_array, j)) continue;
-
-	  uint8_t bit_position = bit_array_size * i + j;
-	  obj *object = get_object_from_bit(bit_position);
-	  deallocate_aux(object);
+	  deallocate_aux(i);
+	     
 	}
+      i = (long)i + sizeof(void *);
     }
   
   list_t *cascade_list = get_cascade_list();
@@ -141,7 +124,7 @@ void shutdown()
       ioopm_linked_list_destroy(cascade_list);
       set_cascade_list_to_null();
     }
-  
-  ioopm_linked_list_destroy(pointer_list);
-  pointer_list = NULL;
+
+  pointer_array[0] = NULL;
+  pointer_array[1] = NULL;
 }

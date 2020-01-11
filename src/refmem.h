@@ -7,10 +7,15 @@
 #define Free(ptr) {free(ptr); ptr = NULL;}
 
 //global functions to set, clear and test a bit in a bit array
-#define bit_array_size 32
-#define set_bit(A,k)     ( A[(k/bit_array_size)] |= (1 << (k%32)) )
-#define clear_bit(A,k)   ( A[(k/bit_array_size)] &= ~(1 << (k%32)) )
-#define test_bit(A,k)    ( A[(k/bit_array_size)] & (1 << (k%32)) )
+#define bit_array_size 10000
+#define set_bit(A,k)     ( A[((long)k%bit_array_size)] |= (1 << ((long)k%32)) )
+#define clear_bit(A,k)   ( A[((long)k%bit_array_size)] &= ~(1 << ((long)k%32)) )
+#define test_bit(A,k)    ( A[((long)k%bit_array_size)] & (1 << ((long)k%32)) )
+/*
+#define set_bit(A,k)     ( A[((long)k/32)] |= (1 << ((long)k%32)) )
+#define clear_bit(A,k)   ( A[((long)k/32)] &= ~(1 << ((long)k%32)) )
+#define test_bit(A,k)    ( A[((long)k/32)] & (1 << ((long)k%32)) )
+*/
 
 /**
  * @file refmem.h
@@ -80,10 +85,12 @@ void cleanup();
 /// @brief Completely tears down library and associated data
 void shutdown();
 
-
-
+obj **get_pointer_array();
 
 int* get_bit_array();
+
+
+
 
 obj *allocate_with_bitarray(size_t bytes, function1_t destructor);
 
