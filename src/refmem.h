@@ -8,7 +8,7 @@
 
 //global functions to set, clear and test a bit in a bit array
 //the current "hash function" where we do k%bit_array_size to find the row in A and k%row_size to find the bit in the row has its disadvantages. Mainly that several different pointers can hash to the same bit in the bit array. We used this hash function because we couldn't determine the size needed for bit_array to be able to do k/bit_array_size in order to find the row in A.
-#define bit_array_size 100000
+#define bit_array_size 50000
 #define row_size 64
 #define set_bit(A,k)     ( A[((long)(char *)k%bit_array_size)] |= ((long)1 << ((long)(char *)k%row_size)) )
 #define clear_bit(A,k)   ( A[((long)(char *)k%bit_array_size)] &= ~((long)1 << ((long)(char *)k%row_size)) )
@@ -93,25 +93,5 @@ obj **get_pointer_array();
 long *get_bit_array();
 
 int allocs_in_bit_array();
-
-
-
-obj *allocate_with_bitarray(size_t bytes, function1_t destructor);
-
-obj *allocate_array_with_bitarray(size_t elements, size_t bytes, function1_t destructor);
-
-void default_destruct_with_bitarray(obj *object);
-
-void deallocate_aux_with_bitarray(obj *object);
-
-void deallocate_with_bitarray(obj *object);
-
-void release_with_bitarray(obj *object);
-
-void cleanup_with_bitarray();
-
-void shutdown_with_bitarray();
-
-size_t rc_with_bitarray(obj *object);
 
 #endif

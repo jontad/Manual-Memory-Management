@@ -31,7 +31,6 @@ int allocs_in_bit_array()
   
   for (long i = 0; i<bit_array_size; i++)
     {
-      //counter += bit_array[i];
 
       if (bit_array[i] != 0)
 	{ 
@@ -106,6 +105,12 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   if (pointer_array[1] == NULL || (char *)alloc > (char *)(pointer_array[1]))
     {
       pointer_array[1] = alloc;
+    }
+  if (test_bit(get_bit_array(), alloc) != 0)
+    {
+      alloc = (obj *)((char *)alloc - 2*sizeof(uint8_t) - sizeof(function1_t));
+      free(alloc);
+      return (allocate_array(elements, bytes, destructor));
     }
   set_bit(get_bit_array(), alloc);
   
