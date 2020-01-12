@@ -388,37 +388,6 @@ void test_cascade_no_limit() //Test with using alloc after cascade limit is reac
   shutdown();
 }
 
-/*
-void test_bit_array()
-{
-  int *bit_array = get_bit_array();
-  set_bit(bit_array, 100);
-  CU_ASSERT_TRUE(test_bit(bit_array, 100));
-  clear_bit(bit_array, 100);
-  CU_ASSERT_FALSE(test_bit(bit_array, 100));
-  shutdown();
-}
-
-void test_allocate_with_bitarray()
-{
-  char *str1 = allocate_with_bitarray(sizeof(char),NULL);
-  //string_t *str2 = allocate_with_bitarray(sizeof(string_t),NULL);
-  //uint8_t n1 = allocate_with_bitarray(sizeof(uint8_t),NULL);
-  //uint32_t n2 = allocate_with_bitarray(sizeof(uint32_t),NULL);
-  //uint64_t n3 = allocate_with_bitarray(sizeof(uint64_t),NULL);
-  deallocate_with_bitarray(str1);
-  shutdown_with_bitarray();
-}
-
-void test_destruct_default_with_bitarray()
-{
-  string_t *alloc = allocate_with_bitarray(sizeof(string_t), NULL);
-  alloc->str = allocate_with_bitarray(sizeof(char *), NULL);
-  release_with_bitarray(alloc);
-  shutdown_with_bitarray();
-}
-*/
-
 int init_suite(void)
 {
   return 0;
@@ -471,10 +440,7 @@ int main()
       (NULL == CU_add_test(test_suite1, "cascade no limit", test_cascade_no_limit))||
       (NULL == CU_add_test(test_suite1, "cleanup different destructors", test_cleanup_dif_destructors))||
       (NULL == CU_add_test(test_suite1, "Default destructor for array", test_destruct_default_array))||
-      (NULL == CU_add_test(test_suite1, "Alloc array struct", test_alloc_array_struct))/*||
-      (NULL == CU_add_test(test_suite1, "bit array", test_bit_array))||
-      (NULL == CU_add_test(test_suite1, "allocate with bit array", test_allocate_with_bitarray))||
-      (NULL == CU_add_test(test_suite1, "default destructor with bit array", test_destruct_default_with_bitarray))*/
+      (NULL == CU_add_test(test_suite1, "Alloc array struct", test_alloc_array_struct))
       )
     {
       CU_cleanup_registry();

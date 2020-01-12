@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 obj *pointer_array[] = {NULL, NULL};
+
 long bit_array[bit_array_size];
 
 long *get_bit_array()
@@ -47,9 +48,7 @@ void shutdown()
   obj **pointer_array = get_pointer_array();
   obj *low = pointer_array[0];
   obj *high = pointer_array[1];
-  //printf("%d\n", (long)low);
-  //printf("%d\n", (long)high);
-
+  
   long i = (long)low;
   while (i <= (long)high)
     {
