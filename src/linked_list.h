@@ -91,6 +91,7 @@ bool ioopm_linked_list_is_empty(list_t *list);
 /// @param list the linked list
 void ioopm_linked_list_clear(obj *object);
 
+void ioopm_linked_list_free_elem(obj *object);
 
 /*
 /// @brief Test if a supplied property holds for all elements in a list.

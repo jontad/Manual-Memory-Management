@@ -14,6 +14,8 @@ list_t *cascade_list = NULL;
 
 size_t counter = 0;
 
+list_t *illegal_alloc_list;
+
 list_t *get_cascade_list()
 {
   return cascade_list;
@@ -106,14 +108,25 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
     {
       pointer_array[1] = alloc;
     }
+  
   if (test_bit(get_bit_array(), alloc) != 0)
     {
+      //puts("hej");
       alloc = (obj *)((char *)alloc - 2*sizeof(uint8_t) - sizeof(function1_t));
-      free(alloc);
+      if (!illegal_alloc_list)
+	{
+	  illegal_alloc_list = ioopm_linked_list_create(eq_func);
+	}
+      ioopm_linked_list_append(illegal_alloc_list, (elem_t){.obj_val = alloc});
       return (allocate_array(elements, bytes, destructor));
     }
-  set_bit(get_bit_array(), alloc);
-  
+  else
+    {
+      set_bit(get_bit_array(), alloc);
+    }
+
+  ioopm_linked_list_free_elem(illegal_alloc_list);
+  ioopm_linked_list_clear(illegal_alloc_list);
   return alloc;
 }
 

@@ -286,7 +286,9 @@ bool ioopm_linked_list_is_empty(list_t *list)
 void ioopm_linked_list_clear(obj *object)
 {
   list_t *list = object;
+  if (list == NULL) return;
   link_t *link = list->first;
+  
   while (link != NULL)
   {
     link_t *temp = link;
@@ -294,6 +296,19 @@ void ioopm_linked_list_clear(obj *object)
     link_destroy(list, temp);
   }
   list->first = NULL;
+}
+
+void ioopm_linked_list_free_elem(obj *object)
+{
+  list_t *list = object;
+  if (list == NULL) return;
+  link_t *link = list->first;
+  
+  while (link != NULL)
+  {
+    free((link->value).obj_val);
+    link = link->next;
+  }
 }
 
 
