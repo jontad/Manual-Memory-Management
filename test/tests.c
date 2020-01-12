@@ -7,12 +7,6 @@
 
 void test_alloc()
 {
-  int a = 2147483647;
-  int b = 1;
-  for (int i = 0; i<40; i++)
-    {
-      printf("%d\n", a & (b << i));
-    }
   string_t *alloc = allocate(sizeof(string_t), NULL);
   alloc->str = NULL;
   CU_ASSERT_PTR_NOT_NULL(alloc);

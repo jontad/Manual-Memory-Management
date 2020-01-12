@@ -7,6 +7,7 @@
 #define Free(ptr) {free(ptr); ptr = NULL;}
 
 //global functions to set, clear and test a bit in a bit array
+//the current "hash function" where we do k%bit_array_size to find the row in A and k%row_size to find the bit in the row has its disadvantages. Mainly that several different pointers can hash to the same bit in the bit array. We used this hash function because we couldn't determine the size needed for bit_array to be able to do k/bit_array_size in order to find the row in A.
 #define bit_array_size 100000
 #define row_size 64
 #define set_bit(A,k)     ( A[((long)(char *)k%bit_array_size)] |= ((long)1 << ((long)(char *)k%row_size)) )
