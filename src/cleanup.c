@@ -85,14 +85,14 @@ void cleanup()
   //printf("%d\n", (long)low);
   //printf("%d\n", (long)high);
 
-  long i = (char *)low;
-  while (i <= (char *)high)
+  long i = (long)low;
+  while (i <= (long)high)
     {
       if (test_bit(get_bit_array(), i) != 0)
 	{
-	  if (rc(i) == 0)
+	  if (rc((obj *)i) == 0)
 	    {
-	      deallocate(i);
+	      deallocate((obj *)i);
 	    }
 	}
       i = i + sizeof(void *);
@@ -107,12 +107,12 @@ void shutdown()
   //printf("%d\n", (long)low);
   //printf("%d\n", (long)high);
 
-  long i = (char *)low;
-  while (i <= (char *)high)
+  long i = (long)low;
+  while (i <= (long)high)
     {
       if (test_bit(get_bit_array(), i) != 0)
 	{
-	  deallocate_aux(i); 
+	  deallocate_aux((obj *)i); 
 	}
       i = i + sizeof(void *);
     }
