@@ -414,5 +414,3 @@ void iterator_destroy(list_iterator_t *iter)
 {
   release(iter);
 }
-
-
