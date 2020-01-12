@@ -172,6 +172,8 @@ void test_inlupp_linked_list_prepend(void)
   
   inlupp_linked_list_prepend(ll, int_elem(1000));
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 1000);
+
+  
   
   inlupp_linked_list_destroy(ll);
 }
@@ -362,6 +364,8 @@ void test_hash_table_insert_str(void)
   CU_ASSERT_EQUAL(o.value.str,"large key");
   
   hash_table_destroy(ht);
+
+  CU_ASSERT_EQUAL(0, ioopm_linked_list_size(linked_list_get_list()));
 }
 
 

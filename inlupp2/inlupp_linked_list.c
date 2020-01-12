@@ -115,7 +115,7 @@ void inlupp_linked_list_append(list_t *list, elem_t value)
       list->last->next = new_entry;
       release(list->last);
       list->last = new_entry;
-      retain(new_entry);
+      retain(list->last);
       //printf("RC: %ld\n", rc(new_entry));
     }
 }
