@@ -7,12 +7,12 @@
 #define Free(ptr) {free(ptr); ptr = NULL;}
 
 //global functions to set, clear and test a bit in a bit array
-#define bit_array_size 1
+#define bit_array_size 100000
 #define row_size 64
-#define set_bit(A,k)     ( A[((long)k%bit_array_size)] |= (1 << ((long)k%row_size)) )
-#define clear_bit(A,k)   ( A[((long)k%bit_array_size)] &= ~(1 << ((long)k%row_size)) )
-#define test_bit(A,k)    ( A[((long)k%bit_array_size)] & (1 << ((long)k%row_size)) )
-#define le_bit(num,k) ( num & (1 << k) )
+#define set_bit(A,k)     ( A[((long)(char *)k%bit_array_size)] |= ((long)1 << ((long)(char *)k%row_size)) )
+#define clear_bit(A,k)   ( A[((long)(char *)k%bit_array_size)] &= ~((long)1 << ((long)(char *)k%row_size)) )
+#define test_bit(A,k)    ( A[((long)(char *)k%bit_array_size)] & ((long)1 << ((long)(char *)k%row_size)) )
+#define le_bit(num,k) ( num & ((long)1 << (long)k) )
 /*
 #define set_bit(A,k)     ( A[((long)k/32)] |= (1 << ((long)k%32)) )
 #define clear_bit(A,k)   ( A[((long)k/32)] &= ~(1 << ((long)k%32)) )

@@ -29,7 +29,7 @@ int allocs_in_bit_array()
   long *bit_array = get_bit_array();
   int counter = 0;
   
-  for (int i = 0; i<bit_array_size; i++)
+  for (long i = 0; i<bit_array_size; i++)
     {
       //counter += bit_array[i];
 

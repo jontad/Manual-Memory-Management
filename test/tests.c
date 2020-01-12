@@ -7,6 +7,12 @@
 
 void test_alloc()
 {
+  int a = 2147483647;
+  int b = 1;
+  for (int i = 0; i<40; i++)
+    {
+      printf("%d\n", a & (b << i));
+    }
   string_t *alloc = allocate(sizeof(string_t), NULL);
   alloc->str = NULL;
   CU_ASSERT_PTR_NOT_NULL(alloc);
@@ -442,7 +448,7 @@ int main()
     }
 
   if (
-      (NULL == CU_add_test(test_suite1, "alloc", test_alloc)) ||
+      (NULL == CU_add_test(test_suite1, "alloc", test_alloc))||
       (NULL == CU_add_test(test_suite1, "alloc array", test_alloc_array))||
       (NULL == CU_add_test(test_suite1, "destruct string", test_destruct_string)) ||
       (NULL == CU_add_test(test_suite1, "destructor null", test_destructor_null)) ||
@@ -461,7 +467,7 @@ int main()
       (NULL == CU_add_test(test_suite1, "allocate different types", test_allocate_dif_structs))||
       (NULL == CU_add_test(test_suite1, "cascade free", test_cascade_free)) ||
       (NULL == CU_add_test(test_suite1, "default destructor", test_destruct_default))||
-      //(NULL == CU_add_test(test_suite1, "generic hash table",  test_scuffed_table)) ||
+      (NULL == CU_add_test(test_suite1, "generic hash table",  test_scuffed_table)) ||
       (NULL == CU_add_test(test_suite1, "default destructor with many ptrs", test_destruct_default_several_ptrs))||
       (NULL == CU_add_test(test_suite1, "cascade dealloc after allocate", test_cascade_free_alloc))||
       (NULL == CU_add_test(test_suite1, "alloc with zero bytes", test_alloc_zero_bytes))||
@@ -469,7 +475,7 @@ int main()
       (NULL == CU_add_test(test_suite1, "retain overflow", test_retain_overflow))||
       (NULL == CU_add_test(test_suite1, "release underflow", test_release_underflow))||
       (NULL == CU_add_test(test_suite1, "cascade no limit", test_cascade_no_limit))||
-      //(NULL == CU_add_test(test_suite1, "cleanup different destructors", test_cleanup_dif_destructors))||
+      (NULL == CU_add_test(test_suite1, "cleanup different destructors", test_cleanup_dif_destructors))||
       (NULL == CU_add_test(test_suite1, "Default destructor for array", test_destruct_default_array))||
       (NULL == CU_add_test(test_suite1, "Alloc array struct", test_alloc_array_struct))/*||
       (NULL == CU_add_test(test_suite1, "bit array", test_bit_array))||

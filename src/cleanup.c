@@ -85,8 +85,8 @@ void cleanup()
   //printf("%d\n", (long)low);
   //printf("%d\n", (long)high);
 
-  long i = (long)low;
-  while (i <= (long)high)
+  long i = (char *)low;
+  while (i <= (char *)high)
     {
       if (test_bit(get_bit_array(), i) != 0)
 	{
@@ -107,8 +107,8 @@ void shutdown()
   //printf("%d\n", (long)low);
   //printf("%d\n", (long)high);
 
-  long i = (long)low;
-  while (i <= (long)high)
+  long i = (char *)low;
+  while (i <= (char *)high)
     {
       if (test_bit(get_bit_array(), i) != 0)
 	{
