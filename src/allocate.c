@@ -108,7 +108,6 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
       pointer_array[1] = alloc;
     }
   set_bit(get_bit_array(), alloc);
-  printf("%d\n", allocs_in_bit_array());
   
   return alloc;
 }
