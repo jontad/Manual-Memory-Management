@@ -683,7 +683,7 @@ int main()
   CU_add_test(test_suite, "Apply to all", test_hash_table_apply_to_all);
 
 
-  CU_add_test(test_suite, "Adaptive buckets", test_hash_table_adaptive_buckets);
+  //CU_add_test(test_suite, "Adaptive buckets", test_hash_table_adaptive_buckets);
   CU_basic_set_mode(CU_BRM_VERBOSE);
   CU_basic_run_tests();
 
