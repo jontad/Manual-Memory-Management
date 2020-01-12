@@ -10,6 +10,15 @@ compile_tests: tests.c backend.c utils.c hash_table.c linked_list.c backend.h ut
 only_test: compile_tests
 	./a.out
 
+compile_unit_tests: tests.c backend.c utils.c hash_table.c linked_list.c hash_table.h linked_list.h
+	gcc -Wall -pedantic -g unit_tests.c hash_table.c linked_list.c hash_table.h linked_list.h -o unit_tests -lcunit
+
+unit_tests: compile_unit_tests
+	./unit_tests
+
+val_unit_tests: compile_unit_tests
+	valgrind --leak-check=full ./unit_tests
+
 mem: compile_webstore
 	valgrind -v --leak-check=full --track-origins=yes ./a.out
 
