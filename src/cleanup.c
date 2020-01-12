@@ -34,6 +34,7 @@ list_t *linked_list_get_list()
   if(pointer_list) return pointer_list;
   else return create_pointer_list();
 }
+
 /*
 void cleanup()
 {
@@ -74,7 +75,6 @@ void shutdown()
 }
 */
 
-
 /****************** BITARRAY STUFF *******************/
 
 void cleanup()
@@ -85,17 +85,17 @@ void cleanup()
   //printf("%d\n", (long)low);
   //printf("%d\n", (long)high);
 
-  obj *i = low;
-  while ((long)i <= (long)high)
+  long i = (long)low;
+  while (i <= (long)high)
     {
-      if (test_bit(get_bit_array(), i) == 1)
+      if (test_bit(get_bit_array(), i) != 0)
 	{
 	  if (rc(i) == 0)
 	    {
 	      deallocate(i);
 	    }
 	}
-      i = (long)i + sizeof(void *);
+      i = i + sizeof(void *);
     }
 }
 
@@ -107,15 +107,14 @@ void shutdown()
   //printf("%d\n", (long)low);
   //printf("%d\n", (long)high);
 
-  obj *i = low;
-  while ((long)i <= (long)high)
+  long i = (long)low;
+  while (i <= (long)high)
     {
-      if (test_bit(get_bit_array(), i) == 1)
+      if (test_bit(get_bit_array(), i) != 0)
 	{
-	  deallocate_aux(i);
-	     
+	  deallocate_aux(i); 
 	}
-      i = (long)i + sizeof(void *);
+      i = i + sizeof(void *);
     }
   
   list_t *cascade_list = get_cascade_list();

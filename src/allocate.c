@@ -26,39 +26,40 @@ void set_cascade_list_to_null()
 
 int allocs_in_bit_array()
 {
-  int *bit_array = get_bit_array();
+  long *bit_array = get_bit_array();
   int counter = 0;
   
   for (int i = 0; i<bit_array_size; i++)
     {
-      counter += bit_array[i];
-      /*
+      //counter += bit_array[i];
+
       if (bit_array[i] != 0)
 	{ 
-	  for (long j = 0; j<64; j++)
+	  for (long j = 0; j<row_size; j++)
 	    {
-	      if (le_bit(bit_array[i], j) == 1)
+	      if (le_bit(bit_array[i], j) != 0)
 		{
 		  counter += 1;
 		}
 	    }
 	}
-      */
     }
   return counter;
 }
 
-set_bit(int *A, obj *k)
+/*
+set_bit(long *A, obj *k)
 {
-  int i = (long)k%bit_array_size;            // i = array index (use: A[i])
-  int pos = (long)k%64;          // pos = bit position in A[i]
+  int i = (long)k%bit_array_size; // i = array index (use: A[i])
+  int pos = (long)k%row_size; // pos = bit position in A[i]
 
-  unsigned int flag = 1;   // flag = 0000.....00001
+  unsigned int flag = 1; // flag = 0000.....00001
 
-  flag = flag << pos;      // flag = 0000...010...000   (shifted k positions)
+  flag = flag << pos; // flag = 0000...010...000   (shifted k positions)
 
-  A[i] = A[i] | flag;      // Set the bit at the k-th position in A[i]
+  A[i] = A[i] | flag; // Set the bit at the k-th position in A[i]
 }
+*/
 
 obj *allocate(size_t bytes, function1_t destructor)
 {
@@ -123,7 +124,7 @@ void default_destruct(obj *object)
       obj **pointer = (obj **)((char *)object + i*sizeof(obj *));      
       obj *ptr = *(obj **)pointer;
 
-      if (test_bit(get_bit_array(), ptr) == 1)
+      if (test_bit(get_bit_array(), ptr) != 0)
 	{
 	  release(ptr);
 	}

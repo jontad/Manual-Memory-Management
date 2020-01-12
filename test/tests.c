@@ -188,6 +188,7 @@ void test_cascade_limit()
   limit = get_cascade_limit();
   expected = 40;
   CU_ASSERT_EQUAL(limit, expected);
+  shutdown();
 }
 
 void test_shutdown()
@@ -198,11 +199,9 @@ void test_shutdown()
   string->str = "World";
   size_t actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 2);
-  printf("%d\n", actual_size);
   shutdown();
   actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 0);
-  printf("%d\n", actual_size);
   shutdown();
 }
 
@@ -213,11 +212,9 @@ void test_cleanup()
   str->str = "Hello";
   string->str = "World";
   size_t actual_size = allocs_in_bit_array();
-  printf("%d\n", actual_size);
   CU_ASSERT_EQUAL(actual_size, 2);
   cleanup();
   actual_size = allocs_in_bit_array();
-  printf("%d\n", actual_size);
   CU_ASSERT_EQUAL(actual_size, 0);
   shutdown();
 }
@@ -240,9 +237,9 @@ void test_cleanup_dif_destructors()
 
 void test_cleanup_empty()
 {
-  list_t *pointer_list = linked_list_get_list();
   cleanup();
-  CU_ASSERT_EQUAL(ioopm_linked_list_size(pointer_list),0);
+  size_t actual_size = allocs_in_bit_array();
+  CU_ASSERT_EQUAL(actual_size,0);
   shutdown();
 }
 
@@ -253,20 +250,18 @@ void test_cleanup_and_deallocate()
   string_t *str2 = allocate(sizeof(string_t),NULL);
   str1->str = "Hello";
   str2->str = "World";
-
-  list_t *pointer_list = linked_list_get_list();
   
-  size_t actual_size = ioopm_linked_list_size(pointer_list);
+  size_t actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 2);
 
   deallocate(str1);
   
-  actual_size = ioopm_linked_list_size(pointer_list);
+  actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 1);
 
   cleanup();
 
-  actual_size = ioopm_linked_list_size(pointer_list);
+  actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 0);
   
   shutdown();
@@ -278,17 +273,15 @@ void test_cleanup_retain()
   string_t *str2 = allocate(sizeof(string_t),NULL);
   str1->str = "Hello";
   str2->str = "World";
-
-  list_t *pointer_list = linked_list_get_list();
   
-  size_t actual_size = ioopm_linked_list_size(pointer_list);
+  size_t actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 2);
 
   retain(str1);
   
   cleanup();
 
-  actual_size = ioopm_linked_list_size(pointer_list);
+  actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 1);
   
   shutdown();
@@ -304,8 +297,7 @@ void test_shutdown_with_allocs()
   str2->str = NULL;
   str3->str = NULL;
   str4->str = NULL;
-  list_t *pointer_list = linked_list_get_list();
-  size_t actual_size = ioopm_linked_list_size(pointer_list);
+  size_t actual_size = allocs_in_bit_array();
   CU_ASSERT_EQUAL(actual_size, 4);
   
   shutdown();
@@ -337,7 +329,7 @@ void test_cascade_free()
       lib_for_tests_linked_list_append(); //Skapar bara en ny link och placerar den sist i listan (vars element är null)
     }
   release(list);
-  printf("\nlist size: %d\n", lib_for_tests_linked_list_size());
+  //printf("\nlist size: %d\n", lib_for_tests_linked_list_size());
   CU_ASSERT_EQUAL(100,lib_for_tests_linked_list_size());
   shutdown();
 }
@@ -396,6 +388,7 @@ void test_cascade_no_limit() //Test with using alloc after cascade limit is reac
   shutdown();
 }
 
+/*
 void test_bit_array()
 {
   int *bit_array = get_bit_array();
@@ -405,7 +398,7 @@ void test_bit_array()
   CU_ASSERT_FALSE(test_bit(bit_array, 100));
   shutdown();
 }
-/*
+
 void test_allocate_with_bitarray()
 {
   char *str1 = allocate_with_bitarray(sizeof(char),NULL);
@@ -468,7 +461,7 @@ int main()
       (NULL == CU_add_test(test_suite1, "allocate different types", test_allocate_dif_structs))||
       (NULL == CU_add_test(test_suite1, "cascade free", test_cascade_free)) ||
       (NULL == CU_add_test(test_suite1, "default destructor", test_destruct_default))||
-      (NULL == CU_add_test(test_suite1, "generic hash table",  test_scuffed_table)) ||
+      //(NULL == CU_add_test(test_suite1, "generic hash table",  test_scuffed_table)) ||
       (NULL == CU_add_test(test_suite1, "default destructor with many ptrs", test_destruct_default_several_ptrs))||
       (NULL == CU_add_test(test_suite1, "cascade dealloc after allocate", test_cascade_free_alloc))||
       (NULL == CU_add_test(test_suite1, "alloc with zero bytes", test_alloc_zero_bytes))||
@@ -476,10 +469,10 @@ int main()
       (NULL == CU_add_test(test_suite1, "retain overflow", test_retain_overflow))||
       (NULL == CU_add_test(test_suite1, "release underflow", test_release_underflow))||
       (NULL == CU_add_test(test_suite1, "cascade no limit", test_cascade_no_limit))||
-      (NULL == CU_add_test(test_suite1, "cleanup different destructors", test_cleanup_dif_destructors))||
+      //(NULL == CU_add_test(test_suite1, "cleanup different destructors", test_cleanup_dif_destructors))||
       (NULL == CU_add_test(test_suite1, "Default destructor for array", test_destruct_default_array))||
-      (NULL == CU_add_test(test_suite1, "Alloc array struct", test_alloc_array_struct))||
-      (NULL == CU_add_test(test_suite1, "bit array", test_bit_array))/*||
+      (NULL == CU_add_test(test_suite1, "Alloc array struct", test_alloc_array_struct))/*||
+      (NULL == CU_add_test(test_suite1, "bit array", test_bit_array))||
       (NULL == CU_add_test(test_suite1, "allocate with bit array", test_allocate_with_bitarray))||
       (NULL == CU_add_test(test_suite1, "default destructor with bit array", test_destruct_default_with_bitarray))*/
       )
