@@ -2,7 +2,7 @@
 #define _BACKENDH_
 
 #include "common.h"
-
+ 
 
 /**
  * @file backend.h
@@ -13,71 +13,126 @@
 
 
 
+/// @brief contains name, desc, price, available amount and location of merchandise 
+//typedef struct merch merch_t;
 
-typedef struct merch merch_t;
-typedef struct hash_table ioopm_hash_table_t;
+/// @brief contains information to build hash table
+//typedef struct hash_table ioopm_hash_table_t;
+
 
 /// @brief Creates a database with hash tables of merch, shelves and carts
 /// @return a new empty database
-ioopm_database_t *ioopm_create_database();
+ioopm_database_t *database_create_database();
   
 /// @brief Add merch into the database
 /// @param db database to add merch to
-void ioopm_add_merch(ioopm_database_t *db);
+/// @param name name of merchandise
+/// @param desc description of merchandise
+/// @param price price of merchandise
+merch_t *database_add_merch(ioopm_database_t *db, char *name, char *desc, unsigned int price);
 
-/// @brief print entries to the terminal 20 at a time 
-/// @param db database containing merch to list
-void ioopm_list_merch(ioopm_database_t *db);
+
+/// @brief sorts a list
+/// @param list list to be sorted
+/// @return sorted list
+char **database_sort_list(ioopm_list_t *list);
 
 /// @brief remove merch from database
 /// @param db database to remove merch from
-void ioopm_remove_merch(ioopm_database_t *db);
+/// @param merch merch to remove
+void database_remove_merch(ioopm_database_t *db, merch_t *merch);
 
-/// @brief edit name, description or price of merch
-/// @param db database containing merch to edit
-void ioopm_edit_merch(ioopm_database_t *db);
+/// @brief edit name of merch
+/// @param db database containing merchandise
+/// @param new_name new name of merchandise
+/// @param merch merchandise to be edited
+/// @return merch with edited name
+merch_t *database_edit_name(ioopm_database_t *db, char *new_name, merch_t *merch);
+
+/// @brief edit description of merch
+/// @param merch merchandise to be edited
+/// @param new_desc new description of merchandise
+void database_edit_desc(merch_t *merch, char *new_desc);
+
+/// @brief edit price of merch
+/// @param merch merchandise to be edited
+/// @param new_price new price of merchandise
+void database_edit_price(merch_t *merch, int new_price);
+
 
 /// @brief print shelf and amount of merch
-/// @param db database containing merch
-void ioopm_show_stock(ioopm_database_t *db);
-
-/// @brief increase stock of merch at a particular shelf
-/// @param db database of merch
-void ioopm_replenish_stock(ioopm_database_t *db);
+/// @param merch merch to show stock of
+void database_show_stock(merch_t *merch);
 
 /// @brief creates a new empty shopping cart
 /// @param db database of merch
 /// @return pointer to cart 
-cart_t *ioopm_create_cart(ioopm_database_t *db);
+cart_t *database_create_cart(ioopm_database_t *db);
 
 /// @brief removes a shopping cart from database and frees its memory
 /// @param db database of merch
-void ioopm_remove_cart(ioopm_database_t *db);
+/// @param cart cart to remove
+void database_remove_cart(ioopm_database_t *db, cart_t *cart);
 
 /// @brief adds an item to a specific cart
 /// @param db database of merch
-void ioopm_add_to_cart(ioopm_database_t *db);
+/// @param cart cart to add merch to
+/// @param merch merch to add to cart
+/// @param amount how many of the merch to add
+void database_add_to_cart(ioopm_database_t *db, cart_t *cart, merch_t *merch, int amount);
+
+/// @brief choose a specific item in a cart
+/// @param cart cart that contains items to be chosen
+/// @param wanted_item name of item
+/// @return Option_t containing item if successful 
+option_t database_choose_item_in_cart(cart_t *cart, char *wanted_item);
+
 
 /// @brief removes an item from a specific cart
-/// @param db database of merch
-void ioopm_remove_from_cart(ioopm_database_t *db);
+/// @param cart cart to remove from
+/// @param item item to remove
+/// @param amount amount to remove
+void database_remove_from_cart(cart_t *cart, item_t *item, int amount);
 
-/// @brief calculates cost of items in a specific cart
+/// @brief remove a given cart and decrease the stock for merch in the cart
 /// @param db database in cart
-void ioopm_calculate_cost(ioopm_database_t *db);
-
-/// @brief remove a specific cart and decrease the stock for merch in the cart
-/// @param db database in cart
-void ioopm_checkout(ioopm_database_t *db);
+/// @param cart cart to checkout
+void database_checkout(ioopm_database_t *db, cart_t *cart);
 
 /// @brief free the entire database
 /// @param db database in cart
-void ioopm_destroy_database(ioopm_database_t *db);
+void database_destroy_database(ioopm_database_t *db);
 
+/// @brief prints the items in cart, their price, amount and the total cost of everything in the cart
+/// @param cart the cart to print
+void database_print_cart(cart_t *cart);
 
-/// @brief prints menu and asks for input to choose an operation
-/// @param db database operated on
-/// @return 0 to end the event loop (quit the program)
-void event_loop(ioopm_database_t *db);
+/// @brief increase stock of merch at a particular shelf
+/// @param db database of merch
+/// @param merch merchandise to be replenished
+/// @param new_shelf shelf where merchandise will have stock
+void database_replenish_stock(ioopm_database_t *db, merch_t *merch, shelf_t *new_shelf);
 
+/// @brief checks that every item in the given cart still exists in the database
+/// @param db database containing cart and merch
+/// @param cart cart to check
+/// @return true if everything exists, false if something doesn't exist
+bool database_items_in_cart_exist(ioopm_database_t *db, cart_t *cart);
+
+/// @brief choose merchandise from merch in database
+/// @param db database to choose merch from
+/// @param index index of merch to choose
+/// @return chosen merch
+option_t database_choose_merch(ioopm_database_t *db, int index);
+
+/// @brief free and remove a cart from a database
+/// @param db database to remove cart from
+/// @param cart cart to remove
+void database_delete_cart(ioopm_database_t *db, cart_t *cart);
+
+/// @brief create a shelf
+/// @param shelf_name name of shelf
+/// @param amount amount of merch stored on the shelf
+/// @return the created shelf
+shelf_t *database_create_shelf(char *shelf_name, int amount);
 #endif

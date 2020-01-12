@@ -4,8 +4,13 @@
 #include <stdbool.h>
 #include "common.h"
 
-typedef struct list ioopm_list_t;
-typedef struct link ioopm_link_t;
+
+/**
+ * @file linked_list.h
+ * @author Fredrik Yngve & Jonathan Tadese
+ * @brief Linked list that stores values 
+ */
+
 
 /// @brief Creates a new empty linked list
 /// @return an empty linked list
@@ -52,7 +57,7 @@ elem_t ioopm_linked_list_get(ioopm_list_t *list, int index);
 
 /// @brief Check if an element is in the list
 /// @param list: the linked list that will be checked
-/// @param element: the element sought
+/// @param value: the element sought
 /// @return true if element is in the list, else false
 bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t value);
 

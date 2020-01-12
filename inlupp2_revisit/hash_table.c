@@ -6,6 +6,12 @@
 #include "iterator.h"
 #include "common.h"
 
+struct option
+{
+  bool success;
+  elem_t value; 
+};
+
 
 #define Success(v)      (option_t) {.success = true, .value = v};
 #define Failure()       (option_t) {.success = false};
@@ -56,6 +62,18 @@ struct hash_table
   ioopm_eq_function value_eq_func;
   size_t size;
 };
+
+struct merch
+{
+  char *name; //key
+  char *desc;
+  unsigned int price_per_unit;
+  unsigned int available_amount; //amount of merch in stock that is not in cart
+  ioopm_list_t *stock;
+};
+
+
+
 
 static entry_t *entry_create(elem_t key, elem_t value, entry_t *next)
 {
@@ -164,6 +182,28 @@ static entry_t *find_previous_entry_for_key(entry_t *first_entry, elem_t key, ha
     }
   return first_entry;
 } 
+/*{
+
+  entry_t *current_entry = first_entry;
+  entry_t *temp_entry = first_entry;
+  while(hash_func(current_entry->key) < hash_func(key) && current_entry->next != NULL)
+    {
+      temp_entry = current_entry;
+      current_entry = current_entry->next;
+    }
+  if(hash_func(current_entry->key) < hash_func(key) && current_entry->next == NULL)
+    {
+      return current_entry;
+    }
+  else
+    {
+      return temp_entry;
+    }
+
+}
+*/
+
+
 
 
 
@@ -207,6 +247,24 @@ option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
       return Failure();
     }
 }
+
+
+/*
+option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
+{
+  /// Find the previous entry for key
+  entry_t *previous_entry = find_previous_entry_for_key(ht->buckets[ht->hash_func(key) % ht->capacity], key, ht->hash_func);
+  entry_t *next = previous_entry->next;
+
+  if (next && (next->value.ioopm_int || next->value.ioopm_u_int || next->value.ioopm_bool || next->value.ioopm_float || next->value.ioopm_void_ptr)) // will not work if value is false (boolean)
+    {
+      return Success(next->value);
+    }
+  else
+    {
+      return Failure();
+    }
+}*/
 
 
 
