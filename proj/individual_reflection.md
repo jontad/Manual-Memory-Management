@@ -1,6 +1,6 @@
 #Individual reflections
 
-##Jonathan
+## Jonathan
 
 Jag har ingenting emot att jobba i en grupp. Det slutar ofta att jag låter andra styra upp och tar sedan an saker runt det de har bestämt.
 Även trots att det är kul att jobba i grupp får jag mer av att jobba själv. Det tar mer tid för mig att lära mig saker, så blir svårt när en gruppmedlem bli klar med någonting när jag precis har grepat konceptet.
@@ -16,8 +16,9 @@ Jag glömmer ofta att logga arbetstid då hjärnan ofta bara stänger av när ma
 2020-01-11 (7 h)
 2020-01-12 (3 h)
 2020-10-13 (8 h)
+Total: 42 h
 
-Min största "fail" var att jag inte tog mer av en ledande roll. Det är någonting jag skulle vilja testa. Min störsa "win" däremot är att jag alltid försökte bidra med så mycket jag kunde på det jag blev tilldelad. 
+Min största "fail" var att jag inte tog mer av en ledande roll. Det är någonting jag skulle vilja testa och bli bättre på. Min störsa "win" däremot är att jag närmare grepade konceptet på hur det kan vara att jobba i en större grupp. 
 
 ## Robert
 
@@ -26,7 +27,7 @@ Jag har inte lärt mig mycket alls under projektet, vilket jag tyckte var synd. 
 Jag motiveras av problem och sitter gärna i timmar för att lösa något, och blir omotiverad av saker som dokumentation och testning. 
 Jag hade missat arbetstidsloggningen under halva projektet men försökt återskapa en i efterhand, den kan avvika med några timmar jämfort med faktisk arbetstid.
 
-2019-12-11 (3 h)
+2019-12-11 (5 h)
 2019-12-16 (6 h) 
 2019-12-17 (6 h)
 2019-12-18 (6 h)

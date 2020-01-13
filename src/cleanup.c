@@ -24,6 +24,8 @@ list_t *linked_list_get_list()
 
 void cleanup()
 {
+  int limit = get_cascade_limit();
+  set_cascade_limit(0); // This allows us to free without a limit.
   if(pointer_list)
     {
       link_t *cursor = pointer_list->first;
@@ -38,6 +40,7 @@ void cleanup()
 	  cursor = tmp;
 	}
     }
+  set_cascade_limit(limit); // Set back the limit to the previous limit.
   return;
 }
 

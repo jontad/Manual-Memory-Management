@@ -1,7 +1,7 @@
 Manuel minneshantering i C
 ==========================
 
-OBS: Detta var först skrivet i latex, vilket också är medskickat i denna mapp
+OBS: Detta var först skrivet i latex, vilket också är medskickat i denna mapp som Projek_IOOPM.pdf
 
 Process
 -------
