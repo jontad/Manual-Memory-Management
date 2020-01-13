@@ -40,3 +40,25 @@ Totalt: 50 h
 Min största win var hur jag kom fram till hur vi skulle skanna objekt efter pekare på ett minneseffektivt sätt. Vi sparar helt enkelt antalet bytes % (storlek av pekare) i en byte innan objektet och när vi sedan skannar objektet vet vi hur många pekare den kan innehålla maximalt.  
 Min största fail var att jag missade att logga tid samt hade lite svårt att kommentera mina ändringar så att andra kunde förstå dem.
 
+## Georgios Davakos 
+
+2019-12-05 Fix trello page. (30 min)
+2019-12-11 Worked on allocate and deallocate together with Robert. (5h)
+2019-12-13 Had a meeting (30 min)
+2019-12-15 Worked on fuctions to test the functions for the assignment (4,5h)
+2019-12-16 Started integrating each others work into the master branch (5h)
+2019-12-18 Worked on the assignment as a group (wasn't efficient but it got the job done (6h)
+2019-12-19 Continued from were we left of from yesterday (6h and 20min)
+2020-01-11 Worked on memory leaks together with Daniel (11h)
+2020-01-12 Continued with the memory leaks from yesterday (5,5h)
+2020-01-13 Finished the report (til we are done)
+
+Min prestation var helt okej. Det känndes aldrig att jag hade en specifik roll
+utan jag provade på och gjorde lite av allt. Att jobba i grupp var väldigt lärorikt
+och roligt. Alla delade med sig av sin kunskap och alla ville hjälpa till så
+det var alltid lätt att hela tiden hänga med.
+
+Jag känner att jag inte har så mycket att skriva angående "biggest fail" och "biggest win".
+Mitt fokus var att få ett fungerande program och lösa alla hinder som kom
+på vägen. Sen så var det så att vi stötte aldrig på någon jobbig bug vilket
+kan bidra till varför jag inte har så mycket att säga om det här.
