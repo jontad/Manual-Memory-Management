@@ -67,3 +67,53 @@ Jag känner att jag inte har så mycket att skriva angående "biggest fail" och 
 Mitt fokus var att få ett fungerande program och lösa alla hinder som kom
 på vägen. Sen så var det så att vi stötte aldrig på någon jobbig bug vilket
 kan bidra till varför jag inte har så mycket att säga om det här.
+
+
+
+Elias Insulander
+----------------
+
+Friday 6/12 -		first project group meeting	12 - 13		1 h
+
+Wednesday 11/12 - 	project group meeting,
+       	       	  	started work on rc functions	12 - 14		2 h
+
+Friday 13/12 - 		meeting with coach Albin,
+       	       		work on rc functions		12 - 14  	2 h
+
+Monday 16/12 - 		coding, with group		12 - 18		6 h
+
+Tuesday 17/12 - 	coding, with group		13 - 18		5 h
+
+Wednesday 18/12 - 	coding, with group		12 - 18		6 h 
+		
+Thursday 19/12 - 	coding, with group		13 - 18		5 h
+	
+Sunday 12/1 - 		started work on presentation PP	13 - 18  	5 h
+
+Monday 13/1 - 		Report and other hand ins	13 - 20+	7 h
+
+Total: 39+ h
+
+
+Mina styrkor i projektarbete är att samarbeta, jag tycker om att arbeta med
+andra och tycker att jag bidrar till en bra stämning. Jag känner att jag också
+får mina bästa idéer när vi samarbetar och får input från varandra. Mina
+svagheter är mitt självständiga arbete, jag tycker det är ganska svårt att
+motivera mig att jobba ensam.
+
+I ett team är jag ganska anpassningsbar och gillar att hjälpa till där det
+behövs. Jag låter gärna någon annan leda, men behöver jag ta initiativet så är
+det inga problem heller.
+
+Jag tycker väldigt mycket om att jobba i grupp. Det är skönt att kunna
+diskutera problem man stöter på direkt. 
+
+Det har gått helt okej att logga arbetstider, i början och i slutet av
+projektet var jag mer noggrann. I mitten av projektet var jag lite lat och
+glömde logga några tider vi jobbade tillsammans, men som tur var kunde jag få
+tiderna från mina gruppmedlemmar.
+
+Över lag är jag ganska nöjd med min insats under projektet. Jag känner att jag
+har koll på de flesta områden i koden. Dock önskar jag att jag hade varit lite
+mer delaktig i själva kodskrivandet.
