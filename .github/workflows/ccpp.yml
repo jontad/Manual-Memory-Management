@@ -19,3 +19,8 @@ jobs:
       run: make tests
     - name: make val_tests
       run: make val_tests
+    - name: make inlupp_unit_tests
+      run: make inlupp_unit_tests
+    - name: make val_inlupp_unit_tests
+      run: make val_inlupp_unit_tests
+

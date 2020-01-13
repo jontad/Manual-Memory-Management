@@ -7,7 +7,8 @@
 #include <assert.h>
 #include "linked_list.h"
 #include "../test/lib_for_tests.h"
-#include "../inlupp2/common.h"
+#include "common_for_linked_list.h"
+//#include "../inlupp2/common.h"
 
 list_t *cascade_list = NULL;
 
@@ -23,11 +24,6 @@ void set_cascade_list_to_null()
   cascade_list = NULL;
 }
 
-obj *allocate(size_t bytes, function1_t destructor)
-{
-  return allocate_array(1, bytes, destructor);
-}
-
 obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
 {
   //Every time we allocate memory we try to clear up our cascade list
@@ -36,7 +32,6 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
     {
       release(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
     }
-
   //2*sizeof(uint8_t), 1 byte for rc, 1 byte for hops
   obj *alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
   //If malloc fails to reserve memory we try to empty our cascade list
@@ -47,8 +42,6 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
       alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
     }
   if(!alloc) return alloc; //Return NULL if we fail to allocate memory
-  
-
   
   uint8_t hops = (elements*bytes) / sizeof(void *); //How many pointers our object can hold
   memset(alloc, hops, sizeof(uint8_t));
@@ -67,6 +60,11 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   if (pointer_list) ioopm_linked_list_append(pointer_list, (elem_t){.obj_val = alloc});
   
   return alloc;
+}
+
+obj *allocate(size_t bytes, function1_t destructor)
+{
+  return allocate_array(1, bytes, destructor);
 }
 
 void remove_from_list(obj *object)
@@ -155,7 +153,11 @@ void release(obj *object)
       uint8_t ref_count = *(uint8_t *)tmp;
       if(ref_count != 0) ref_count--;
       memset(tmp,ref_count,1);
-      if(ref_count == 0) deallocate(object);
+      if(ref_count == 0)
+	{
+	  deallocate(object);
+	  object = NULL;
+	}
     }
 }
 
