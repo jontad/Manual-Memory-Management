@@ -1,6 +1,8 @@
-#Individual reflections
+Individual reflections
+=====================
 
-## Jonathan
+Jonathan
+--------
 
 Jag har ingenting emot att jobba i en grupp. Det slutar ofta att jag låter andra styra upp och tar sedan an saker runt det de har bestämt.
 Även trots att det är kul att jobba i grupp får jag mer av att jobba själv. Det tar mer tid för mig att lära mig saker, så blir svårt när en gruppmedlem bli klar med någonting när jag precis har grepat konceptet.
@@ -20,7 +22,8 @@ Total: 42 h
 
 Min största "fail" var att jag inte tog mer av en ledande roll. Det är någonting jag skulle vilja testa och bli bättre på. Min störsa "win" däremot är att jag närmare grepade konceptet på hur det kan vara att jobba i en större grupp. 
 
-## Robert
+Robert
+------
 
 Jag gillar att jobba tillsammans, men helst inte med för många i taget. Det blir lätt rörigt för mig och många störningsmoment. Jag föredrar parprogrammeing där man kan diskturera med en person och bolla ideér. När vi jobbade så fick jag snabbt rollen som "problemlösare", vissa dagar satt vi med mig på projektorn och försökte lösa ett problem tillsammans, andra dagar grävde jag ner mig och löste något jobbigt problem vi haft. För mig är grupparbete ej mer givande än par-arbete, men det är också skönt med en större grupp där alla hjälps åt.
 Jag har inte lärt mig mycket alls under projektet, vilket jag tyckte var synd. Det jag har lärt mig är hur man manipulerar pekare för att flytta dem frammåt och bakåt.
@@ -41,7 +44,8 @@ Totalt: 50 h
 Min största win var hur jag kom fram till hur vi skulle skanna objekt efter pekare på ett minneseffektivt sätt. Vi sparar helt enkelt antalet bytes % (storlek av pekare) i en byte innan objektet och när vi sedan skannar objektet vet vi hur många pekare den kan innehålla maximalt.  
 Min största fail var att jag missade att logga tid samt hade lite svårt att kommentera mina ändringar så att andra kunde förstå dem.
 
-## Georgios Davakos 
+Georgios Davakos 
+----------------
 
 2019-12-05 Fix trello page. (30 min)
 2019-12-11 Worked on allocate and deallocate together with Robert. (5h)
