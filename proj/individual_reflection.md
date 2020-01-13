@@ -10,15 +10,15 @@ Det jag alltså främst lärt mig under detta projekt är hur det är att jobba 
 
 Jag glömmer ofta att logga arbetstid då hjärnan ofta bara stänger av när man är klar för dagen. Inkluderar därför endast de tider jag kommit ihåg att skriva ner.
 
-2019-12-11 (1 h)
-2019-12-16 (6 h) 
-2019-12-17 (5 h)
-2019-12-18 (6 h)
-2019-12-19 (6 h)
-2020-01-11 (7 h)
-2020-01-12 (3 h)
-2020-10-13 (8 h)
-Total: 42 h
+2019-12-11 (1 h)  
+2019-12-16 (6 h)   
+2019-12-17 (5 h)  
+2019-12-18 (6 h)  
+2019-12-19 (6 h)  
+2020-01-11 (7 h)  
+2020-01-12 (3 h)  
+2020-10-13 (8 h)  
+Total: 42 h  
 
 Min största "fail" var att jag inte tog mer av en ledande roll. Det är någonting jag skulle vilja testa och bli bättre på. Min störsa "win" däremot är att jag närmare grepade konceptet på hur det kan vara att jobba i en större grupp. 
 
@@ -30,16 +30,16 @@ Jag har inte lärt mig mycket alls under projektet, vilket jag tyckte var synd. 
 Jag motiveras av problem och sitter gärna i timmar för att lösa något, och blir omotiverad av saker som dokumentation och testning. 
 Jag hade missat arbetstidsloggningen under halva projektet men försökt återskapa en i efterhand, den kan avvika med några timmar jämfort med faktisk arbetstid.
 
-2019-12-11 (5 h)
-2019-12-16 (6 h) 
-2019-12-17 (6 h)
-2019-12-18 (6 h)
-2019-12-19 (6 h)
-2019-12-20 (5 h)
-2020-01-11 (5 h)
-2020-01-12 (5 h)
-2020-10-13 (8 h)
-Totalt: 50 h
+2019-12-11 (5 h)  
+2019-12-16 (6 h)   
+2019-12-17 (6 h)  
+2019-12-18 (6 h)  
+2019-12-19 (6 h)  
+2019-12-20 (5 h)  
+2020-01-11 (5 h)  
+2020-01-12 (5 h)  
+2020-10-13 (8 h)  
+Totalt: 50 h  
 
 Min största win var hur jag kom fram till hur vi skulle skanna objekt efter pekare på ett minneseffektivt sätt. Vi sparar helt enkelt antalet bytes % (storlek av pekare) i en byte innan objektet och när vi sedan skannar objektet vet vi hur många pekare den kan innehålla maximalt.  
 Min största fail var att jag missade att logga tid samt hade lite svårt att kommentera mina ändringar så att andra kunde förstå dem.
@@ -47,17 +47,17 @@ Min största fail var att jag missade att logga tid samt hade lite svårt att ko
 Georgios Davakos 
 ----------------
 
-2019-12-05 Fix trello page. (30 min)
-2019-12-11 Worked on allocate and deallocate together with Robert. (5h)
-2019-12-13 Had a meeting (30 min)
-2019-12-15 Worked on fuctions to test the functions for the assignment (4,5h)
-2019-12-16 Started integrating each others work into the master branch (5h)
-2019-12-18 Worked on the assignment as a group (wasn't efficient but it got the job done (6h)
-2019-12-19 Continued from were we left of from yesterday (6h and 20min)
-2020-01-11 Worked on memory leaks together with Daniel (11h)
-2020-01-12 Continued with the memory leaks from yesterday (5,5h)
-2020-01-13 Finished the report (til we are done)
-
+2019-12-05 Fix trello page. (30 min)  
+2019-12-11 Worked on allocate and deallocate together with Robert. (5h)  
+2019-12-13 Had a meeting (30 min)  
+2019-12-15 Worked on fuctions to test the functions for the assignment (4,5h)  
+2019-12-16 Started integrating each others work into the master branch (5h)  
+2019-12-18 Worked on the assignment as a group (wasn't efficient but it got the job done (6h)  
+2019-12-19 Continued from were we left of from yesterday (6h and 20min)  
+2020-01-11 Worked on memory leaks together with Daniel (11h)  
+2020-01-12 Continued with the memory leaks from yesterday (5,5h)  
+2020-01-13 Finished the report (til we are done)  
+  
 Min prestation var helt okej. Det känndes aldrig att jag hade en specifik roll
 utan jag provade på och gjorde lite av allt. Att jobba i grupp var väldigt lärorikt
 och roligt. Alla delade med sig av sin kunskap och alla ville hjälpa till så
