@@ -7,8 +7,7 @@
 #include <assert.h>
 #include "linked_list.h"
 #include "../test/lib_for_tests.h"
-//#include "common_for_linked_list.h"
-#include "../inlupp2/common.h"
+#include "../demo/common.h"
 
 list_t *cascade_list = NULL;
 

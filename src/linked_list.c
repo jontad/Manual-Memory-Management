@@ -4,8 +4,7 @@
 #include <stdio.h>
 #include "linked_list.h"
 #include "refmem.h"
-//#include "common_for_linked_list.h"
-#include "../inlupp2/common.h"
+#include "../demo/common.h"
 
 /*************** FUNCTIONS **********************/
 

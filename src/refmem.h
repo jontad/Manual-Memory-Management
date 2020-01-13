@@ -2,8 +2,6 @@
 #define __REFMEM_H__
 
 #include <stdlib.h>
-//#include "common_for_linked_list.h"
-//#include "linked_list.h"
 #define Free(ptr) {free(ptr); ptr = NULL;}
 /**
  * @file refmem.h
