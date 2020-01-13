@@ -132,3 +132,51 @@ tiderna från mina gruppmedlemmar.
 Över lag är jag ganska nöjd med min insats under projektet. Jag känner att jag
 har koll på de flesta områden i koden. Dock önskar jag att jag hade varit lite
 mer delaktig i själva kodskrivandet.
+
+
+Alex Kangas
+----------------
+
+2019-12-06 Första gruppmöte								(1 h)
+2019-12-11 Andra gruppmöte, började koda retain, release och rc				(2 h)
+2019-12-16 Arbetade med gruppen med rc och cascade_free	     				(7 h)
+2019-12-17 Arbetade med gruppen	med cascade_free     	     				(5 h)
+2019-12-18 Arbetade med gruppen med default destructors, började intergrera inlupp2	(7 h)
+2019-12-19 linked_list intergrering klar     		    	 	 		(7.5 h)
+2020-01-09 Fixade de flesta minnesläckor i intergreringen av linked_list och hash_table	(6.5 h)
+2020-01-11 Grupparbete med minnesläckor i inlupp2, började med bit array		(9 h)
+2020-01-12 Blev klar med bit array     	 	 	     				(7 h)
+2020-01-13 Fixade buggar i bit array, arbetade med gruppen och skrev klart md-filerna	(9 h)
+Totalt: 61 h
+
+Jag tycker att grupparbetet har varit spännande och lärorikt. Även fast jag inte har problem
+med att jobba ensam så tycker jag om att diskutera och få ett bredare perspektiv på olika
+lösningar på uppgifter, speciellt då jag jobbar i kodpar. Dessutom märker jag att
+min inlärning blir avsevärt bättre om jag kan förklara och diskutera olika koncept med andra
+som har liknande erfarenhet av programmering som mig.
+
+En av mina svagheter dock är att jag blir något mer passiv i större grupparbeten än i exempelvis
+parprogrammering. Detta är dock något som jag har haft problem med i tidigare grupparbeten
+men som jag känner har förbättrats ganska mycket.
+
+Jag motiveras av att lösa komplicerade uppgifter. Dock avtar den motivationen om problemet
+pågår under flera timmar utan att jag kommit närmare målet. Sätt att behålla en hög motivation
+för mig är att bland annat ta pauser och att ha motiverade arbetskamrater.
+
+Uppskattning av hur mycket tid en uppgift tar känner jag att jag blir bättre på ju mer erfarenhet
+jag får. Däremot kan just uppskattningen variera beroende på motivationsnivån och hur svårt det
+är att till exempel felsöka en bugg.
+
+Jag har inte tagit en särskild roll i projektet. Kom det någon uppgift som jag kunde bidra med
+att lösa så tog jag den.
+
+Att logga tid har gått bra. Varje kväll efter en arbetsdag har jag försökt skriva ned arbetstiden
+och uppgifter som jag gjort under dagens gång.
+
+Den största vinsten kan ha varit då jag och Joel fixade minnesläckor i inlupp2-intergreringen. Även
+fast vi inte lyckades lösa alla den dagen så kändes det ändå som en av mina mest produktiva dagar
+under projektet.
+
+Den största förlusten är misslyckandet med att få en felfri bit array med tanke på hur mycket tid
+som lagts på den och hur nära jag kände mig att klara av den. Dock så ångrar jag inte den tiden jag
+arbetat på den.
