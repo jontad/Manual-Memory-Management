@@ -16,8 +16,6 @@
 #define Failure()       (option_t) { .success = false };
 #define Successful(o)   (o.success == true)
 #define Unsuccessful(o) (o.success == false)
-#define int_elem(i) (elem_t) { .int_val=(i) }
-#define str_elem(s) (elem_t) { .str_val=(s) }
 #define obj_elem(o) (elem_t) { .obj_val=(o) }
 
 /**************** COMMON TYPE DEFINITIONS ****************/
@@ -57,12 +55,6 @@ typedef void (*ioopm_apply_function)(elem_t key, elem_t *value, void *extra);
 
 union elem
 {
-  int int_val;
-  unsigned int uns_int_val;
-  bool bool_val;
-  float float_val;
-  char *str_val;
-  void *void_val;
   obj *obj_val;
 };
 

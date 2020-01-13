@@ -298,7 +298,7 @@ bool inlupp_linked_list_is_empty(list_t *list)
 
 void inlupp_linked_list_clear(list_t *list)
 {
-  link_t *link = list->first;
+  //  link_t *link = list->first;
   
   release(list->first);  
   release(list->last);

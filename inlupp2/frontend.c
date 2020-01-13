@@ -319,6 +319,7 @@ static void list_id(database_t *db)
        printf("Cart ID: %u\n", id_list[i]);
      }
    printf("\n");
+   release(id);
    inlupp_linked_list_destroy(id);
    release(id_list);
  }

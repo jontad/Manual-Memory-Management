@@ -35,7 +35,7 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   //2*sizeof(uint8_t), 1 byte for rc, 1 byte for hops
   obj *alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
   //If malloc fails to reserve memory we try to empty our cascade list
-
+  printf("Sizeof: %ld\n", sizeof(link_t));
   while(alloc == NULL && ioopm_linked_list_size(cascade_list))
     {
       deallocate(ioopm_linked_list_remove(cascade_list,0).value.obj_val);

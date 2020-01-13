@@ -527,7 +527,7 @@ int main()
   CU_basic_set_mode(CU_BRM_VERBOSE);
   if(!CU_basic_run_tests()) // Shutdown only when passing all tests
     {
-      shutdown();
+            shutdown();
     }
   CU_cleanup_registry();
   return CU_get_error();

@@ -32,20 +32,22 @@ static void free_items_in_cart(link_t **element, void *extra)
   //free((*element)->value.item);
   release((*element)->value.item);
 }
-
+/*
 static void free_shelves_in_stock(link_t **element, void *extra)
 {
   free((*element)->value.shelf->shelf_name);
   //free((*element)->value.shelf);
   //release((*element)->value.shelf->shelf_name);
   release((*element)->value.shelf);
-}
+  }*/
 
 static void free_carts_apply_func(elem_t key, elem_t *value, void *extra)
 {
   inlupp_linked_apply_to_all(value->cart->basket, free_items_in_cart, NULL);
+
   inlupp_linked_list_destroy(value->cart->basket);
   //free(value->cart);
+  release(value->cart);
   release(value->cart);
 }
 
@@ -98,6 +100,7 @@ void database_destroy_database(database_t *db)
   //free(db);
   //release(db);
   release(db);
+  //shutdown();
 }
 
 
@@ -353,11 +356,14 @@ cart_t *database_create_cart(database_t *db)
 
 void database_delete_cart(database_t *db, cart_t *cart)
 {
-  //inlupp_linked_apply_to_all(cart->basket, free_items_in_cart, NULL);
-  hash_table_remove(db->carts, unsigned_elem(cart->id));
-  //inlupp_linked_list_destroy(cart->basket);
-  //free(cart);
+  inlupp_linked_apply_to_all(cart->basket, free_items_in_cart, NULL);
   //release(cart);
+  inlupp_linked_list_destroy(cart->basket);
+
+  hash_table_remove(db->carts, unsigned_elem(cart->id));
+  
+  //free(cart);
+  
 }
 
 void database_remove_cart(database_t *db, cart_t *cart)
@@ -562,6 +568,7 @@ void database_checkout(database_t *db, cart_t *cart)
       current_link = current_link->next;
       retain(current_link);
     }
+  release(current_link);
   database_delete_cart(db, cart);
 }
 

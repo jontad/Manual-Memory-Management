@@ -102,7 +102,7 @@ static void resize_hash_table(hash_table_t *ht)
   
   list_t *keys = hash_table_keys(ht);
   list_t *values = hash_table_values(ht);
-  printf("keys ref count: %s \n",rc(values->first->value.merch));
+  printf("keys ref count: %ld \n",rc(values->first->value.merch));
   buckets_destroy(ht);
   
   ht->capacity = new_capacity;
@@ -257,18 +257,18 @@ elem_t hash_table_remove(hash_table_t *ht, elem_t key)
       //previous_entry is retained in find_previous_entry_for_key()
 	
       entry_t *temp_entry = previous_entry->next;
-      retain(temp_entry);
+      //retain(temp_entry);
       
       removed_value = temp_entry->value;
       
       previous_entry->next = temp_entry->next;
 
-      retain(temp_entry->next);
+      //retain(temp_entry->next);
       entry_destroy(temp_entry);
       --ht->size;
 
       release(previous_entry);
-      release(temp_entry);
+      //release(temp_entry);
     }
   return removed_value;
 }

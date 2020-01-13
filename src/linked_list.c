@@ -296,7 +296,7 @@ void ioopm_linked_list_clear(obj *object)
   list->first = NULL;
 }
 
-
+/*
 bool ioopm_linked_list_all(list_t *list, ioopm_predicate prop, void *extra)
 {
   link_t *link = list->first;
@@ -343,3 +343,4 @@ void ioopm_linked_apply_to_all(list_t *list, ioopm_apply_function apply_fun, voi
     i++;
   }
 }
+*/
