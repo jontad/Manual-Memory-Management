@@ -111,7 +111,7 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
   
   if (test_bit(get_bit_array(), alloc) != 0)
     {
-      //puts("hej");
+      printf("%d\n", (long)alloc);
       alloc = (obj *)((char *)alloc - 2*sizeof(uint8_t) - sizeof(function1_t));
       if (!illegal_alloc_list)
 	{
