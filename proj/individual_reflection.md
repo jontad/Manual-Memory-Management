@@ -26,7 +26,7 @@ Jag har inte lärt mig mycket alls under projektet, vilket jag tyckte var synd. 
 Jag motiveras av problem och sitter gärna i timmar för att lösa något, och blir omotiverad av saker som dokumentation och testning. 
 Jag hade missat arbetstidsloggningen under halva projektet men försökt återskapa en i efterhand, den kan avvika med några timmar jämfort med faktisk arbetstid.
 
-2019-12-11 (3 h)
+2019-12-11 (5 h)
 2019-12-16 (6 h) 
 2019-12-17 (6 h)
 2019-12-18 (6 h)
