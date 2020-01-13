@@ -11,7 +11,7 @@ only_test: compile_tests
 	./a.out
 
 mem: compile_webstore
-	valgrind -v --leak-check=full --track-origins=yes ./a.out
+	valgrind -v --leak-check=full --show-leak-kinds=all --track-origins=yes ./a.out
 
 test: compile_tests
 	valgrind -v --leak-check=full --track-origins=yes ./a.out 

@@ -78,8 +78,9 @@ static void destroy_merch(database_t *db, merch_t *merch) //Note: remember to re
     }
   clear_stock(stock);
   inlupp_linked_list_destroy(stock); //2. free list of shelves_ht
-  free(merch);
-  //release(merch);
+  free(merch->name);
+  free(merch->desc);
+  release(merch);
 }
 
 static void free_merch_apply_func(elem_t key, elem_t *value, void *db)
@@ -94,8 +95,8 @@ void database_destroy_database(database_t *db)
   hash_table_apply_to_all(db->merch_ht, free_merch_apply_func, db);
   hash_table_destroy(db->merch_ht);
   hash_table_destroy(db->shelves_ht);
-
   //free(db);
+  //release(db);
   release(db);
 }
 

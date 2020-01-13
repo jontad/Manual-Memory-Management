@@ -95,6 +95,7 @@ void list_merch(database_t *db)
      }
    printf("\n");
    release(merch_list);
+   release(names);
    inlupp_linked_list_destroy(names);
  }
 
@@ -568,7 +569,9 @@ int main()
   database_t *db = database_create_database();
   retain(db);
   event_loop(db);
+  release(db);
   database_destroy_database(db);
+  //shutdown();
   return 0;
 }
 

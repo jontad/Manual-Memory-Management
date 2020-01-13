@@ -475,7 +475,7 @@ void test_resize(void)
 
   printf("name: %s \n",merch9->name);
   database_remove_merch(db, merch9); //test removing the 23rd merch after continue listing
-  /*database_remove_merch(db, merch8); //test removing the 22rd merch before continue listing
+  database_remove_merch(db, merch8); //test removing the 22rd merch before continue listing
   database_remove_merch(db, merch1); //test removing the first merch after continue listing
   
   option_t namn9 = hash_table_lookup(db->merch_ht, str_elem("namn9"));
@@ -487,7 +487,7 @@ void test_resize(void)
   option_t namn1 = hash_table_lookup(db->merch_ht, str_elem("namn1"));
   CU_ASSERT_FALSE(namn1.success);
   
-  */
+  
   tests_destroy_database(db);
 }
 
@@ -517,7 +517,7 @@ int main()
   CU_add_test(test_suite1, "test add to cart", test_add_to_cart);
   CU_add_test(test_suite1, "test remove from cart", test_remove_from_cart);
   CU_add_test(test_suite1, "test checkout", test_checkout);
-  /*CU_add_test(test_suite1, "test resize", test_resize);*/
+  /* CU_add_test(test_suite1, "test resize", test_resize);*/
   CU_add_test(test_suite1, "test sort list", test_sort_list);
   CU_add_test(test_suite1, "test chosen item in cart", test_choose_item_in_cart);
   CU_add_test(test_suite1, "test items in cart exist", test_items_in_cart_exist);
