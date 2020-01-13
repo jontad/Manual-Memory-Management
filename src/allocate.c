@@ -7,7 +7,6 @@
 #include <assert.h>
 #include "linked_list.h"
 #include "../test/lib_for_tests.h"
-//#include "common_for_linked_list.h"
 #include "../inlupp2/common.h"
 
 list_t *cascade_list = NULL;
@@ -135,7 +134,6 @@ void deallocate(obj *object)
     }
   else if(rc(object) == 0) deallocate_aux(object);
   counter = 0;
-  //  object = NULL;
 }
 
 void retain(obj *object)
