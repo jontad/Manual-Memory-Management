@@ -63,3 +63,18 @@ Jag känner att jag inte har så mycket att skriva angående "biggest fail" och 
 Mitt fokus var att få ett fungerande program och lösa alla hinder som kom
 på vägen. Sen så var det så att vi stötte aldrig på någon jobbig bug vilket
 kan bidra till varför jag inte har så mycket att säga om det här.
+
+## Joel Waldenbäck
+
+191206 Första möte (1h)
+191213 Läste på om hur continous integration fungerar och hur man aktiverar det i Github (4h)
+191216 (5h)
+191217 (5h)
+191218 (6,5h)
+191219 (5,5h)
+200109 Arbetade med retain och release i backend.c (6h)
+200111 Arbetade med att implementera bit array (11h)
+200112 Blev klara med implementationen av bit array (10h)
+200113 14-
+
+Jag är nöjd med min prestation. 
