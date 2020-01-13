@@ -7,8 +7,8 @@
 #include <assert.h>
 #include "linked_list.h"
 #include "../test/lib_for_tests.h"
-//#include "common_for_linked_list.h"
-#include "../inlupp2/common.h"
+#include "common_for_linked_list.h"
+//#include "../inlupp2/common.h"
 
 list_t *cascade_list = NULL;
 
@@ -32,7 +32,6 @@ obj *allocate_array(size_t elements, size_t bytes, function1_t destructor)
     {
       release(ioopm_linked_list_remove(cascade_list,0).value.obj_val);
     }
-
   //2*sizeof(uint8_t), 1 byte for rc, 1 byte for hops
   obj *alloc = malloc(2*sizeof(uint8_t) + sizeof(function1_t) + elements*bytes);
   //If malloc fails to reserve memory we try to empty our cascade list

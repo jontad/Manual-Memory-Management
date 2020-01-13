@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 #include "hash_table.h"
 #include "inlupp_linked_list.h"
 #include "iterator.h"

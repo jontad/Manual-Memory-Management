@@ -7,7 +7,7 @@
 #include "common.h"
 #include "backend.h"
 #include "utils.h"
-#include "../src/linked_list.h"
+//#include "../src/linked_list.h"
 #include "../src/refmem.h"
 
 int init_suite(void)
@@ -146,7 +146,7 @@ void test_add_merch(void)
   database_add_merch(db, "18", "beskrivning", 10); //Add first merch
 
   tests_destroy_database(db);
-  CU_ASSERT_EQUAL(0, ioopm_linked_list_size(linked_list_get_list()));
+
 }
 
 void test_remove_merch(void)
@@ -159,7 +159,7 @@ void test_remove_merch(void)
   CU_ASSERT_FALSE(result.success);
   
   tests_destroy_database(db);
-  CU_ASSERT_EQUAL(0, ioopm_linked_list_size(linked_list_get_list()));
+
 }
 
 void test_edit(void) 
@@ -188,7 +188,7 @@ void test_edit(void)
   CU_ASSERT_EQUAL(size, 0);
   
   tests_destroy_database(db);
-  CU_ASSERT_EQUAL(0, ioopm_linked_list_size(linked_list_get_list()));
+
 }
 
 void test_replenish(void)
@@ -248,7 +248,7 @@ void test_replenish(void)
   CU_ASSERT_TRUE(result.success);
   
   tests_destroy_database(db);
-  CU_ASSERT_EQUAL(0, ioopm_linked_list_size(linked_list_get_list()));
+
 }
 
 void test_create_cart(void)
@@ -267,7 +267,7 @@ void test_create_cart(void)
   CU_ASSERT_TRUE(result.success);
   
   tests_destroy_database(db);
-  CU_ASSERT_EQUAL(0, ioopm_linked_list_size(linked_list_get_list()));
+
 }
 
 void test_remove_cart(void)
@@ -525,11 +525,10 @@ int main()
 
   
   CU_basic_set_mode(CU_BRM_VERBOSE);
-  CU_basic_run_tests();
-
-  ioopm_linked_list_destroy(get_cascade_list());
-  ioopm_linked_list_destroy(linked_list_get_list());
-
+  if(!CU_basic_run_tests()) // Shutdown only when passing all tests
+    {
+      shutdown();
+    }
   CU_cleanup_registry();
   return CU_get_error();
 }
