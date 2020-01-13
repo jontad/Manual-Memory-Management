@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 #include "hash_table.h"
 #include "inlupp_linked_list.h"
 #include "iterator.h"
@@ -25,11 +26,11 @@ struct entry
 static entry_t *entry_create(elem_t key, elem_t value, entry_t *next)
 {
   entry_t *new_entry = allocate(sizeof(entry_t), NULL);
+  retain(new_entry);
   new_entry->key = key;
   new_entry->value = value;
   new_entry->next = next;
-  retain(next);
-  
+  //retain(next);
   return new_entry;
 }
 
@@ -38,8 +39,8 @@ static void create_dummys(hash_table_t *ht)
   for (int i = 0 ; i < ht->capacity ; i++)
     {
       elem_t empty = { .void_ptr = NULL };
-      ht->buckets[i] = entry_create(empty, empty, NULL); // Dummy
-      retain(ht->buckets[i]);
+      ht->buckets[i] = entry_create(empty, empty, NULL);
+      //ht->buckets[i] is retained in entry_create()
     }
 }
 
@@ -49,6 +50,7 @@ hash_table_t *hash_table_create(hash_function hash_func, eq_function key_eq, eq_
   /// Allocate space for a hash_table_t = ht->capacity pointers to
   /// entry_t's, which will be set to NULL
   hash_table_t *result = allocate(sizeof(hash_table_t), NULL);
+  retain(result);
   entry_t **buckets = allocate_array(capacity, sizeof(entry_t *), NULL);
   result->buckets = buckets;
   retain(buckets);
@@ -74,16 +76,15 @@ static void buckets_destroy(hash_table_t *ht)
   for (int i = 0 ; i < ht->capacity ; i++)
     {
       entry_t *current_entry = ht->buckets[i];
-      retain(current_entry);
-      entry_t *previous_entry;
-      while (current_entry->next != NULL)
+      while(current_entry != NULL)
 	{
-	  previous_entry = current_entry;
+	  entry_t*prev = current_entry;
+	  retain(prev->value.merch);
 	  current_entry = current_entry->next;
-	  retain(current_entry);
-	  entry_destroy(previous_entry);
 	}
-      entry_destroy(current_entry);
+
+      release(current_entry);
+      
     }
   release(ht->buckets);
 }
@@ -100,10 +101,8 @@ static void resize_hash_table(hash_table_t *ht)
     }
   
   list_t *keys = hash_table_keys(ht);
-  retain(keys);
   list_t *values = hash_table_values(ht);
-  retain(values);
-  
+  printf("keys ref count: %ld \n",rc(values->first->value.merch));
   buckets_destroy(ht);
   
   ht->capacity = new_capacity;
@@ -137,6 +136,7 @@ static void resize_hash_table(hash_table_t *ht)
 }
 
 //Took find_previous_entry_for_key from the other hash_table.c, as our segfaulted for the last entry
+//This function expects that first_entry has been retained by caller
 static entry_t *find_previous_entry_for_key(entry_t *first_entry, elem_t key, hash_function hash_func)
 {
   if (!first_entry) return NULL;
@@ -147,10 +147,10 @@ static entry_t *find_previous_entry_for_key(entry_t *first_entry, elem_t key, ha
       first_entry = first_entry->next;
       retain(first_entry);
     }
+  
   return first_entry;
 } 
 /*{
-
   entry_t *current_entry = first_entry;
   entry_t *temp_entry = first_entry;
   while(hash_func(current_entry->key) < hash_func(key) && current_entry->next != NULL)
@@ -166,7 +166,6 @@ static entry_t *find_previous_entry_for_key(entry_t *first_entry, elem_t key, ha
     {
       return temp_entry;
     }
-
 }
 */
 
@@ -179,8 +178,9 @@ void hash_table_insert(hash_table_t *ht, elem_t key, elem_t value)
   /// Calculate the bucket for this entry
   int bucket = ht->hash_func(key) % ht->capacity;
   /// Search for an existing entry for a key
+  retain(ht->buckets[bucket]);
   entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], key, ht->hash_func);
-  retain(entry);
+  //entry is retained in find_previous_entry_for_key()
   entry_t *next = entry->next;
   retain(next);
   
@@ -192,31 +192,37 @@ void hash_table_insert(hash_table_t *ht, elem_t key, elem_t value)
   else
     {
       entry->next = entry_create(key, value, next);
-      retain(entry->next);
       ++ht->size;
       if (ht->size / (float)ht->capacity >= ht->load_factor)
 	{
 	  resize_hash_table(ht);
 	}
     }
-  // release(entry/next)????
+  release(entry);
+  release(next);
 }
 
 
 //Took lookup from the other hash_table.c as our had issues (lookup on "namn9" somehow found "namn19")
 option_t hash_table_lookup(hash_table_t *ht, elem_t key)
 {
+  retain(ht->buckets[ht->hash_func(key) % ht->capacity]);
   entry_t *tmp = find_previous_entry_for_key(ht->buckets[ht->hash_func(key) % ht->capacity], key, ht->hash_func);
-  retain(tmp);
+  //tmp is retained in find_previous_entry_for_key()
+  
   entry_t *next = tmp->next;
   retain(next);
   
   if (next && ht->hash_func(next->key) == ht->hash_func(key))
     {
+      release(tmp);
+      release(next);
       return Success(next->value);
     }
   else
     {
+      release(tmp);
+      release(next);
       return Failure();
     }
 }
@@ -228,7 +234,6 @@ option_t hash_table_lookup(hash_table_t *ht, elem_t key)
   /// Find the previous entry for key
   entry_t *previous_entry = find_previous_entry_for_key(ht->buckets[ht->hash_func(key) % ht->capacity], key, ht->hash_func);
   entry_t *next = previous_entry->next;
-
   if (next && (next->value.int || next->value.u_int || next->value.bool || next->value.float || next->value.void_ptr)) // will not work if value is false (boolean)
     {
       return Success(next->value);
@@ -247,19 +252,23 @@ elem_t hash_table_remove(hash_table_t *ht, elem_t key)
   elem_t removed_value = str_elem("Non existent key");
   if (exist.success)
     {
+      retain(ht->buckets[ht->hash_func(key) % ht->capacity]);
       entry_t *previous_entry = find_previous_entry_for_key(ht->buckets[ht->hash_func(key) % ht->capacity], key, ht->hash_func);
-      retain(previous_entry);
+      //previous_entry is retained in find_previous_entry_for_key()
 	
       entry_t *temp_entry = previous_entry->next;
-      retain(temp_entry);
+      //retain(temp_entry);
       
       removed_value = temp_entry->value;
       
       previous_entry->next = temp_entry->next;
-      retain(temp_entry->next);
-      
+
+      //retain(temp_entry->next);
       entry_destroy(temp_entry);
       --ht->size;
+
+      release(previous_entry);
+      //release(temp_entry);
     }
   return removed_value;
 }
@@ -268,18 +277,21 @@ void hash_table_destroy(hash_table_t *ht)
 {
   for (int i = 0 ; i < ht->capacity ; i++)
     {
-      entry_t *current_entry = ht->buckets[i];
+      release(ht->buckets[i]);
+      /*entry_t *current_entry = ht->buckets[i];
       retain(current_entry);
       entry_t *previous_entry;
       while (current_entry->next != NULL)
 	{
 	  previous_entry = current_entry;
-	  current_entry = current_entry->next;  
+	  current_entry = current_entry->next;
 	  retain(current_entry);
-	  
+
+	  release(previous_entry);
 	  entry_destroy(previous_entry);
 	}
-      entry_destroy(current_entry);
+      //release(current_entry);
+      entry_destroy(current_entry);*/
     }
   release(ht->buckets);
   // free(ht->buckets);
@@ -316,11 +328,11 @@ void hash_table_clear(hash_table_t *ht)
 	  entry_t *current_entry = ht->buckets[i]->next;
 	  retain(current_entry);
 	  ht->buckets[i]->next = NULL;
+	  release(current_entry);
 	  entry_t *previous_entry;
 	  while (current_entry->next != NULL)
 	    {
 	      previous_entry = current_entry;
-	      
 	      current_entry = current_entry->next;
 	      retain(current_entry);
 	      
@@ -338,7 +350,8 @@ void hash_table_clear(hash_table_t *ht)
 list_t *hash_table_keys(hash_table_t *ht)
 {
   list_t *keys = inlupp_linked_list_create(ht->key_eq_func);
-  retain(keys);
+  //keys has been retained in inlupp_linked_list_create() 
+  
   for (int i = 0; i < ht->capacity; ++i)
     {
       if (ht->buckets[i]->next != NULL)
@@ -348,7 +361,7 @@ list_t *hash_table_keys(hash_table_t *ht)
 	  while(current_entry != NULL)
 	    {
 	      inlupp_linked_list_append(keys, current_entry->key);
-
+	      
 	      release(current_entry);
 	      current_entry = current_entry->next;
 	      retain(current_entry);
@@ -364,7 +377,8 @@ list_t *hash_table_keys(hash_table_t *ht)
 list_t *hash_table_values(hash_table_t *ht)
 {
   list_t *values = inlupp_linked_list_create(ht->value_eq_func);
-  retain(values);
+  //values has been retained in inlupp_linked_list_create() 
+
   for (int i = 0; i < ht->capacity; ++i)
     {
       if (ht->buckets[i]->next != NULL)
@@ -374,7 +388,6 @@ list_t *hash_table_values(hash_table_t *ht)
 	  while(current_entry != NULL)
 	    {
 	      inlupp_linked_list_append(values, current_entry->value);
-
 	      release(current_entry);
 	      current_entry = current_entry->next;
 	      retain(current_entry);
@@ -403,6 +416,7 @@ bool hash_table_has_key(hash_table_t *ht, elem_t key)
 	      current_entry = current_entry->next;
 	      retain(current_entry);
 	    }
+	  release(current_entry);
 	}
     }
   return result;
@@ -427,6 +441,7 @@ bool hash_table_has_value(hash_table_t *ht, elem_t value)
 	      current_entry = current_entry->next;
 	      retain(current_entry);
 	    }
+	  release(current_entry);
 	}
     }
   return result;
@@ -446,12 +461,14 @@ bool hash_table_all(hash_table_t *ht, predicate pred, void *arg)
 	{
 	  if(!pred(entry->next->key, entry->next->value, arg))
 	    {
+	      release(entry);
 	      return false;
 	    }
 	  release(entry);
 	  entry = entry->next;
 	  retain(entry);
-	} 
+	}
+      release(entry);
     }
   return result;  
 }
@@ -475,7 +492,8 @@ bool hash_table_any(hash_table_t *ht, predicate pred, void *arg)
 	  release(entry);
 	  entry = entry->next;
 	  retain(entry);
-	} 
+	}
+      release(entry);
     }
   return result;
 }
@@ -495,6 +513,7 @@ void hash_table_apply_to_all(hash_table_t *ht, apply_function apply_fun, void *a
 	  
 	  apply_fun(current_entry->key, &current_entry->value, arg);
 	}
+      release(current_entry);
     }
 }
 
@@ -600,4 +619,3 @@ bool equality_function_merch(elem_t a, elem_t b)
   elem_t merch2 = str_elem(b.merch->name);    
   return equality_function_str(merch1, merch2);
 }
-

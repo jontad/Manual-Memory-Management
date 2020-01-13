@@ -16,8 +16,6 @@
 #define Failure()       (option_t) { .success = false };
 #define Successful(o)   (o.success == true)
 #define Unsuccessful(o) (o.success == false)
-#define int_elem(i) (elem_t) { .int_val=(i) }
-#define str_elem(s) (elem_t) { .str_val=(s) }
 #define obj_elem(o) (elem_t) { .obj_val=(o) }
 
 /**************** COMMON TYPE DEFINITIONS ****************/
@@ -57,12 +55,6 @@ typedef void (*ioopm_apply_function)(elem_t key, elem_t *value, void *extra);
 
 union elem
 {
-  int int_val;
-  unsigned int uns_int_val;
-  bool bool_val;
-  float float_val;
-  char *str_val;
-  void *void_val;
   obj *obj_val;
 };
 
@@ -112,14 +104,14 @@ struct hash_table
 /// A link in the linked structure
 typedef struct link link_t;
 // A list
-typedef struct list ioopm_list_t;
+typedef struct list list_t;
 
 
 /**************** LINKED LIST STRUCTS ****************/
 
 struct link
 {
-  elem_t element;
+  elem_t value;
   link_t *next;
 };
 
@@ -127,8 +119,8 @@ struct list
 {
   link_t *first;
   link_t *last;
-  size_t size;
-  ioopm_eq_function eq_fun;
+  size_t list_size;
+  ioopm_eq_function equal;
 };
 
 
@@ -142,7 +134,7 @@ typedef struct iter ioopm_list_iterator_t;
 struct iter
 {
     link_t *current;
-    ioopm_list_t *list;
+    list_t *list;
 };
 
 bool eq_func(elem_t a, elem_t b);
