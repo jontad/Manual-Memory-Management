@@ -180,3 +180,35 @@ under projektet.
 Den största förlusten är misslyckandet med att få en felfri bit array med tanke på hur mycket tid
 som lagts på den och hur nära jag kände mig att klara av den. Dock så ångrar jag inte den tiden jag
 arbetat på den.
+
+
+Daniel Westberg
+----------------
+6/12	1 h	Första mötet
+11/12	1 h	Andra mötet
+12/12	1 h	Förberedde saker att ta upp under morgondagens möte. Försökte förstå projektet bättre.
+13/12	3 h	Möte med coach Albin och arbetade sen på projektet. Fick inte mycket av värde gjort.
+16/12	4.5 h	Kodning med gruppen
+17/12	5 h	Kodning med gruppen
+19/12	4.5 h	Kodning med gruppen
+20/12	4 h	Kodning med gruppen
+21/12	3 h	Strukturerade upp koden, ändrade namn på alla länkade listor och förbättrade makefilen
+25/12	3 h	Började implementera en bitarray
+29/12	3 h	Fortsättning på bitarray, men kom till ett stopp och gav upp bitarray tills vidare
+30/12	3 h	Undersökte fel med användningen av cascade limit med länkade listor
+4/1	2 h	Hittade och löste felet med cascade limit
+10/1	1 h	Debuggade och förberedde notes inför morgondagen
+11/1	9 h	Jag, Georgios och Jonathan jobbade med memory leaks i inlupp_linked_list.c och backend.c
+12/1	9 h	Jag och Georgios jobbade med memory leaks i backend.c och skrev sen rapport
+
+Totalt 58 timmar
+
+De styrkor jag har i grupparbete är att jag är samarbetsvillig, jag har en öppen attityd och jag är mån om att föra arbetet framåt. Jag gillar att bolla idéer och diskutera koncept; det är verkligen jättekul när man lyckas lösa problem tillsammans. Jag har inga problem med att arbeta själv, men jag märker oftast att antalet effektiva timmar blir avsevärt lägre, ofta eftersom antalet granskande ögon som hjälper är då färre. En svaghet jag har är att jag kan bli stressad om jag känner att jag underpresterar. Jag får känslan att jag sviker gruppen och lägger för mycket fokus på att jag inte får något gjort när jag istället bara borde successivt ta en sak i taget.
+
+Det jag motiveras av är känslan av att just ha löst ett problem med kod och få direkt feedback på att det fungerar. Det är oerhört tillfredsställande att se att något man skrivit fungerar som man vill. Det som kan göra mig omotiverad är om man känner att man inte ens är i närheten av att lösa ett problem. Men då brukar svaret ofta vara att börja om, dela upp det i mindre delar och tackla en sak i taget.
+
+Det jag främst har lärt mig i projektet jämfört med resten av kursen är hur det är att skriva kod med en stor grupp. Jag har lärt mig metoder som fungerar bra för mig och vice versa och jag kommer ta med mig det för framtida projekt. Jag har även bättre koll på C nu än tidigare, men det beror nödvändigtvis inte på att det var ett grupparbete.
+
+Loggningen av tid har gått rätt bra. Jag lyckades oftast komma ihåg att markera de timmar som spenderades på projektet, men jag glömde skriva vad som gjordes under de timmarna så jag skrev de nu i efterhand.
+
+Jag känner mig allt som allt nöjd med min prestation. Jag kan inte komma på någon exakt "biggest fail" eller "biggest win" förutom att jag skulle ha velat tillföra mer i början av projektet, men ju mer tiden gick och ju bättre koll jag fick på koden desto mer kunde jag tillföra till gruppen. Det var kul att stämningen var så bra och att alla verkade ha roligt under projektets gång.
