@@ -24,7 +24,7 @@ cleanup.o: src/cleanup.c src/refmem.h
 allocate.o: src/allocate.c src/refmem.h src/linked_list.h test/lib_for_tests.h
 	$(C_COMPILER) $(C_OPTIONS) -c  src/allocate.c
 
-linked_list.o: src/linked_list.c src/linked_list.h inlupp2/common.h
+linked_list.o: src/linked_list.c src/linked_list.h demo/common.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/linked_list.c
 
 
@@ -32,20 +32,20 @@ linked_list.o: src/linked_list.c src/linked_list.h inlupp2/common.h
 
 webstore: frontend.o backend.o utils.o hash_table.o inlupp_linked_list.o
 
-frontend.o: inlupp2/frontend.c inlupp2/frontend.h inlupp2/backend.h inlupp2/hash_table.h inlupp2/inlupp_linked_list.h inlupp2/utils.h inlupp2/common.h src/refmem.h
-	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/frontend.c
+frontend.o: demo/frontend.c demo/frontend.h demo/backend.h demo/hash_table.h demo/inlupp_linked_list.h demo/utils.h demo/common.h src/refmem.h
+	$(C_COMPILER) $(C_OPTIONS) -c demo/frontend.c
 
-backend.o: inlupp2/backend.c inlupp2/frontend.h inlupp2/backend.h inlupp2/hash_table.h inlupp2/inlupp_linked_list.h inlupp2/utils.h inlupp2/common.h src/refmem.h
-	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/backend.c
+backend.o: demo/backend.c demo/frontend.h demo/backend.h demo/hash_table.h demo/inlupp_linked_list.h demo/utils.h demo/common.h src/refmem.h
+	$(C_COMPILER) $(C_OPTIONS) -c demo/backend.c
 
-inlupp_linked_list.o: inlupp2/inlupp_linked_list.c inlupp2/inlupp_linked_list.h inlupp2/common.h
-	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/inlupp_linked_list.c
+inlupp_linked_list.o: demo/inlupp_linked_list.c demo/inlupp_linked_list.h demo/common.h
+	$(C_COMPILER) $(C_OPTIONS) -c demo/inlupp_linked_list.c
 
-hash_table.o: inlupp2/hash_table.c inlupp2/hash_table.h inlupp2/inlupp_linked_list.h inlupp2/common.h src/refmem.h
-	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/hash_table.c
+hash_table.o: demo/hash_table.c demo/hash_table.h demo/inlupp_linked_list.h demo/common.h src/refmem.h
+	$(C_COMPILER) $(C_OPTIONS) -c demo/hash_table.c
 
-utils.o: inlupp2/utils.c inlupp2/utils.h
-	$(C_COMPILER) $(C_OPTIONS) -c inlupp2/utils.c
+utils.o: demo/utils.c demo/utils.h
+	$(C_COMPILER) $(C_OPTIONS) -c demo/utils.c
 
 
 ## TEST ##
@@ -58,10 +58,10 @@ lib_for_tests.o: test/lib_for_tests.c test/lib_for_tests.h src/refmem.h allocate
 ################### TEST RUNS ######################
 
 .PHONY: tests
-tests: src
+test: src
 	./test/tests
 
-val_tests: src
+memtest: src
 	$(C_VALGRIND) ./test/tests
 
 crayparty_val_test: linked_list.o cleanup.o allocate.o src/crayparty.c cascade.o lib_for_tests.o
@@ -72,19 +72,19 @@ example: test/example.c allocate.o cascade.o lib_for_tests.o cleanup.o linked_li
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/example $(CUNIT_LINK)
 	$(C_VALGRIND) test/example
 
-ll_test: inlupp2/ll_test.c hash_table.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
+ll_test: demo/ll_test.c hash_table.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/ll_test $(CUNIT_LINK)
 	$(C_VALGRIND) ./test/ll_test
 
-webstore_test: inlupp2/tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
+webstore_test: demo/tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/webstore_test $(CUNIT_LINK)
 	$(C_VALGRIND) ./test/webstore_test
 
-inlupp_unit_tests: inlupp2/unit_tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
+inlupp_unit_tests: demo/unit_tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/unit_test $(CUNIT_LINK)
 	./test/unit_test
 
-val_inlupp_unit_tests: inlupp2/unit_tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
+val_inlupp_unit_tests: demo/unit_tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/unit_test $(CUNIT_LINK)
 	$(C_VALGRIND) ./test/unit_test
 
@@ -110,4 +110,4 @@ gprof: test/example.c allocate.o cascade.o lib_for_tests.o cleanup.o linked_list
 
 
 clean:	
-	rm *.o *.gcno *.gcda gmon.out ./test/tests ./test/crayparty ./test/example ./test/ll_test ./test/webstore_test ./test/unit_test ./test/gprof ./test/*.gcno ./src/*.gch ./inlupp2/*.gcno ./inlupp2/*.gcda ./inlupp2/*.gch
+	rm *.o *.gcno *.gcda gmon.out ./test/tests ./test/crayparty ./test/example ./test/ll_test ./test/webstore_test ./test/unit_test ./test/gprof ./test/*.gcno ./src/*.gch ./demo/*.gcno ./demo/*.gcda ./demo/*.gch
