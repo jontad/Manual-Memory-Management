@@ -39,12 +39,12 @@ Utöver detta gick KANBAN processen väldigt smidigt, och alla styrkor KANBAN lo
 
 Även trots att uppdelningen av sprintarna inte var felfri fungerade det väldigt bra. Dessa var uppdelade så att sprint 1 var från projektets början till innan jullovet, medan den andra sprinten började efter jullovet vilket ledde till en väldigt naturlig uppdelning av sprintarna. Som sagt var sprint 1 planerad för implementation medan sprint 2 var planerad för efterarbetet, men sprint 1 flöt ihop i sprint 2. Dock följdes planen mestadels, där majoriteten av implementationen som sagt skedde under sprint 1 och det resterande under sprint 2. Den underliggande planen följdes då alltså hela vägen, med justeringen att en del av sprint 1 gjordes under sprint 2.
 
-
+![Trello](trelloboard.png)
 Användning av verktyg
 ---------------------
 
 Under projektets gång använde vi en hel del olika verktyg. Som editor använde vi alla emacs, eftersom det är det vi har fått lära oss under kursen. För att kontrollera minnesläckor har vi använt valgrind för att verifiera att vårt program faktiskt är felfritt. För att testa programmet använde vi oss av Cunit, åter igen för att det har vi lärt oss under kursen. Vi har verifierat att testerna täcker de flesta fallen med gcov/lcov. Make har använts för att bygga programmet och köra diverse olika verktyg som valgrind, lcov, gprof osv.  
-Git tillsammans med Github har använts som versionskontroll, det har varit väldigt användbart och smidigt då vi kunnat göra pull requests och låta varandra läsa igenom koden man skrivit. För arbetsuppdelning har vi använt trello (se figur \ref{fig:trello}), ett program som med fördel kan användas när man arbetar efter KANBANs arbetssätt. Vi har använt Slack för kommunikation, vilket har varit smidigt då den finns som en app till mobilen. 
+Git tillsammans med Github har använts som versionskontroll, det har varit väldigt användbart och smidigt då vi kunnat göra pull requests och låta varandra läsa igenom koden man skrivit. För arbetsuppdelning har vi använt trello (se figur trello), ett program som med fördel kan användas när man arbetar efter KANBANs arbetssätt. Vi har använt Slack för kommunikation, vilket har varit smidigt då den finns som en app till mobilen. 
 Verktygen har varit till stor nytta och underlättat projektet, det är inget vi känner som saknas och inget vi känner som har varit onödigt.
 %In this section, discuss:
 
@@ -60,6 +60,9 @@ Det hölls en god stämning i gruppen. Samtliga gruppmedlemmar var samarbetsvill
  
 Det som har lärts under projektet är att kommunikation är a och o. Vi hade aldrig kunnat styra upp detta projekt utan att prata med varandra. Samarbetet och kommunikationen hjälpte också alla att förstå vad vi hade gjort i diverse funktioner och annat.
 
+![Tidsfördelning per person](meta-chart.png)
+![Tidsfördelning per kategori, sprint 1](sprint1.png)
+![Tidsfördelning per kategori, sprint 2](sprint2.png)
 Arbetsstruktur
 --------------
 
