@@ -69,7 +69,8 @@ på vägen. Sen så var det så att vi stötte aldrig på någon jobbig bug vilk
 kan bidra till varför jag inte har så mycket att säga om det här.
 
 
-## Joel Waldenbäck
+Joel Waldenbäck
+----------------
 
 191206 Första möte (1h)
 191213 Läste på om hur continous integration fungerar och hur man aktiverar det i Github (4h)
@@ -77,13 +78,21 @@ kan bidra till varför jag inte har så mycket att säga om det här.
 191217 (5h)
 191218 (6,5h)
 191219 (5,5h)
-200109 Arbetade med retain och release i backend.c (6h)
-200111 Arbetade med att implementera bit array (11h)
-200112 Blev klara med implementationen av bit array (10h)
-200113 14-
+200109 Alex och jag arbetade med retain och release i backend.c (6h)
+200111 Alex och jag arbetade med att implementera bit array (11h)
+200112 Vi blev klara med implementationen av bit array (10h)
+200113 Wrapping up (6h)
+Totalt: 58h
 
-Jag är nöjd med min prestation. 
+Det har varit intressant att arbeta tillsammans med 7 personer i en så liten kodbas som projekt 1 faktiskt innebär. Egentligen är vi nog 2-3 för många personer i gruppen för att man ska kunna få ut effektivt arbete av alla. Särskilt i uppbyggnaden av projektet är det svårt för så många personer att bidra på ett vettigt sätt utan att introducera jobbiga merchkonflikter för varandra. Med denna utmaning i beaktning tycker jag att vi tog oss an projektet på ett bra sätt. 
 
+Jag missade den första dagen vi satte igång att koda. Och även den andra dagen (4h) hade jag inte tid att ta till mig koden som skrevs utan försökte förstå hur man fick igång continuous integration i Github. Så när jag den tredje koddagen skulle sätta mig och faktiskt arbeta med projektet hade ganska mycket kod skrivits. Det tog därför ett tag innan jag kom igång på riktigt. 
+
+Mitt största fail under projektets gång var när jag satte igång med cascading frees och cascade limit. Implementationen blev krånglig och jag kunde inte dra det i land. Skillnaden på den cascading free-implementation jag tänkte mig mot den vi senare valde är att den vi valde kräver att ett objekt vars subobjekt inte är kedjade måste tas bort i ett enda svep (dvs inget avbrott i en cascading free får göras, cascade_limit = oändligheten) då huvudstrukten alltid kommer att tas bort i den "första rundan" av cascading frees. Detta är en begränsning, men det förenklar också själva implementationen vilket är positivt. Så jag tycker därför att det alternativet vi valde är bättre än det jag tänkte ut.
+
+En annan stor fail är att vi inte lyckades komma på en bra mappingfunktion till vår bit array vilket gör att två olika pekare dessvärre alltför ofta mappas till samma bit, vilket renderar bit arrayen värdelös. Vi har därför valt att inte merga bit array-branchen med master utan använder oss fortf av en länkad lista för att hålla våra pekare. 
+
+Min största win är att vi lyckades komma på hur en bit array skulle hjälpa oss att hålla overhead på en lägre nivå. I projektbeskrivningen fanns det minst sagt begränsad information kring hur en bit array skulle hjälpa oss så jag är nöjd med att vi kom på ett sätt att använda den.
 
 Elias Insulander
 ----------------
