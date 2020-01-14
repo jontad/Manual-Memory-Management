@@ -1,7 +1,8 @@
 Vi försökte skriva kod som dokumenterade sig själv. Vad vi menar är
-att variabel namnen, funktions namnen och strukt namnen var så
+att variabelnamnen, funktionsnamnen och struktnamnen var så
 tydliga som möjligt så att en okänd användare skulle kunna föstå
-vad koden gör. Vi följde "GNU coding standard" så gott det gick. 
+vad koden gör. Vi följde "GNU coding standard" så gott det gick,
+men med vissa undantag. T.ex så skrev vi ej funktionsnamn på nya rader som standarden vill.  
 
 Sedan såg vi till att gruppera relevant kod med varandra så att det
 var lättare att läsa. Vi gjorde inga tidiga optimeringar eftersom
