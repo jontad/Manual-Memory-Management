@@ -184,22 +184,22 @@ arbetat på den.
 
 Daniel Westberg
 ----------------
-6/12	1 h	Första mötet
-11/12	1 h	Andra mötet
-12/12	1 h	Förberedde saker att ta upp under morgondagens möte. Försökte förstå projektet bättre.
-13/12	3 h	Möte med coach Albin och arbetade sen på projektet. Fick inte mycket av värde gjort.
-16/12	4.5 h	Kodning med gruppen
-17/12	5 h	Kodning med gruppen
-19/12	4.5 h	Kodning med gruppen
-20/12	4 h	Kodning med gruppen
-21/12	3 h	Strukturerade upp koden, ändrade namn på alla länkade listor och förbättrade makefilen
-25/12	3 h	Började implementera en bitarray
-29/12	3 h	Fortsättning på bitarray, men kom till ett stopp och gav upp bitarray tills vidare
-30/12	3 h	Undersökte fel med användningen av cascade limit med länkade listor
-4/1	2 h	Hittade och löste felet med cascade limit
-10/1	1 h	Debuggade och förberedde notes inför morgondagen
-11/1	9 h	Jag, Georgios och Jonathan jobbade med memory leaks i inlupp_linked_list.c och backend.c
-12/1	9 h	Jag och Georgios jobbade med memory leaks i backend.c och skrev sen rapport
+6/12 (1 h) - Första mötet
+11/12 (1 h) - Andra mötet
+12/12 (1 h) - Förberedde saker att ta upp under morgondagens möte. Försökte förstå projektet bättre.
+13/12 (3 h) - Möte med coach Albin och arbetade sen på projektet. Fick inte mycket av värde gjort.
+16/12 (4.5 h) - Kodning med gruppen
+17/12 (5 h) - Kodning med gruppen
+19/12 (4.5 h) - Kodning med gruppen
+20/12 (4 h) - Kodning med gruppen
+21/12 (3 h) - Strukturerade upp koden, ändrade namn på alla länkade listor och förbättrade makefilen
+25/12 (3 h) - Började implementera en bitarray
+29/12 (3 h) - Fortsättning på bitarray, men kom till ett stopp och gav upp bitarray tills vidare
+30/12 (3 h) - Undersökte fel med användningen av cascade limit med länkade listor
+4/1 (2 h) - Hittade och löste felet med cascade limit
+10/1 (1 h) - Debuggade och förberedde notes inför morgondagen
+11/1 (9 h) - Jag, Georgios och Jonathan jobbade med memory leaks i inlupp_linked_list.c och backend.c
+12/1 (9 h) - Jag och Georgios jobbade med memory leaks i backend.c och skrev sen rapport
 
 Totalt 58 timmar
 
