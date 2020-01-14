@@ -19,3 +19,8 @@ jobs:
       run: make test
     - name: make memtest
       run: make memtest
+    - name: make inlupp_unit_tests
+      run: make inlupp_unit_tests
+    - name: make val_inlupp_unit_tests
+      run: make val_inlupp_unit_tests
+

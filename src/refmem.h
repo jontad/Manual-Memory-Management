@@ -2,6 +2,9 @@
 #define __REFMEM_H__
 
 #include <stdlib.h>
+//#include "common_for_linked_list.h"
+//#include "linked_list.h"
+//#include "../inlupp2/common.h"
 #define Free(ptr) {free(ptr); ptr = NULL;}
 /**
  * @file refmem.h
@@ -25,7 +28,7 @@ typedef void(*function1_t)(obj *object);
 void retain(obj *object);
 
 /// @brief Decrements reference count of object by 1. If reference counter is 1 object is free'd
-/// @param object Object where reference count will be decreased
+/// @param object Object where reference count willa be decreased
 /// NOTE: Calling release() with NULL is supported, however it is ignored
 /// \pre Using release when refrence count is 0 is supported but object is just deallocated
 void release(obj *object);

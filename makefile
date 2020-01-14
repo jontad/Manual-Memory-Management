@@ -78,24 +78,35 @@ ll_test: demo/ll_test.c hash_table.o allocate.o cleanup.o cascade.o lib_for_test
 
 webstore_test: demo/tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/webstore_test $(CUNIT_LINK)
-	./test/webstore_test
+	$(C_VALGRIND) ./test/webstore_test
 
 inlupp_unit_tests: demo/unit_tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
 	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/unit_test $(CUNIT_LINK)
 	./test/unit_test
 
+val_inlupp_unit_tests: demo/unit_tests.c hash_table.o backend.o utils.o allocate.o cleanup.o cascade.o lib_for_tests.o inlupp_linked_list.o linked_list.o
+	$(C_COMPILER) $(C_LCOV) $(C_OPTIONS) $^ -o test/unit_test $(CUNIT_LINK)
+	$(C_VALGRIND) ./test/unit_test
+
 ############# LCOV ##################
 
-lcov_generate: val_tests
+lcov_generate: memtest
 	lcov --capture --rc lcov_branch_coverage=1 --directory . --output-file test/tests.info
 
 lcov: lcov_generate
 	genhtml --rc genhtml_branch_coverage=1 test/tests.info -o test/tests-lcov
 
 lcov_open: lcov_generate
+	make lcov
 	google-chrome-stable test/tests-lcov/index.html
 
-
+lcov_new: test/tests.c src/allocate.c src/cleanup.c src/cascade.c lib_for_tests.o linked_list.o
+	$(C_COMPILER) --coverage $? -o test/tests $(CUNIT_LINK)
+	./test/tests
+#	gcov -abcfu src/allocate.c src/cleanup.c src/cascade.c test/tests.c
+	lcov -c -d . -o test/tests.info
+	genhtml test/tests.info -o test/tests-lcov
+	google-chrome-stable test/tests-lcov/index.html
 
 ################# GPROF #################
 

@@ -3,6 +3,11 @@
 
 list_t *pointer_list = NULL;
 
+list_t *get_pointer_list(void)
+{
+  return pointer_list;
+}
+
 bool eq_func(elem_t a, elem_t b)
 {
   obj *a_ptr = a.obj_val;

@@ -4,9 +4,10 @@
 #include <CUnit/Basic.h>
 #include "inlupp_linked_list.h"
 #include "hash_table.h"
+//#include "../src/linked_list.h"
 #include "iterator.h"
 #include "common.h"
-
+#include "../src/refmem.h"
 
 #define No_Buckets 17
 #define Load 1
@@ -32,7 +33,7 @@ static void apply_func(link_t **element, void *extra)
 
 static void link_destroy(link_t *link)
 {
-  Free(link);
+  release(link);
 }
 
 static bool int_equiv(elem_t key_ignored, elem_t value, void *x)
@@ -70,8 +71,8 @@ static elem_t test_iterator_func(list_t *list, int index)
 	}
       iterator_next(iter);
     }
-
   link_t *elem = iter->current;
+  retain(elem);
   
   iterator_reset(iter);
   for(int i = 0; i<index-1; ++i)
@@ -82,17 +83,16 @@ static elem_t test_iterator_func(list_t *list, int index)
 	}
       iterator_next(iter);
     }
-  
-  
-  
   link_t *prev = iter->current;
+  retain(prev);
+
   elem_t value;
-  
   if (index == 0)
     {
-      value = prev->value;
-      list->first = prev->next;
-      link_destroy(prev);
+      value = elem->value;
+      list->first = elem->next;
+      retain(list->first);
+      link_destroy(elem);
       --list->list_size;
     }
   else if(elem != NULL)
@@ -100,6 +100,8 @@ static elem_t test_iterator_func(list_t *list, int index)
       value = remove_aux(list, index, prev, elem);
     }
   iterator_destroy(iter);
+  release(elem);
+  release(prev);
   return value;
 }
 
@@ -120,8 +122,7 @@ void test_inlupp_linked_list_get(void)
   inlupp_linked_list_insert(ll, 8, int_elem(15));
   i = inlupp_linked_list_get(ll, 2).int1;
   CU_ASSERT_EQUAL(i,15);
-  
-    
+ 
   inlupp_linked_list_destroy(ll);
 }
 
@@ -133,12 +134,12 @@ void test_inlupp_linked_list_insert(void)
   list_t *ll = inlupp_linked_list_create(equality_function_int);
 
   inlupp_linked_list_insert(ll, 5, int_elem(10));
-  CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 10);
-
+  CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 10); 
+  printf("RC: %ld\n",rc(ll->first));
   
   inlupp_linked_list_insert(ll, 1, int_elem(1));
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 1).int1, 1);
-  
+
   inlupp_linked_list_insert(ll, 0, int_elem(5));
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 5);
 
@@ -149,6 +150,8 @@ void test_inlupp_linked_list_insert(void)
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 99);
   
   inlupp_linked_list_destroy(ll);
+
+  CU_ASSERT_EQUAL(0, ioopm_linked_list_size(linked_list_get_list()));
 }
 
 
@@ -167,7 +170,6 @@ void test_inlupp_linked_list_prepend(void)
   
   inlupp_linked_list_prepend(ll, int_elem(1000));
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 1000);
-  
   inlupp_linked_list_destroy(ll);
 }
 
@@ -202,7 +204,6 @@ void test_inlupp_linked_list_remove(void)
   inlupp_linked_list_remove(ll, 1);
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 1).int1, 1000);  
 
-  
   inlupp_linked_list_remove(ll, 0);
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 1000);  
   
@@ -315,22 +316,7 @@ void test_inlupp_linked_list_apply_to_all(void)
 
 void test_iterator(void)
 {
-  list_t *ll = inlupp_linked_list_create(equality_function_int);
 
-  inlupp_linked_list_append(ll, int_elem(10));
-  inlupp_linked_list_append(ll, int_elem(100));
-  inlupp_linked_list_append(ll, int_elem(1000));
-
-  test_iterator_func(ll, 1);
-  CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 1).int1, 1000);  
-  
-  test_iterator_func(ll, 0);
-  CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 1000);  
-
-  test_iterator_func(ll, 0);
-  CU_ASSERT_PTR_NULL(ll->first);  
-
-  inlupp_linked_list_destroy(ll);
 }
 
 
@@ -358,6 +344,8 @@ void test_hash_table_insert_str(void)
   CU_ASSERT_EQUAL(o.value.str,"large key");
   
   hash_table_destroy(ht);
+
+  CU_ASSERT_EQUAL(0, ioopm_linked_list_size(linked_list_get_list()));
 }
 
 
@@ -675,10 +663,15 @@ int main()
   CU_add_test(test_suite, "Apply to all", test_hash_table_apply_to_all);
 
 
-  CU_add_test(test_suite, "Adaptive buckets", test_hash_table_adaptive_buckets);
+  //CU_add_test(test_suite, "Adaptive buckets", test_hash_table_adaptive_buckets);
+  CU_basic_set_mode(CU_BRM_VERBOSE);
   CU_basic_run_tests();
+
+  //Need to free the cascade_list and pointer_list which are ioopm_linked_lists, not inlupp_linked_lists
+  ioopm_linked_list_destroy(get_cascade_list());
+  ioopm_linked_list_destroy(linked_list_get_list());
 
   CU_cleanup_registry(); 
   
-  return 0;
+  return CU_get_error();
 }

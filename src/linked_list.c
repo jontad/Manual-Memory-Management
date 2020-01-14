@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include "linked_list.h"
 #include "refmem.h"
-#include "../demo/common.h"
+#include "common_for_linked_list.h"
+//#include "../inlupp2/common.h"
 
 /*************** FUNCTIONS **********************/
 
@@ -295,8 +296,8 @@ void ioopm_linked_list_clear(obj *object)
   list->first = NULL;
 }
 
-
-bool ioopm_linked_list_all(list_t *list, predicate prop, void *extra)
+/*
+bool ioopm_linked_list_all(list_t *list, ioopm_predicate prop, void *extra)
 {
   link_t *link = list->first;
   int i = 0;
@@ -313,7 +314,7 @@ bool ioopm_linked_list_all(list_t *list, predicate prop, void *extra)
   return true;
 }
 
-bool ioopm_linked_list_any(list_t *list, predicate prop, void *extra)
+bool ioopm_linked_list_any(list_t *list, ioopm_predicate prop, void *extra)
 {
   link_t *link = list->first;
   int i = 0;
@@ -330,7 +331,7 @@ bool ioopm_linked_list_any(list_t *list, predicate prop, void *extra)
   return false;
 }
 
-void ioopm_linked_apply_to_all(list_t *list, apply_function apply_fun, void *extra)
+void ioopm_linked_apply_to_all(list_t *list, ioopm_apply_function apply_fun, void *extra)
 {
   link_t *link = list->first;
   int i = 0;
@@ -342,3 +343,4 @@ void ioopm_linked_apply_to_all(list_t *list, apply_function apply_fun, void *ext
     i++;
   }
 }
+*/

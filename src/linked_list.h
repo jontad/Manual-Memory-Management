@@ -1,6 +1,7 @@
 #pragma once
 #include <stdbool.h>
-#include "../demo/common.h"
+#include "common_for_linked_list.h"
+//#include "../inlupp2/common.h"
 
 
 typedef struct list list_t;
