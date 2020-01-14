@@ -7,6 +7,7 @@
 #include "common.h"
 #include "backend.h"
 #include "utils.h"
+
 //#include "../src/linked_list.h"
 #include "../src/refmem.h"
 
@@ -40,6 +41,7 @@ bool ask_to_continue()
   free(answer);
   return !quit;
 }
+
 
 
 static item_t *item_create_for_testing(merch_t *merch, int amount)
@@ -159,7 +161,6 @@ void test_remove_merch(void)
   CU_ASSERT_FALSE(result.success);
   
   tests_destroy_database(db);
-
 }
 
 void test_edit(void) 
@@ -188,7 +189,6 @@ void test_edit(void)
   CU_ASSERT_EQUAL(size, 0);
   
   tests_destroy_database(db);
-
 }
 
 void test_replenish(void)
@@ -240,7 +240,6 @@ void test_replenish(void)
   
   CU_ASSERT_TRUE(strcmp(shelf1, "A10") == 0);
   CU_ASSERT_TRUE(strcmp(shelf2, "B30") == 0);
-
   CU_ASSERT_TRUE(strcmp(shelf3, "H20") == 0);
 
   //check that shelves_ht is updated properly
@@ -248,7 +247,6 @@ void test_replenish(void)
   CU_ASSERT_TRUE(result.success);
   
   tests_destroy_database(db);
-
 }
 
 void test_create_cart(void)
@@ -267,7 +265,6 @@ void test_create_cart(void)
   CU_ASSERT_TRUE(result.success);
   
   tests_destroy_database(db);
-
 }
 
 void test_remove_cart(void)
@@ -324,7 +321,6 @@ void test_remove_from_cart(void)
   database_replenish_stock(db, merch, shelf_h20); //Replenish merch
 
   database_add_to_cart(db, cart, merch, 25); //Add merch to cart
-    
   
   item_t *item = cart->basket->first->value.item;
   database_remove_from_cart(cart, item, 5); //Tests only removing some
@@ -340,7 +336,6 @@ void test_remove_from_cart(void)
     
   
   database_remove_from_cart(cart, item, 20); //Tests removing everything
-  
   result = hash_table_lookup(db->carts, unsigned_elem(0));
   CU_ASSERT_TRUE(result.success);
   CU_ASSERT_EQUAL(result.value.cart->basket->list_size, 0);
@@ -532,3 +527,4 @@ int main()
   CU_cleanup_registry();
   return CU_get_error();
 }
+

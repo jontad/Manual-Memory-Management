@@ -570,6 +570,7 @@ int main()
   database_t *db = database_create_database();
   retain(db);
   event_loop(db);
+
   release(db);
   database_destroy_database(db);
   //shutdown();

@@ -63,7 +63,6 @@ static bool check_length(elem_t key, elem_t value, void *extra)
 static elem_t test_iterator_func(list_t *list, int index)
 {
   list_iterator_t *iter = list_iterator(list);
-
   for(int i = 0; i<index; ++i)
     {
       if(!iterator_has_next(iter))
@@ -123,7 +122,7 @@ void test_inlupp_linked_list_get(void)
   inlupp_linked_list_insert(ll, 8, int_elem(15));
   i = inlupp_linked_list_get(ll, 2).int1;
   CU_ASSERT_EQUAL(i,15);
-  
+ 
   inlupp_linked_list_destroy(ll);
 }
 
@@ -135,8 +134,7 @@ void test_inlupp_linked_list_insert(void)
   list_t *ll = inlupp_linked_list_create(equality_function_int);
 
   inlupp_linked_list_insert(ll, 5, int_elem(10));
-  CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 10);
-  
+  CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 10); 
   printf("RC: %ld\n",rc(ll->first));
   
   inlupp_linked_list_insert(ll, 1, int_elem(1));
@@ -172,9 +170,6 @@ void test_inlupp_linked_list_prepend(void)
   
   inlupp_linked_list_prepend(ll, int_elem(1000));
   CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 1000);
-
-  
-  
   inlupp_linked_list_destroy(ll);
 }
 
@@ -321,22 +316,7 @@ void test_inlupp_linked_list_apply_to_all(void)
 
 void test_iterator(void)
 {
-  /* list_t *ll = inlupp_linked_list_create(equality_function_int);
 
-  inlupp_linked_list_append(ll, int_elem(10));
-  inlupp_linked_list_append(ll, int_elem(100));
-  inlupp_linked_list_append(ll, int_elem(1000));
-  
-  test_iterator_func(ll, 1);
-  CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 1).int1, 1000);  
-  
-  test_iterator_func(ll, 0);
-  CU_ASSERT_EQUAL(inlupp_linked_list_get(ll, 0).int1, 1000);  
-
-  test_iterator_func(ll, 0);
-  CU_ASSERT_PTR_NULL(ll->first);  
-
-  inlupp_linked_list_destroy(ll);*/
 }
 
 

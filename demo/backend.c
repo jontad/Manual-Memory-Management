@@ -32,19 +32,10 @@ static void free_items_in_cart(link_t **element, void *extra)
   //free((*element)->value.item);
   release((*element)->value.item);
 }
-/*
-static void free_shelves_in_stock(link_t **element, void *extra)
-{
-  free((*element)->value.shelf->shelf_name);
-  //free((*element)->value.shelf);
-  //release((*element)->value.shelf->shelf_name);
-  release((*element)->value.shelf);
-  }*/
 
 static void free_carts_apply_func(elem_t key, elem_t *value, void *extra)
 {
   inlupp_linked_apply_to_all(value->cart->basket, free_items_in_cart, NULL);
-
   inlupp_linked_list_destroy(value->cart->basket);
   //free(value->cart);
   release(value->cart);
@@ -82,6 +73,7 @@ static void destroy_merch(database_t *db, merch_t *merch) //Note: remember to re
   inlupp_linked_list_destroy(stock); //2. free list of shelves_ht
   free(merch->name);
   free(merch->desc);
+
   release(merch);
 }
 
@@ -110,12 +102,12 @@ merch_t *database_add_merch(database_t *db, char *new_name, char *new_desc, unsi
 {  
   merch_t *merch = allocate(sizeof(merch_t), NULL);
   retain(merch);
+
   merch->name = new_name;
   merch->desc = new_desc;
   merch->price_per_unit = new_price;
   merch->available_amount = 0;
   merch->stock = inlupp_linked_list_create(equality_function_str);
-  
   hash_table_insert(db->merch_ht, str_elem(merch->name), merch_elem(merch));
   return merch;
 }
@@ -195,7 +187,6 @@ static merch_t *rename_merch(char *name, merch_t *merch)
   new_merch->price_per_unit = merch->price_per_unit;
   new_merch->available_amount = merch->available_amount;
   new_merch->stock = merch->stock;
-
   retain(new_merch);
   return new_merch; 
 }
@@ -204,7 +195,6 @@ static merch_t *rename_merch(char *name, merch_t *merch)
 static merch_t *insert_merch(database_t *db, char *new_name, merch_t *merch)
 {
   merch_t *new_merch = rename_merch(new_name, merch);
-  
   retain(new_merch->stock);
   hash_table_remove(db->merch_ht, str_elem(merch->name));
   
@@ -257,6 +247,7 @@ void database_show_stock(merch_t *merch)
 shelf_t *database_create_shelf(char *shelf_name, int amount)
 {
   shelf_t *new_shelf = allocate(sizeof(shelf_t), NULL);
+
   retain(new_shelf);
   new_shelf->shelf_name = shelf_name;
   new_shelf->amount = amount;
@@ -288,7 +279,7 @@ static int shelf_compare(list_t *stock, char *shelf_name)
 	{
 	  current_shelf_value = shelf_value(current_loc->value.merch->name);
 	  ++counter;
-	  
+	 
 	  release(current_loc);
 	  current_loc = current_loc->next;
 	  retain(current_loc);
@@ -316,6 +307,7 @@ void database_replenish_stock(database_t *db, merch_t *merch, shelf_t *new_shelf
       if (strcmp(current_shelf->shelf_name, new_shelf->shelf_name) == 0)
 	{
 	  replenish_existing_shelf = true;
+
 	  release(current_link);
 	  break;
 	}
@@ -430,7 +422,6 @@ option_t database_choose_item_in_cart(cart_t *cart, char *wanted_item)
         release(current_link);
       return Failure();
     }
-
 }
 
 
@@ -568,6 +559,7 @@ void database_checkout(database_t *db, cart_t *cart)
       current_link = current_link->next;
       retain(current_link);
     }
+
   release(current_link);
   database_delete_cart(db, cart);
 }

@@ -39,6 +39,7 @@ static void create_dummys(hash_table_t *ht)
   for (int i = 0 ; i < ht->capacity ; i++)
     {
       elem_t empty = { .void_ptr = NULL };
+
       ht->buckets[i] = entry_create(empty, empty, NULL);
       //ht->buckets[i] is retained in entry_create()
     }
@@ -101,6 +102,7 @@ static void resize_hash_table(hash_table_t *ht)
     }
   
   list_t *keys = hash_table_keys(ht);
+
   list_t *values = hash_table_values(ht);
   printf("keys ref count: %ld \n",rc(values->first->value.merch));
   buckets_destroy(ht);
@@ -137,6 +139,7 @@ static void resize_hash_table(hash_table_t *ht)
 
 //Took find_previous_entry_for_key from the other hash_table.c, as our segfaulted for the last entry
 //This function expects that first_entry has been retained by caller
+
 static entry_t *find_previous_entry_for_key(entry_t *first_entry, elem_t key, hash_function hash_func)
 {
   if (!first_entry) return NULL;
@@ -191,8 +194,7 @@ void hash_table_insert(hash_table_t *ht, elem_t key, elem_t value)
     }
   else
     {
-      entry->next = entry_create(key, value, next);
-      ++ht->size;
+      entry->next = entry_create(key, value, next); ++ht->size;
       if (ht->size / (float)ht->capacity >= ht->load_factor)
 	{
 	  resize_hash_table(ht);
@@ -361,7 +363,6 @@ list_t *hash_table_keys(hash_table_t *ht)
 	  while(current_entry != NULL)
 	    {
 	      inlupp_linked_list_append(keys, current_entry->key);
-	      
 	      release(current_entry);
 	      current_entry = current_entry->next;
 	      retain(current_entry);

@@ -134,6 +134,7 @@ void deallocate(obj *object)
   counter = 0;
 }
 
+//the upper limit of reference count value is 255
 void retain(obj *object)
 {
   if(object)

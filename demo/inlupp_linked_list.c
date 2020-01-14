@@ -74,6 +74,7 @@ static void insert_aux(list_t *list, int index, elem_t value)
   //release(entry);
 }
 
+
 list_t *inlupp_linked_list_create(eq_function equal) 
 {
   list_t *linked_list = allocate(sizeof(list_t), NULL);
@@ -165,6 +166,7 @@ link_t *inlupp_linked_list_remove_link(obj *object, int index)
       link = prev_element;
       list->first = prev_element->next;
       prev_element->next = NULL;
+
       link_destroy(prev_element);
       --list->list_size;
       if (list->list_size == 0)
@@ -198,6 +200,7 @@ elem_t inlupp_linked_list_remove(list_t *list, int index)
   link_t *prev_element = find_previous_entry_for_index(list, index);
   link_t *element = prev_element->next;
   retain(element);
+
   elem_t value;
   
   if (index == 0)
@@ -209,7 +212,6 @@ elem_t inlupp_linked_list_remove(list_t *list, int index)
       --list->list_size;
       if (list->list_size == 0)
 	{
-	  //release(list->last);
 	  list->last = NULL;
 	}
 
@@ -218,7 +220,6 @@ elem_t inlupp_linked_list_remove(list_t *list, int index)
     {
       value = remove_aux(list, index, prev_element, element);
     }
-  //release(prev_element); //Inte helt säker på om vi behöver frigöra prev
   release(element);
   
   return value;
@@ -298,8 +299,7 @@ bool inlupp_linked_list_is_empty(list_t *list)
 
 void inlupp_linked_list_clear(list_t *list)
 {
-  //  link_t *link = list->first;
-  
+
   release(list->first);  
   release(list->last);
 
@@ -366,6 +366,7 @@ void inlupp_linked_apply_to_all(list_t *list, apply_char_function fun, void *ext
 list_iterator_t *list_iterator(list_t *list)
 {
   list_iterator_t *iter = allocate(sizeof(list_iterator_t), NULL);
+
   retain(iter);
   iter->current = list->first;
   retain(iter->current);
@@ -414,3 +415,4 @@ void iterator_destroy(list_iterator_t *iter)
 {
   release(iter);
 }
+
