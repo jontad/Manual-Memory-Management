@@ -68,6 +68,13 @@ Mitt fokus var att få ett fungerande program och lösa alla hinder som kom
 på vägen. Sen så var det så att vi stötte aldrig på någon jobbig bug vilket
 kan bidra till varför jag inte har så mycket att säga om det här.
 
+Personligen upplevde jag att jag lärde mig allt jag behövde för att lösa uppgiften ifrån
+assignments 1 och 2. Det fanns ett par små saker som vi fick söka efter och lära oss av det
+t.ex. bitmap, men jag upplevde främst att vi satt och löste problem som t.ex. när i en funktion
+ska vi ha en retain eller en release. 
+Från tidigare erfarenheter så vet jag att det kvittar om jag jobbar i grupp eller ensam, jag lär
+mig bäst när jag faktiskt använder det jag har läst eller fått höra på föreläsningen. 
+
 
 Joel Waldenbäck
 ----------------
