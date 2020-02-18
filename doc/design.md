@@ -19,7 +19,7 @@ frees in its stead.
 To avoid freeing too large objects, a freeing limit is implemented, which is the upper limit of how many objects are allowed to be free'd at once
 and can be adjusted by the user. If the limit is lower than the amount of objects, the remaining object are stored to be free'd later.
 They are free'd during the next allocation.
-<img src="https://github.com/IOOPM-UU/Team-13/blob/master/proj/overhead.png" title="allocated">
+<img src="https://github.com/IOOPM-UU/Team-13/blob/master/proj/overhead.png" title="allocated"></br>
 What is allocated for each object is:
 
 * reference count: Amount of pointers to object (1 byte)
