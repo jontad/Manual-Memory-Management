@@ -255,7 +255,7 @@ void replenish_stock(database_t *db)
       int amount = ask_question_int("Amount: ");
 
       shelf_t *new_shelf = database_create_shelf(shelf_name, amount);
-      retain(new_shelf);
+      //retain(new_shelf);
       
       database_replenish_stock(db, merch, new_shelf);
     }
@@ -383,7 +383,7 @@ void add_to_cart(database_t *db)
   if (Successful(result_carts))
     {
       cart_t *cart = result_carts.value.cart;
-      retain(cart);
+      //retain(cart);
       
       option_t result_merch = choose_merch(db); //Choose merch
       
