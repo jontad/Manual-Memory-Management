@@ -33,13 +33,15 @@ static void free_items_in_cart(link_t **element, void *extra)
   release((*element)->value.item);
 }
 
+//value är av typen cart
+//basket är av typen list_t
 static void free_carts_apply_func(elem_t key, elem_t *value, void *extra)
 {
   inlupp_linked_apply_to_all(value->cart->basket, free_items_in_cart, NULL);
   inlupp_linked_list_destroy(value->cart->basket);
   //free(value->cart);
-  release(value->cart);
-  release(value->cart);
+  //release(value->cart);
+  //release(value->cart);
 }
 
 static void clear_stock(list_t *stock)
@@ -357,6 +359,7 @@ void database_delete_cart(database_t *db, cart_t *cart)
 {
   inlupp_linked_apply_to_all(cart->basket, free_items_in_cart, NULL);
   //release(cart);
+
   inlupp_linked_list_destroy(cart->basket);
 
   hash_table_remove(db->carts, unsigned_elem(cart->id));
@@ -386,6 +389,7 @@ static item_t *item_create(merch_t *merch, int amount)
 
 void database_add_to_cart(database_t *db, cart_t *cart, merch_t *merch, int amount)
 {
+  //item has been retained by item_create()
   item_t *item = item_create(merch, amount);
 
   merch->available_amount = merch->available_amount - amount;
