@@ -166,8 +166,8 @@ void test_remove_merch(void)
 void test_edit(void) 
 {
   database_t *db = database_create_database();
-  merch_t *merch  = database_add_merch(db, "namn", "beskrivning", 10); //Add a merch
-
+  merch_t *merch  = database_add_merch(db, strdup("namn"), "beskrivning", 10); //Add a merch
+  retain(merch);
   merch = database_edit_name(db, "nytt_namn", merch);
   database_edit_desc(merch, "ny_beskrivning");
   database_edit_price(merch, 20);   
