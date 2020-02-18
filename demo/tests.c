@@ -156,6 +156,7 @@ void test_remove_merch(void)
   database_t *db = database_create_database();
 
   merch_t *merch = database_add_merch(db, strdup("namn"), strdup("beskrivning"), 10); //Add a merch
+  retain(merch);
   database_remove_merch(db, merch); //and remove it
   option_t result = hash_table_lookup(db->merch_ht, str_elem("namn"));
   CU_ASSERT_FALSE(result.success);

@@ -71,14 +71,14 @@ static void destroy_merch(database_t *db, merch_t *merch) //Note: remember to re
     }
   clear_stock(stock);
   inlupp_linked_list_destroy(stock); //2. free list of shelves_ht
-  free(merch->name);
-  free(merch->desc);
-
   release(merch);
 }
 
 static void free_merch_apply_func(elem_t key, elem_t *value, void *db)
-{  
+{
+  free(value->merch->name);
+  free(value->merch->desc);
+  
   destroy_merch(db, value->merch);  
 }
 
@@ -173,10 +173,11 @@ void database_remove_merch(database_t *db, merch_t *merch)
 {
   char *str_name = merch->name;
   char *str_desc = merch->desc;
+  destroy_merch(db, merch);
   hash_table_remove(db->merch_ht, str_elem(merch->name));
   free(str_name);
   free(str_desc);
-  //destroy_merch(db, merch);
+  
 }
 
 
