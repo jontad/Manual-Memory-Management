@@ -10,6 +10,9 @@ C_VALGRIND  	  = valgrind --leak-check=full --show-leak-kinds=all
 
 compile: src webstore
 
+run: compile
+	(cd demo && make run)
+
 ## SRC ##
 
 src: test/tests.c allocate.o cleanup.o cascade.o lib_for_tests.o linked_list.o

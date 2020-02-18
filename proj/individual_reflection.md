@@ -68,6 +68,13 @@ Mitt fokus var att få ett fungerande program och lösa alla hinder som kom
 på vägen. Sen så var det så att vi stötte aldrig på någon jobbig bug vilket
 kan bidra till varför jag inte har så mycket att säga om det här.
 
+Personligen upplevde jag att jag lärde mig allt jag behövde för att lösa uppgiften ifrån
+assignments 1 och 2. Det fanns ett par små saker som vi fick söka efter och lära oss av det
+t.ex. bitmap, men jag upplevde främst att vi satt och löste problem som t.ex. när i en funktion
+ska vi ha en retain eller en release. 
+Från tidigare erfarenheter så vet jag att det kvittar om jag jobbar i grupp eller ensam, jag lär
+mig bäst när jag faktiskt använder det jag har läst eller fått höra på föreläsningen. 
+
 
 Joel Waldenbäck
 ----------------
@@ -158,10 +165,14 @@ det inga problem heller.
 Jag tycker väldigt mycket om att jobba i grupp. Det är skönt att kunna
 diskutera problem man stöter på direkt. 
 
+Jag lärde mig inget specifikt under projektet, förutom vissa lösningar på problem vi gjorde, men då använde vi oss av det vi lärt oss tidigare i kursen. Jag tycker dock att jag lär mig bäst tillsammans med andra. Tidigare i kursen har jag alltid diskuterat problem med min dåvarande labbpartner eller andra kursare för att få bättre förståelse. 
+
 Det har gått helt okej att logga arbetstider, i början och i slutet av
 projektet var jag mer noggrann. I mitten av projektet var jag lite lat och
 glömde logga några tider vi jobbade tillsammans, men som tur var kunde jag få
 tiderna från mina gruppmedlemmar.
+
+Från min sida kan jag egentligen inte komma på någon ”biggest win” kodmässigt, men jag är nöjd med presentationen där jag gjorde mallen för vår powerpoint. Jag är också nöjd med hur grupparbetet fungerade i det hela. Det största problemet jag stötte på var hur vi skulle implementera funktionerna i inlupp 2. Jag tyckte det var svårt att förstå när vissa funktioner skulle användas(t.ex. retain() och release()).
 
 Över lag är jag ganska nöjd med min insats under projektet. Jag känner att jag
 har koll på de flesta områden i koden. Dock önskar jag att jag hade varit lite
