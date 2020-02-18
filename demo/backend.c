@@ -170,8 +170,12 @@ option_t database_choose_merch(database_t *db, int result)
 ///////////////////////////////// REMOVE ////////////////////////////////////////////
 
 void database_remove_merch(database_t *db, merch_t *merch)
-{ 
+{
+  char *str_name = merch->name;
+  char *str_desc = merch->desc;
   hash_table_remove(db->merch_ht, str_elem(merch->name));
+  free(str_name);
+  free(str_desc);
   //destroy_merch(db, merch);
 }
 

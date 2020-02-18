@@ -134,6 +134,7 @@ void remove_merch(database_t *db)
       merch_t *merch = result.value.merch;
       retain(merch);
       database_remove_merch(db, merch);
+      release(merch);
     }
 }
 
