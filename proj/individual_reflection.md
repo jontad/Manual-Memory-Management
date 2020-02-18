@@ -84,15 +84,40 @@ Joel Waldenbäck
 200113 Wrapping up (6h)
 Totalt: 58h
 
-Det har varit intressant att arbeta tillsammans med 7 personer i en så liten kodbas som projekt 1 faktiskt innebär. Egentligen är vi nog 2-3 för många personer i gruppen för att man ska kunna få ut effektivt arbete av alla. Särskilt i uppbyggnaden av projektet är det svårt för så många personer att bidra på ett vettigt sätt utan att introducera jobbiga merchkonflikter för varandra. Med denna utmaning i beaktning tycker jag att vi tog oss an projektet på ett bra sätt. 
+How do I function in a team? Where are my strengths and weaknesses?
+Jag uppskattar att arbeta tillsammans med andra. Jag lär mig oftast bäst när jag har någon att diskutera lösningar och koncept med. Och detsamma gäller i att producera kod, har jag  någon att bolla idéer med innan jag sätter igång producerar jag i regel bättre kod. Min största styrka är att jag tycker det är kul att grotta ner mig i en uppgift och ge allt för att lösa den, samtidigt är det en av mina svagheter när det kommer till grupparbete. Trots att jag blir bättre av att arbeta med andra drar jag mig alltför ofta undan för att ensam fokusera på någon uppgift. Ibland är det bra, men vissa gånger är det negativt då jag inte följer med i vart gruppen är på väg utan snarare vart jag är på väg. 
 
-Jag missade den första dagen vi satte igång att koda. Och även den andra dagen (4h) hade jag inte tid att ta till mig koden som skrevs utan försökte förstå hur man fick igång continuous integration i Github. Så när jag den tredje koddagen skulle sätta mig och faktiskt arbeta med projektet hade ganska mycket kod skrivits. Det tog därför ett tag innan jag kom igång på riktigt. 
+How should I try to adapt the way I work to work better in a team?
+*Tydligt kommunicera vad jag tar mig an härnäst och varför.
+*Gärna bjuda in en teammedlem att parprogrammera med. Särskilt i ett projekt med så här stort manskap på en så liten kodbas som projekt 1 faktiskt innebär. Då funkar det inte så bra att alla jobbar som egna satelliter utan det är klokare att arbeta två och två. 
 
+What motivates me? What demotivates me? How do I stay motivated in a project?
+Projektet var spännande och utmanande så jag kände mig motiverad under hela dess gång. Är en uppgift för stor eller för svår att konceptualisera/greppa kan jag tappa motivationen. Jag får en känsla av att jag hur jag än försöker inte kommer att kunna lösa problemet.  
+
+How good am I at estimating how long a task will take? What is the process that produce my estimations?
+Att estimera tidsåtgång för en uppgift är något jag finner oerhört svårt. Jag upplever ofta att jag inte kan ge ett bra estimat pga att jag har för lite programmeringserfarenhet. Jag använder ingen särskild process när jag gör mina estimeringar.
+
+What role do I want to play in a team?
+Jag har erfarenhet av att projektleda och tar gärna en analyserande/planerande roll. Jag vill ha en överblick över vad som ska hända härnäst. När det är tydligt klarlagt vad som ska göras, tar jag gärna tag i en programmeringsuppgift.
+
+Hur fungerar du i ett team? Faller du in i ett särskilt mönster, eller tar du återkommande en särskild roll?
+En svaghet jag har är att jag emellanåt har svårt att sätta igång. Startsträckan kan vara lång. Detta är något jag behöver förbättra.
+
+Jämför hur mycket du lärt dig under projektarbetet kontra kursens övriga delar, och fundera över hur du bäst lär dig saker.
+Den största lärdomen jag fick från projektet var en inblick i hur det är att jobba fler än 2-3 st i samma projekt. Det var lärorikt och jag har lärt mig mycket utifrån det. Annars anser jag att kursens övriga delar var mer lärorika ur ett skriva-kod-perspektiv.
+
+Hur har det gått att logga arbetstid?
+Det har gått ganska bra. Någon gång glömdes det bort, men det var enkelt att rätta till dagen därpå.
+
+“Biggest fail” och “biggest win”, dvs. det största problem som du stötte på och det smartaste eller bästa du gjorde.
 Mitt största fail under projektets gång var när jag satte igång med cascading frees och cascade limit. Implementationen blev krånglig och jag kunde inte dra det i land. Skillnaden på den cascading free-implementation jag tänkte mig mot den vi senare valde är att den vi valde kräver att ett objekt vars subobjekt inte är kedjade måste tas bort i ett enda svep (dvs inget avbrott i en cascading free får göras, cascade_limit = oändligheten) då huvudstrukten alltid kommer att tas bort i den "första rundan" av cascading frees. Detta är en begränsning, men det förenklar också själva implementationen vilket är positivt. Så jag tycker därför att det alternativet vi valde är bättre än det jag tänkte ut.
 
-En annan stor fail är att vi inte lyckades komma på en bra mappingfunktion till vår bit array vilket gör att två olika pekare dessvärre alltför ofta mappas till samma bit, vilket renderar bit arrayen värdelös. Vi har därför valt att inte merga bit array-branchen med master utan använder oss fortf av en länkad lista för att hålla våra pekare. 
+En annan stor fail är att vi inte lyckades komma på en bra mappingfunktion till vår bit array vilket gör att två olika pekare dessvärre alltför ofta mappas till samma bit, vilket renderar bit arrayen värdelös. Vi har därför valt att inte merga bit array-branchen med master utan använder oss fortf av en länkad lista för att hålla våra pekare.
+
+En tredje fail var att det tog lite för lång tid för mig att komma in i projektet. Jag missade den första dagen vi satte igång att koda, och även den andra dagen (4h) hade jag inte tid att ta till mig koden som skrevs utan försökte förstå hur man fick igång continuous integration i Github. Så när jag den tredje koddagen skulle sätta mig och faktiskt arbeta med projektet hade ganska mycket kod skrivits. Så det tog ett tag innan jag kom igång på riktigt. 
 
 Min största win är att vi lyckades komma på hur en bit array skulle hjälpa oss att hålla overhead på en lägre nivå. I projektbeskrivningen fanns det minst sagt begränsad information kring hur en bit array skulle hjälpa oss så jag är nöjd med att vi kom på ett sätt att använda den.
+
 
 Elias Insulander
 ----------------
