@@ -383,7 +383,7 @@ void add_to_cart(database_t *db)
   if (Successful(result_carts))
     {
       cart_t *cart = result_carts.value.cart;
-      retain(cart);
+      //retain(cart);
       
       option_t result_merch = choose_merch(db); //Choose merch
       

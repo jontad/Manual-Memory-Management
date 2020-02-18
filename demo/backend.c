@@ -21,15 +21,11 @@ database_t *database_create_database()
   db->carts = hash_table_create(uns_int_hash_func, equality_function_uns_int, equality_function_pointer, 0.75, 17);
   db->id_counter = 0;
   retain(db);
-  //retain(db->merch_ht);
-  //retain(db->shelves_ht);
-  //retain(db->carts);
   return db;
 }
 
 static void free_items_in_cart(link_t **element, void *extra)
 {
-  //free((*element)->value.item);
   release((*element)->value.item);
 }
 
@@ -37,8 +33,6 @@ static void free_carts_apply_func(elem_t key, elem_t *value, void *extra)
 {
   inlupp_linked_apply_to_all(value->cart->basket, free_items_in_cart, NULL);
   inlupp_linked_list_destroy(value->cart->basket);
-  //free(value->cart);
-  release(value->cart);
   release(value->cart);
 }
 
@@ -49,8 +43,6 @@ static void clear_stock(list_t *stock)
     {
       element = inlupp_linked_list_get(stock, i);
       free(element.shelf->shelf_name);
-      //free(element.shelf);
-      //release(element.shelf->shelf_name);
       release(element.shelf);
       
     }
