@@ -244,7 +244,6 @@ void database_show_stock(merch_t *merch)
 shelf_t *database_create_shelf(char *shelf_name, int amount)
 {
   shelf_t *new_shelf = allocate(sizeof(shelf_t), NULL);
-
   retain(new_shelf);
   new_shelf->shelf_name = shelf_name;
   new_shelf->amount = amount;
@@ -304,7 +303,8 @@ void database_replenish_stock(database_t *db, merch_t *merch, shelf_t *new_shelf
       if (strcmp(current_shelf->shelf_name, new_shelf->shelf_name) == 0)
 	{
 	  replenish_existing_shelf = true;
-
+	  //free(new_shelf->shelf_name);
+	  //release(new_shelf);
 	  release(current_link);
 	  break;
 	}
@@ -317,6 +317,8 @@ void database_replenish_stock(database_t *db, merch_t *merch, shelf_t *new_shelf
   if(replenish_existing_shelf)
     {
       current_link->value.shelf->amount += new_shelf->amount;
+      free(new_shelf->shelf_name);
+      release(new_shelf);
     }
   else
     {

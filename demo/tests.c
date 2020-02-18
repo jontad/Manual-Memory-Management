@@ -198,7 +198,7 @@ void test_replenish(void)
   
   merch_t *merch_namn = database_add_merch(db, "namn", "beskrivning", 10); //Add first merch
   shelf_t *shelf_h20 = database_create_shelf("H20", 5);
-
+  shelf_t *shelf_h20_snd = database_create_shelf(strdup("H20"), 5);
   /*inlupp_linked_list_insert(merch_namn->stock, 0, shelf_elem(shelf_h20));
   printf("ref count h20: %d\n", rc(merch_namn->stock->first));
   
@@ -213,7 +213,7 @@ void test_replenish(void)
   option_t result = hash_table_lookup(db->merch_ht, str_elem("namn"));
   CU_ASSERT_TRUE(result.success);
   
-  database_replenish_stock(db, merch_namn, shelf_h20); //Replenish first merch again
+  database_replenish_stock(db, merch_namn, shelf_h20_snd); //Replenish first merch again
   
   int size = result.value.merch->stock->list_size;
   CU_ASSERT_EQUAL(size, 1);
