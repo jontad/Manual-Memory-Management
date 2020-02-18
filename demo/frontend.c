@@ -162,7 +162,7 @@ void event_loop_edit(database_t *db, merch_t *merch)
 		{
 		  if (Unsuccessful(lookup_result))
 		    {
-		      free(merch->name);
+		      //free(merch->name);
 		      merch = database_edit_name(db, new_name, merch);
 		      print_item(merch->name, merch->desc, merch->price_per_unit);
 

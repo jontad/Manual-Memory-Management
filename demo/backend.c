@@ -200,8 +200,10 @@ static merch_t *insert_merch(database_t *db, char *new_name, merch_t *merch)
 {
   merch_t *new_merch = rename_merch(new_name, merch);
   retain(new_merch->stock);
+  char *str_name = merch->name;
+  release(merch);
   hash_table_remove(db->merch_ht, str_elem(merch->name));
-  
+  free(str_name);
   //inlupp_linked_apply_to_all(merch->stock, free_shelves_in_stock, NULL);
   //free(merch);
   //release(merch);
