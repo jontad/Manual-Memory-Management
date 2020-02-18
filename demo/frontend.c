@@ -359,6 +359,7 @@ void remove_cart(database_t *db)
       cart_t *cart = result.value.cart;
       retain(cart);
       database_remove_cart(db, cart);
+      release(cart);
     }
 }
 
