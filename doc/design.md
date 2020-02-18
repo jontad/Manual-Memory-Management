@@ -11,13 +11,13 @@ Using these are quite unforgiving, which is why Team 13 has developed this progr
 
 By using our program you don't need to allocate memory for an already used object, but simply add a reference to that objects reference counter.
 When you're done with a perticular reference you subtract from the reference counter.
-Our program also recognizes that when an object doesn't have any references anymore, it deallocates the object.
+Our program also recognizes that when an object doesn't have any references anymore, it can deallocate the object.
 
 Each object can have a destructor provided by the user, that frees data structures. If a destructor is not provided, there is a default destructor implemented that
-frees in its stead.
+frees it instead.
 
-To avoid freeing too large objects, a freeing limit is implemented, which is the upper limit of how many objects are allowed to be free'd at once
-and can be adjusted by the user. If the limit is lower than the amount of objects, the remaining object are stored to be free'd later.
+To avoid freeing too many objects, a freeing limit is implemented, which is the upper limit of how many objects are allowed to be free'd at once in a sequence.
+This limit can be adjusted by the user. If the limit is lower than the amount of objects, the remaining object are stored to be free'd later.
 They are free'd during the next allocation.
 <img src="https://github.com/IOOPM-UU/Team-13/blob/master/proj/overhead.png" title="allocated"></br>
 What is allocated for each object is:
@@ -29,4 +29,4 @@ What is allocated for each object is:
 
 * what user want to allocate (n bytes)
 
-All allocated objects have a pointer that is placed in a linked list, which keeps track of each object.  
+All allocated objects have a pointer that is placed in a linked list, which keeps track of each object. This is so that all objects can be freed at once if the user would wish to do that. 
