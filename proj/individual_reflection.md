@@ -226,6 +226,10 @@ Den största förlusten är misslyckandet med att få en felfri bit array med ta
 som lagts på den och hur nära jag kände mig att klara av den. Dock så ångrar jag inte den tiden jag
 arbetat på den.
 
+Jag lärde mig inte så mycket nytt under projektet. Det enda nya jag lärde mig var hur en bitarray fungerar, att arbeta i en större grupp och lite bättre om hur git fungerar. Men det allra mesta av mina nya lärdomar kom under inlupparna då C och objektorienterad programmering i Java var nytt för mig.
+
+Jag lär mig nya saker bäst om det intresserar mig och/eller när jag kan praktiskt kan använda den nya informationen, exempelvis genom att arbeta med uppgifter så att jag ser vad den nya lärdomen ger för resultat. Dessutom lär jag mig väldigt mycket av att diskutera information och lösningsförslag med andra personer, speciellt de som har en liknande kunskapsnivå inom diskussionsämnet som mig. 
+
 
 Daniel Westberg
 ----------------
