@@ -575,7 +575,7 @@ int main()
 
   release(db);
   database_destroy_database(db);
-  //shutdown();
+  shutdown();
   return 0;
 }
 
