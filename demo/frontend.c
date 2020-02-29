@@ -134,6 +134,7 @@ void remove_merch(database_t *db)
       merch_t *merch = result.value.merch;
       retain(merch);
       database_remove_merch(db, merch);
+      //release(merch);
     }
 }
 
@@ -161,7 +162,7 @@ void event_loop_edit(database_t *db, merch_t *merch)
 		{
 		  if (Unsuccessful(lookup_result))
 		    {
-		      free(merch->name);
+		      //free(merch->name);
 		      merch = database_edit_name(db, new_name, merch);
 		      print_item(merch->name, merch->desc, merch->price_per_unit);
 
@@ -254,7 +255,7 @@ void replenish_stock(database_t *db)
       int amount = ask_question_int("Amount: ");
 
       shelf_t *new_shelf = database_create_shelf(shelf_name, amount);
-      retain(new_shelf);
+      //retain(new_shelf);
       
       database_replenish_stock(db, merch, new_shelf);
     }
@@ -358,6 +359,7 @@ void remove_cart(database_t *db)
       cart_t *cart = result.value.cart;
       retain(cart);
       database_remove_cart(db, cart);
+      release(cart);
     }
 }
 
@@ -381,7 +383,7 @@ void add_to_cart(database_t *db)
   if (Successful(result_carts))
     {
       cart_t *cart = result_carts.value.cart;
-      retain(cart);
+      //retain(cart);
       
       option_t result_merch = choose_merch(db); //Choose merch
       
@@ -573,7 +575,7 @@ int main()
 
   release(db);
   database_destroy_database(db);
-  //shutdown();
+  shutdown();
   return 0;
 }
 
