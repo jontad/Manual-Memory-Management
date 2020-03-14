@@ -234,6 +234,7 @@ void show_stock(database_t *db)
       merch_t *merch = result.value.merch;
       retain(merch);
       database_show_stock(merch);
+      release(merch);
     }
 }
 
@@ -575,7 +576,7 @@ int main()
 
   release(db);
   database_destroy_database(db);
-  shutdown();
+  //shutdown();
   return 0;
 }
 
