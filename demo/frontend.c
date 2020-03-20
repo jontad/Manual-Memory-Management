@@ -234,6 +234,7 @@ void show_stock(database_t *db)
       merch_t *merch = result.value.merch;
       retain(merch);
       database_show_stock(merch);
+      release(merch);
     }
 }
 
