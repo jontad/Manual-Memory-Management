@@ -27,8 +27,16 @@ allocate.o: src/allocate.c src/refmem.h src/linked_list.h test/lib_for_tests.h
 linked_list.o: src/linked_list.c src/linked_list.h demo/common.h
 	$(C_COMPILER) $(C_OPTIONS) -c src/linked_list.c
 
+compile_webstore: demo/frontend.c demo/backend.c demo/utils.c demo/hash_table.c demo/inlupp_linked_list.c src/cleanup.c src/allocate.c src/cascade.c test/lib_for_tests.c src/linked_list.c
+	gcc --coverage -Wall -pedantic -g demo/frontend.c demo/backend.c demo/utils.c demo/hash_table.c demo/inlupp_linked_list.c src/cleanup.c src/allocate.c src/cascade.c test/lib_for_tests.c src/linked_list.c
 
 ## WEBSTORE ##
+
+run: compile_webstore
+	valgrind --leak-check=full --show-leak-kinds=all ./a.out
+
+commands: compile_webstore
+	valgrind --leak-check=full --show-leak-kinds=all ./a.out < demo/commands.txt
 
 webstore: frontend.o backend.o utils.o hash_table.o inlupp_linked_list.o
 
